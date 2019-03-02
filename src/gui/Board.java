@@ -294,18 +294,6 @@ public class Board {
 		return labelContainer;
 	}
 	
-	/**
-	 * TODO
-	 * @param rotation
-	 */
-	public void setPipContainerRegion(double rotation) {
-		if (rotation == 0) {
-			
-		} else if (rotation == 180) {
-			
-		}
-	}
-	
 	public void setPipLabelRegion(double rotatation) {
 		if (rotatation == 0) {	
 			topBorder.setLeft(topLeftLabelContainer);
@@ -338,6 +326,7 @@ public class Board {
 	 * @param moveToIndex
 	 */
 	public void moveDisks(int moveFromIndex, int moveToIndex) {
+		
 		if (!pipArray[moveFromIndex].isEmpty()) {
 			pipArray[moveToIndex].updatePushedDisks(pipArray[moveFromIndex].updatePoppedDisks());
 		}

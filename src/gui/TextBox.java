@@ -23,6 +23,9 @@ public class TextBox {
 
 	HBox inputBox;
 	HBox outputBox;
+	
+	/** A boolean value that used to check if the dice roll red button is currently disabled */
+	private boolean diceRollDisabled;
 
 	public TextBox() {
 		textContainer = new BorderPane();
@@ -32,6 +35,8 @@ public class TextBox {
 		inputBox = new HBox(inputField, rollDiceBtn);
 		outputBox = new HBox(outputField);
 
+		diceRollDisabled = false; // TODO
+		
 		initTextBox();
 	}
 
@@ -45,10 +50,10 @@ public class TextBox {
 
 		inputField.setPrefHeight(50.0);
 
-		outputField.setText("> Welcome to Backgammon");
+		outputField.setText(">> Welcome to Backgammon <<");
 		outputField.setEditable(false);
 		outputField.setWrapText(true);
-		outputField.setScrollTop(Double.MIN_VALUE);
+		//outputField.setScrollTop(Double.MAX_VALUE);
 
 		rollDiceBtn.setText("Roll Dice");
 		rollDiceBtn.setPrefWidth(200.0);
@@ -80,16 +85,17 @@ public class TextBox {
 		
 		switch (error) {
 			case "move":
-				s = "Invalid move, please try again";
+				s = "Invalid move, please try again\n";
 				break;
 			case "input":
-				s = "Invalid input, please try again";
+				s = "Invalid input, please try again\n";
 				break;
 			case "command":
-				s = "Invalid command, please try again";
+				s = "Invalid command, please try again\n";
 				break;
 		}
 		
+		System.out.println("\tError message created\t\t: SUCCESS"); // Testing
 		output(s);
 	}
 	
@@ -102,11 +108,13 @@ public class TextBox {
 
 		switch (warning) {
 			case "dice":
-				output += "You must use all dice rolls before continuing";
+				output += "You must use ALL dice rolls before continuing\n";
 				break;
 			case "name": 
-				output += "All players must provide a name first";
+				output += "All players must provide a name first\n";
 		}
+		
+		System.out.println("\tWarning message created\t\t: SUCCESS"); // Testing
 		output(output);
 	}
 	
@@ -116,7 +124,7 @@ public class TextBox {
 	 */
 	public void displayHelp(String command) {
 
-		String output = "\t\t< Commands >\n\tUSAGE : ";
+		String output = "\t< Commands >\n\tUSAGE : ";
 
 		switch (command) {
 			case ".name":
@@ -132,7 +140,7 @@ public class TextBox {
 				output += "To end turn\t- next";
 				break;
 			case "all":
-				output += "To change names\t- .name [oldName] [newName]\n" + "\tUSAGE : To move\t- .move [moveFrom] [moveTo]\n" + "\tUSAGE : To quit\t- quit\n" + "\tUSAGE : To end turn\t- next\n";
+				output += "To change names\t\t- .name [oldName] [newName]\n" + "\tUSAGE : To move\t\t\t\t- .move [moveFrom] [moveTo]\n" + "\tUSAGE : To move without rules\t- cheat [moveFrom] [moveTo]\n" + "\tUSAGE : To quit\t\t\t\t- quit\n" + "\tUSAGE : To end turn\t\t\t- next\n";
 				break;
 		}
 
@@ -140,10 +148,19 @@ public class TextBox {
 	}
 	
 	/**
+	 * Method to check if the dice roll button is disabled
+	 * @return	True if the dice roll button is disabled, else false
+	 */
+	public boolean getDiceRollBtnStatus() {
+		return this.diceRollDisabled;
+	}
+	
+	/**
 	 * Method to disable the clicking of dice-roll red button 
 	 * @param disable	Boolean value to indicate the disable of the dice-roll button
 	 */
 	public void disableDiceRollBtn(boolean disable) {
+		this.diceRollDisabled = disable;
 		this.rollDiceBtn.setDisable(disable);
 	}
 
@@ -159,7 +176,7 @@ public class TextBox {
 	 * @param player	The name of the current player
 	 */
 	public void printUserInput(String player) {
-		outputField.appendText("\n[@" + player + "] " + getUserInput());
+		outputField.appendText("\n\n[@" + player + "] " + getUserInput());
 		clearInputField();
 	}
 	

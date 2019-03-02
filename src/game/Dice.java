@@ -18,7 +18,7 @@ public class Dice {
 	private int[] diceRoll;
 	
 	private int numberOfMoves;
-	
+		
 	/**
 	 * Constructor that creates a new Random object
 	 */

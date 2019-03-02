@@ -1,6 +1,7 @@
 package gui;
 
 import data_structures.LinkedStack;
+import data_structures.StackEmptyException;
 import javafx.scene.paint.Color;
 
 /**
@@ -110,8 +111,11 @@ public class Pip extends LinkedStack<Disks> {
 		
 		if(isEmpty()) {			
 			size = -100;
-		}else if(size() >= 5)
+		}else if(size() >= 5) {
 			size = top().getCircle().getTranslateY() + 30.0;
+			System.out.println("Entered Push Disk\n");
+			// updateDisks();
+		}
 		else 
 			size = top().getCircle().getTranslateY() + 40.0;
 		
@@ -141,14 +145,14 @@ public class Pip extends LinkedStack<Disks> {
 	 * @return The color of disk (s) on any pip (stack, look for the top element)
 	 */
 	public String returnDiskColor() {
+	
 		String color;
-
-		if (top().getColor() == Color.BLACK) {
+			
+		if (top().getColor() == Color.BLACK) 
 			color = "black";
-		} else {
-			color = "white";
-		}
-
+		else 
+			color = "white";		
+		
 		return color;
 	}
 	

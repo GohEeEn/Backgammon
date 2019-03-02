@@ -70,7 +70,7 @@ public class PlayerController {
 	 * @return The information about the current player
 	 */
 	public String displayCurrentPlayerInfo() {
-		return getCurrentPlayerName() + ", your disk color is " + getCurrentPlayerColor().toUpperCase();
+		return getCurrentPlayerName() + ", your disk color is " + getCurrentPlayerColor().toUpperCase() + "\n";
 	}
 	
 	/**

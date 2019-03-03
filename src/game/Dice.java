@@ -17,6 +17,7 @@ public class Dice {
 	/** Integer array that stores both 2 dice roll values per game turn */ 
 	private int[] diceRoll;
 	
+	/** Number of disk moves at the current game turn */
 	private int numberOfMoves;
 		
 	/**
@@ -87,7 +88,7 @@ public class Dice {
 	 * @return String generated for notify the player that he/she got a normal dice play
 	 */
 	private String returnTwoDiceRolls() {
-		return "Rolled: " + diceRoll[0] + " and " + diceRoll[1] + " , the current player can make AT MOST " + (diceRoll[0] + diceRoll[1]) + " disk move(s) in a command";
+		return "Rolled: " + diceRoll[0] + " and " + diceRoll[1] + " , the current player can make " + (diceRoll[0] + diceRoll[1]) + " disk move(s)";
 	}
 	
 	/**

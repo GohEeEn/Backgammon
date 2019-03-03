@@ -32,10 +32,10 @@ public class Board {
 	/** Vertical Box that the home checkers removed to when bear off happens */
 	private VBox sideBox;
 	
-	private HBox labelContainer;
+	// private HBox labelContainer;
 	
 	private Jail jail ;
-	private Pip pip ;
+	// private Pip pip ;
 	private Pip[] pipArray ;
 	
 	private HBox topRightQuad;
@@ -47,8 +47,6 @@ public class Board {
 	private HBox topRightLabelContainer;
 	private HBox bottomLeftLabelContainer;
 	private HBox bottomRightLabelContainer;
-	
-	
 	
 	/**
 	 * Constructor to initialise the whole game

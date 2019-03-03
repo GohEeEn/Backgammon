@@ -50,10 +50,12 @@ public class TextBox {
 
 		inputField.setPrefHeight(50.0);
 
+		/* Initialize the outputField  */
+		
 		outputField.setText(">> Welcome to Backgammon <<");
 		outputField.setEditable(false);
 		outputField.setWrapText(true);
-		//outputField.setScrollTop(Double.MAX_VALUE);
+		outputField.setScrollTop(Double.MAX_VALUE); // TODO
 
 		rollDiceBtn.setText("Roll Dice");
 		rollDiceBtn.setPrefWidth(200.0);
@@ -69,8 +71,16 @@ public class TextBox {
 	}
 
 	/**
-	 * Method to output customized message on output field
-	 * @param s	The given message to displayed on the output field
+	 * Method to output general message on output field
+	 * @param s	General message given
+	 */
+	public void generalOutput(String s) {
+		outputField.appendText("\n" + s);
+	}
+	
+	/**
+	 * Method to output customized feedback message on output field
+	 * @param s	Customized feedback given
 	 */
 	public void output(String s) {
 		outputField.appendText("\n> " + s);
@@ -83,7 +93,7 @@ public class TextBox {
 	public void outputError(String error) {
 		String s = "";
 		
-		switch (error) {
+		switch (error.toLowerCase()) {
 			case "move":
 				s = "Invalid move, please try again\n";
 				break;
@@ -94,8 +104,6 @@ public class TextBox {
 				s = "Invalid command, please try again\n";
 				break;
 		}
-		
-		System.out.println("\tError message created\t\t: SUCCESS"); // Testing
 		output(s);
 	}
 	
@@ -106,12 +114,15 @@ public class TextBox {
 	public void warningMessage(String warning) {
 		String output = "WARNING: ";
 
-		switch (warning) {
+		switch (warning.toLowerCase()) {
 			case "dice":
 				output += "You must use ALL dice rolls before continuing\n";
 				break;
 			case "name": 
 				output += "All players must provide a name first\n";
+			case "roll":
+				output += "You must ROLL DICE (red button) before this command \n";
+				break;
 		}
 		
 		System.out.println("\tWarning message created\t\t: SUCCESS"); // Testing
@@ -126,7 +137,7 @@ public class TextBox {
 
 		String output = "\t< Commands >\n\tUSAGE : ";
 
-		switch (command) {
+		switch (command.toLowerCase()) {
 			case ".name":
 				output += "To change names\t- .name [oldName] [newName]";
 				break;
@@ -151,7 +162,7 @@ public class TextBox {
 	 * Method to check if the dice roll button is disabled
 	 * @return	True if the dice roll button is disabled, else false
 	 */
-	public boolean getDiceRollBtnStatus() {
+	public boolean getDiceRollBtnDisabled() {
 		return this.diceRollDisabled;
 	}
 	

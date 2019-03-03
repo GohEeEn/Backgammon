@@ -1,12 +1,14 @@
 package gui;
 
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.stage.Screen;
 
 /**
  * Class that define the GUI of the game board
@@ -15,6 +17,8 @@ import javafx.scene.paint.Color;
  */
 
 public class Board {
+	
+	Rectangle2D screenBounds;
 	
 	/* The whole container of UI of this game */
 	private HBox gameContainer;
@@ -36,7 +40,7 @@ public class Board {
 	
 	private Jail jail ;
 	private Pip pip ;
-	private Pip[] pipArray ;
+	private Pip[] pipArray;
 	
 	private HBox topRightQuad;
 	private HBox topLeftQuad;
@@ -48,23 +52,33 @@ public class Board {
 	private HBox bottomLeftLabelContainer;
 	private HBox bottomRightLabelContainer;
 	
+	// Constants
+	private double pipWidth = 78.5;
+	private double diskRadius = 20;
+	
+	// Variables
+	
+	
 	
 	
 	/**
 	 * Constructor to initialise the whole game
 	 */
 	public Board() {
+		Rectangle2D screen = Screen.getPrimary().getVisualBounds();
+		screenBounds = new Rectangle2D(0,0,(double)(screen.getWidth() - 50), (double)(screen.getHeight() - 50));		// Screen dimensions
+
 		
-		gameContainer = new HBox();
-		board = new VBox();
+		gameContainer = new HBox();		// Whole board container
+		board = new VBox();				
 
-		topBorder = new BorderPane();
-		bottomBorder = new BorderPane();
+		topBorder = new BorderPane();			// Top bar of board
+		bottomBorder = new BorderPane();		// Bottom bar of board
 
-		leftBoard = new BorderPane();
-		rightBoard = new BorderPane();
+		leftBoard = new BorderPane();			// Left half of board
+		rightBoard = new BorderPane();			// Right half of board
 
-		jail = new Jail();
+		
 		sideBox = new VBox();
 		
 		topLeftLabelContainer = new HBox();
@@ -83,21 +97,38 @@ public class Board {
 	 */
 	private void initBoard() {
 
+		double gameWidth = screenBounds.getWidth();
+		double gameHeight = screenBounds.getHeight();
+		
+		double boardWidth = gameWidth - 200;		// window width - right pip home area	
+		double boardheight = gameHeight - 100 - 50 - 50;		// Window height - height of input/output area - topborder - bottomborder
+		
+		jail = new Jail(boardheight);		
+		
 		HBox middle = new HBox();
 
 		HBox topLeftLabel = new HBox();
 		topLeftLabel.setPrefWidth(475);
 
-		gameContainer.setPrefWidth(1100);
-		board.setPrefWidth(1000);
-		topBorder.setPrefSize(900, 100);
-		bottomBorder.setPrefSize(900, 100);
+		gameContainer.setPrefSize(gameWidth, gameHeight);
+		board.setPrefSize(boardWidth, boardheight);
+		
+		topBorder.setPrefSize(boardWidth, 50);
+		bottomBorder.setPrefSize(boardWidth, 50);
 
-		leftBoard.setPrefSize(475, 600);
-		rightBoard.setPrefSize(475, 600);
+		// Set up board
+		
+		int widthOfHalfBoard = (int)(	(boardWidth - 50)/2	);		// (boardWidth - Jail)/2
+		//int heightOfHalfBoard = (int)(				);
+		
+		leftBoard.setPrefSize(widthOfHalfBoard, boardheight);
+		rightBoard.setPrefSize(widthOfHalfBoard, boardheight);
+		
+		// End set up of board
 		//rightBoard.setRight(sideBox);
 		leftBoard.setRight(jail);
 
+		Disks.SetDiskSize(diskRadius);
 		initPips();
 		initSideBox();
 
@@ -120,7 +151,7 @@ public class Board {
 		BorderPane diskArea = new BorderPane();
 		diskArea.setPrefHeight(600);
 
-		sideBox.setPrefWidth(100);
+		sideBox.setPrefWidth(200);
 		sideBox.setAlignment(Pos.CENTER);
 		sideBox.getChildren().add(diskArea);
 
@@ -129,8 +160,8 @@ public class Board {
 		StackPane whiteHome = new StackPane();
 
 		doublingCube.setPrefSize(50, 50);
-		blackHome.setPrefSize(50, 250);
-		whiteHome.setPrefSize(50, 250);
+		blackHome.setPrefSize(100, 250);
+		whiteHome.setPrefSize(100, 250);
 
 		diskArea.setTop(blackHome);
 		diskArea.setCenter(doublingCube);
@@ -269,7 +300,8 @@ public class Board {
 				HBox box = new HBox(label);
 
 				box.setAlignment(Pos.CENTER);
-				box.setPrefWidth(78.5);
+				
+				box.setPrefWidth(pipWidth);
 
 				labelContainer.getChildren().add(box);
 
@@ -283,7 +315,7 @@ public class Board {
 				HBox box = new HBox(label);
 
 				box.setAlignment(Pos.CENTER);
-				box.setPrefWidth(78.5);
+				box.setPrefWidth(pipWidth);
 
 				labelContainer.getChildren().add(box);
 

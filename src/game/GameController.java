@@ -1,6 +1,7 @@
 package game;
 
 import gui.Board;
+import gui.EndGame;
 import gui.TextBox;
 import javafx.event.EventHandler;
 import javafx.scene.input.KeyCode;
@@ -47,6 +48,8 @@ public class GameController{
 		eventController = new EventsController();
 		initUIListener();
 		initGame();
+		
+		//GameOver("the winner");
 	}
 	
 	private void initGame() {
@@ -489,5 +492,13 @@ public class GameController{
 	/** Method to access the text box container */
 	public BorderPane getTextBox() {
 		return textBox.getTextBox();
+	}
+	
+	public void GameOver(String winner) {
+		
+		EndGame endOfGame_Window = new EndGame(winner);
+		getGameContainer().getChildren().clear();
+		getGameContainer().getChildren().add(endOfGame_Window.getEndGame_PopUp());
+		
 	}
 }

@@ -26,9 +26,12 @@ public class TextBox {
 
 	public TextBox() {
 		textContainer = new BorderPane();
+		
 		inputField = new TextField();
+		
 		outputField = new TextArea();
 		rollDiceBtn = new Button();
+		
 		inputBox = new HBox(inputField, rollDiceBtn);
 		outputBox = new HBox(outputField);
 
@@ -43,7 +46,8 @@ public class TextBox {
 		HBox.setHgrow(inputField, Priority.ALWAYS);
 		HBox.setHgrow(outputField, Priority.ALWAYS);
 
-		inputField.setPrefHeight(50.0);
+		inputField.setPrefHeight(50);
+		outputField.setPrefHeight(100);
 
 		outputField.setText("> Welcome to Backgammon");
 		outputField.setEditable(false);
@@ -54,7 +58,7 @@ public class TextBox {
 		rollDiceBtn.setPrefWidth(200.0);
 		rollDiceBtn.setPrefHeight(50.0);
 
-		textContainer.setPrefHeight(200);
+		textContainer.setPrefHeight(100);
 		textContainer.setCenter(outputBox);
 		textContainer.setBottom(inputBox);
 
@@ -62,7 +66,6 @@ public class TextBox {
 		outputField.setStyle("-fx-text-fill: black;");
 		rollDiceBtn.setStyle("-fx-background-color: #d11919;");
 	}
-
 	/**
 	 * Method to output customized message on output field
 	 * @param s	The given message to displayed on the output field

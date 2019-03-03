@@ -16,6 +16,18 @@ public class Disks {
 	
 	/** Each disk has the shape in circle */
 	private Circle circle;
+	private static double CircleSize;
+	
+	
+	
+	
+	
+	// setup
+	
+	public static void SetDiskSize(double radius) {
+		CircleSize = radius;
+	}
+	
 	
 	/**
 	 * Constructor that creates a new circle that will represent a disk for the game
@@ -23,10 +35,15 @@ public class Disks {
 	 * @param stroke	Border color of circle
 	 */
 	public Disks(Color fill, Color stroke) {
-		circle = new Circle(20);
+		circle = new Circle(CircleSize);
 		circle.setFill(fill); 
 		circle.setStroke(stroke);    
 	}
+	
+	
+	
+	
+	// End of set up
 	
 	/**
 	 * @return The circle object / disk 

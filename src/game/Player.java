@@ -21,6 +21,8 @@ public class Player {
 	/** The color of disk that this player is using */
 	private Color color;
 	
+	private boolean playerHasPieceInJail = false;
+	
 	/** The degree of rotation of the game board for better user experience */
 	// private int rotation;
 	
@@ -77,5 +79,14 @@ public class Player {
 	 */
 	public void setColor(Color color) {
 		this.color = color;
+	}
+	
+	
+	public boolean doesPlayerHavePieceInJail() {
+		return playerHasPieceInJail;
+	}
+	
+	public void setPlayersJailState(boolean state) {
+		playerHasPieceInJail = state;
 	}
 }

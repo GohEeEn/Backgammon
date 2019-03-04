@@ -1,5 +1,9 @@
 package game;
 
+import java.util.ArrayList;
+
+import com.sun.javafx.collections.MappingChange.Map;
+
 import gui.Board;
 import gui.EndGame;
 import gui.TextBox;
@@ -196,6 +200,7 @@ public class GameController{
 			// ( Must to move the checker(s) in the jail out from it if the current player has this situation, otherwise skip round )
 			
 			/* If user wants to move to the jail */
+		
 			if (argv2.contains("jail")) {			
 				
 				/* Call function in board to add/remove disks */
@@ -221,7 +226,8 @@ public class GameController{
 			}
 			
 			/* Normal disk move : the player inserts the command to move checker(s) from 1 coordinate to another */
-			else if(isLegalMove(Integer.parseInt(argv1) - 1, Integer.parseInt(argv2) - 1)) {
+			
+			else if(true) {
 				
 				moveFrom = Integer.parseInt(argv1) - 1;
 				moveTo   = Integer.parseInt(argv2) - 1;
@@ -325,12 +331,13 @@ public class GameController{
 	}
 
 	/**
-	 * Boolean method that check if the move instruction given is valid
+	 * int method that check if the move instruction given is valid
 	 * @param moveFrom	The pip index where the checker is will move from
 	 * @param moveTo	The pip index where the checker is will move to
-	 * @return			True, if the given move is valid, else false
+	 * @return			0 if is not a valid move, 1 if can move, and 2 if can take an enemy piece
 	 */
-	private boolean isLegalMove(int moveFrom, int moveTo) {
+	
+	private int isLegalMove(int moveFrom, int moveTo) {
 		
 		if (rotation == 180) {
 			moveFrom = convertPipNumbering(moveFrom);
@@ -339,23 +346,29 @@ public class GameController{
 
 		if (isWithinBounds(moveFrom) && isWithinBounds(moveTo)) {			// Test if the given pip indexes are valid
 			System.out.println("Range: SUCCESS");
-			
-			// Test if the pip is empty OR the disk(s) in the pip with index moveTo is same as the player's disk colour
-			if (!board.getPipArray(moveFrom).isEmpty() || playerController.isColorEqual(board.getDiskColorOnPip(moveFrom))) {	
-				
-				if(!board.getPipArray(moveFrom).isEmpty()) {
-					System.out.println("Not empty: SUCCESS");
-				}else
-					System.out.println("Color: SUCCESS");
-				System.out.println("Dice: " + Math.abs(moveFrom - moveTo));
-				
-				if (dice.isMoveAccordingToDiceRoll(moveFrom, moveTo)) {		// Test if the move is mathematically valid
-					System.out.println("Dice: SUCCESS");
-					return true;
+			if(board.getPipArray(moveFrom).isEmpty()) {
+				// No piece on the pip
+				return 0;
+			}
+			else if(playerController.isColorEqual(board.getDiskColorOnPip(moveFrom))) {
+				if(playerController.isColorEqual(board.getDiskColorOnPip(moveTo))) {
+					// Own pip that are moving to, so can move there
+					return 1;
+				}
+				else {
+					// is enemy pip
+					if(board.getPipArray(moveTo).size() == 1) {
+						// Only 1 enemy piece on pip, so can take pip
+						return 2;
+					}
+					else {
+						// too many enemy pieces on the pip
+						return 0;
+					}
 				}
 			}
 		}
-		return false;  
+		return 0;
 	}
 
 	/**
@@ -406,82 +419,8 @@ public class GameController{
 	 * @return The new pip index after converted
 	 */
 	private int convertPipNumbering(int pipIndex) {
-		switch (pipIndex) {
-		case 0:
-			pipIndex = 23;
-			break;
-		case 1:
-			pipIndex = 22;
-			break;
-		case 2:
-			pipIndex = 21;
-			break;
-		case 3:
-			pipIndex = 20;
-			break;
-		case 4:
-			pipIndex = 19;
-			break;
-		case 5:
-			pipIndex = 18;
-			break;
-		case 6:
-			pipIndex = 17;
-			break;
-		case 7:
-			pipIndex = 16;
-			break;
-		case 8:
-			pipIndex = 15;
-			break;
-		case 9:
-			pipIndex = 14;
-			break;
-		case 10:
-			pipIndex = 13;
-			break;
-		case 11:
-			pipIndex = 12;
-			break;
-		case 12:
-			pipIndex = 11;
-			break;
-		case 13:
-			pipIndex = 10;
-			break;
-		case 14:
-			pipIndex = 9;
-			break;
-		case 15:
-			pipIndex = 8;
-			break;
-		case 16:
-			pipIndex = 7;
-			break;
-		case 17:
-			pipIndex = 6;
-			break;
-		case 18:
-			pipIndex = 5;
-			break;
-		case 19:
-			pipIndex = 4;
-			break;
-		case 20:
-			pipIndex = 3;
-			break;
-		case 21:
-			pipIndex = 2;
-			break;
-		case 22:
-			pipIndex = 1;
-			break;
-		case 23:
-			pipIndex = 0;
-			break;
-		}
 
-		return pipIndex;
+		return (23 - pipIndex);
 	}
 	
 	/** Method to access the container that has the game GUI */
@@ -500,5 +439,90 @@ public class GameController{
 		getGameContainer().getChildren().clear();
 		getGameContainer().getChildren().add(endOfGame_Window.getEndGame_PopUp());
 		
+	}
+	
+	/* getMapOfAllPossibleMoves is given a array of rolls (rolls that the player has left to use).
+	  for now: it will return a list containing all moves for each individual roll and 
+	  from the "total" roll number (from a certain pip position).
+	  
+	  So basicly: it expects user to move one dice at a time, or use all dice for 1 pip.
+	 */
+	public ArrayList<int[]> getMapOfAllPossibleMoves(int[] rolls){
+		// Different playing states -> jail and normal move
+		ArrayList<int[]> possibleMoves = new ArrayList<int[]>();
+		
+		if(playerController.isCurrentPlayerInJail()) {
+			// Then the current player is in jail, and must roll pieces out of jail
+		}
+		else {
+			// player can move pieces
+			
+			// iterate through board pips that the current player owns, 
+			//and check what moves are possible with current dice rolls
+			int currentPipPosition = 23;
+			while(currentPipPosition >= 0){
+				
+				// Check each individual roll for the pip
+				int totalRoll = 0;
+				for (int roll_individual : rolls) {
+					int positionAreMoveingTo = currentPipPosition - roll_individual;
+					int checkIfLegalMove = isLegalMove(currentPipPosition, positionAreMoveingTo);
+					if(checkIfLegalMove == 1) {
+						// Is legal Move
+						int[] legalMove = {currentPipPosition,positionAreMoveingTo,0};
+						if(!doesMovePossibilityAlreadyExist(possibleMoves, legalMove)) {
+							possibleMoves.add(legalMove);
+						}
+					}
+					else if(checkIfLegalMove == 2) {
+						// Is legal enemy take
+						int[] legalTake = {currentPipPosition,positionAreMoveingTo,1};
+						if(!doesMovePossibilityAlreadyExist(possibleMoves, legalTake)) {
+							possibleMoves.add(legalTake);
+						}
+						// else the move already exists
+					}
+					totalRoll += roll_individual;
+				}
+				
+				// Check moveing with total of rolls
+				int positionAreMoveingTo = currentPipPosition - totalRoll;
+				int checkIfLegalMove = isLegalMove(currentPipPosition, positionAreMoveingTo);
+				if(checkIfLegalMove == 1) {
+					// Legal move
+					int[] legalMove = {currentPipPosition,positionAreMoveingTo,0};
+					if(!doesMovePossibilityAlreadyExist(possibleMoves, legalMove)) {
+						possibleMoves.add(legalMove);
+					}
+				}
+				else if(checkIfLegalMove == 2) {
+					// Legal take
+					int[] legalTake = {currentPipPosition,positionAreMoveingTo,1};
+					if(!doesMovePossibilityAlreadyExist(possibleMoves, legalTake)) {
+						possibleMoves.add(legalTake);
+					}
+				}
+				
+				
+				currentPipPosition--;
+			}
+		}
+		
+		
+		// return array list containing int[3]
+		// int goes-> int[0] is starting position, int[1] is ending position, and [2] is 0 for a move and 1 for a piece take
+
+		
+		
+		
+		
+		return possibleMoves;
+	}
+	
+	public boolean doesMovePossibilityAlreadyExist(ArrayList<int[]> listOfPossibleMoves, int[] theMove) {
+		if(listOfPossibleMoves.contains(theMove)) {
+			return true;
+		}
+		return false;
 	}
 }

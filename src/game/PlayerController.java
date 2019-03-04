@@ -88,4 +88,8 @@ public class PlayerController {
 		return ("black".compareTo(color) == 0) || ("white".compareTo(color) == 0);
 	}
 */
+	
+	public boolean isCurrentPlayerInJail() {
+		return currentPlayer.doesPlayerHavePieceInJail();
+	}
 }

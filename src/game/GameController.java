@@ -453,6 +453,11 @@ public class GameController{
 		
 		if(playerController.isCurrentPlayerInJail()) {
 			// Then the current player is in jail, and must roll pieces out of jail
+			// so: must check the "enemy home quarter" of the current player and the positions there that are free,
+			// and must check if can "escape jail"
+			
+			
+			
 		}
 		else {
 			// player can move pieces
@@ -512,9 +517,10 @@ public class GameController{
 		// return array list containing int[3]
 		// int goes-> int[0] is starting position, int[1] is ending position, and [2] is 0 for a move and 1 for a piece take
 
-		
-		
-		
+		if(possibleMoves.isEmpty()) {
+			// No moves are possible		(I will make an exception)
+			
+		}
 		
 		return possibleMoves;
 	}

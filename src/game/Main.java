@@ -3,8 +3,10 @@ package game;
 
 import gui.Board;
 import javafx.application.Application;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 /**
@@ -34,7 +36,9 @@ public class Main extends Application {
 
 		root.getStyleClass().add("root");
 	
-		Scene scene = new Scene(root, 1100, 1000);
+		Rectangle2D screen = Screen.getPrimary().getVisualBounds();
+		Rectangle2D screenBounds = new Rectangle2D(0,0,(double)(screen.getWidth() - 50), (double)(screen.getHeight() - 50));		// Screen dimensions
+		Scene scene = new Scene(root, screenBounds.getWidth(), screenBounds.getHeight());
 
 		primaryStage.setTitle("Backgammon");	// Set the application name 
 		primaryStage.setScene(scene);	

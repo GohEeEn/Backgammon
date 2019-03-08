@@ -152,7 +152,7 @@ public class Board {
 	private void initSideBox() {
 
 		BorderPane diskArea = new BorderPane();
-		diskArea.setPrefHeight(600);
+		diskArea.setPrefHeight(screenBounds.getHeight());
 
 		sideBox.setPrefWidth(200);
 		sideBox.setAlignment(Pos.CENTER);
@@ -261,7 +261,7 @@ public class Board {
 
 		pipContainer.setAlignment(Pos.CENTER);
 		pipContainer.setPrefSize(leftBoard.getPrefWidth(), 250.0);
-		pipContainer.setSpacing((leftBoard.getPrefWidth() - 6 * (40.0)) / 6);
+		pipContainer.setSpacing((leftBoard.getPrefWidth() - (6 * (40.0))) / 6);
 
 		if (leftValue > rightValue) {
 			for (int i = leftValue - 1; i >= rightValue - 1; i--) {

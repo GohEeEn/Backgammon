@@ -31,11 +31,6 @@ public class Main extends Application {
 		
 		GameController gameController = new GameController(); 
 		
-		/* Place the game board in the center of the root */
-		root.setCenter(gameController.getGameContainer());
-		
-		/* Place the text board in the bottom of the root */
-		root.setRight(gameController.getTextBox());
 
 		root.getStyleClass().add("root");
 	
@@ -50,6 +45,12 @@ public class Main extends Application {
 		else {
 			scene = new Scene(root, screenBounds.getWidth(), screenBounds.getHeight());
 		}
+		
+		/* Place the game board in the center of the root */
+		root.setCenter(gameController.getGameContainer());
+		
+		/* Place the text board in the bottom of the root */
+		root.setRight(gameController.getTextBox());
 
 		primaryStage.setTitle("Backgammon");	// Set the application name 
 		primaryStage.setScene(scene);	

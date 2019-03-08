@@ -18,6 +18,14 @@ import javafx.stage.Screen;
 
 public class Board {
 	
+	// Constants
+	private final double pipWidth = 78.5;
+	private final double diskRadius = 20;
+	
+	// Variables
+	
+	private static Board thisBoard;		// The instance
+	
 	Rectangle2D screenBounds;
 	
 	/* The whole container of UI of this game */
@@ -52,11 +60,9 @@ public class Board {
 	private HBox bottomLeftLabelContainer;
 	private HBox bottomRightLabelContainer;
 	
-	// Constants
-	private double pipWidth = 78.5;
-	private double diskRadius = 20;
+
 	
-	// Variables
+	//  END OF Variables
 	
 	
 	
@@ -65,6 +71,8 @@ public class Board {
 	 * Constructor to initialise the whole game
 	 */
 	public Board() {
+		thisBoard = this;		// save instance
+		
 		Rectangle2D screen = Screen.getPrimary().getVisualBounds();
 		screenBounds = new Rectangle2D(0,0,(double)(screen.getWidth() - 50), (double)(screen.getHeight() - 50));		// Screen dimensions
 
@@ -95,8 +103,8 @@ public class Board {
 	/**
 	 * Initialize and set up the game board
 	 */
+	
 	private void initBoard() {
-
 		double gameWidth = screenBounds.getWidth();
 		double gameHeight = screenBounds.getHeight();
 		

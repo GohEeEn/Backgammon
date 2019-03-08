@@ -21,27 +21,44 @@ import javafx.scene.layout.HBox;
  * @version This class will control the logistics of the game, and not the mechanics. To be finished
  */
 public class GameController{
+	
+	// VARIALES
 
-	/**
-	 * Instance variables
-	 */
-	private Dice dice;
-	private Board board;
-	private TextBox textBox;
-	private PlayerController playerController;
-	private EventsController eventController;
+	// INSTANCE VARIABLES
+	
+	private static GameController thisGameController;
+	
+	private  static Dice dice;
+	private  static Board board;
+	private  static TextBox textBox;
+	private  static PlayerController playerController;
+	private  static EventsController eventController;
 	
 	/** Boolean variable to indicate if the players have been instantiated with their name */
-	private boolean playersNotInstantiated;
+	private static boolean playersNotInstantiated;
 	
 	/** The degree of rotation of the board */
-	double rotation;
+	private static double rotation;
 	//private boolean sameErrorInRow;
+	
+	// FUNCTION VARIABLES (TO "CATCH" COMMANDS)
+	private static boolean t;
+	
+	
+	// END OF VARIABLES
+	
+	
+	
+	
+	// SET UP METHODS
 	
 	/**
 	 * Default constructor that initialize 
 	 */
 	protected GameController() {
+		thisGameController = this;		// Saving the constructed instance
+		
+		t = true;
 		playersNotInstantiated = true;
 		//sameErrorInRow = false;	// TODO
 		rotation = 0;
@@ -58,6 +75,8 @@ public class GameController{
 	
 	private void initGame() {
 		onGameStart();
+		
+		runGame();
 	}
 	
 	/**
@@ -86,6 +105,17 @@ public class GameController{
 			textBox.output(eventController.promptPlayerToMove());
 		}
 	}
+	
+	// run the game after the players have been initialised
+	public void runGame() { 
+		
+		//while() {
+			//String  currentPlayer = playerController.getCurrentPlayerColor();
+		//}
+		
+	}
+	
+	// END OF SET UP METHODS
 	
 	/**
 	 * UI Listener instantiation 

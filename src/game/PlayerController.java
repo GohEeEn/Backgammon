@@ -7,18 +7,27 @@ import javafx.scene.paint.Color;
  *
  */
 public class PlayerController {
+	
+	// Variables
 
 	/** Player that is using black checker */
-	private Player playerB;
+	private  static Player playerB;
 	
 	/** Player that is using white checker */
-	private Player playerW;
+	private  static Player playerW;
 	
 	/** Player in this game round */
-	private Player currentPlayer;
+	private  static Player currentPlayer;
 	
 	/** The opponent player */
-	private Player opponentPlayer;
+	private  static Player opponentPlayer;
+	
+	
+	
+	
+	// End of variables
+	
+	// Set up methods
 	
 	PlayerController() {
 		playerW = new Player(null, Color.WHITE);
@@ -27,14 +36,16 @@ public class PlayerController {
 		opponentPlayer = playerB;
 	}
 	
-	/**
-	 * Switch the current player when the game turn progress
-	 */
-	public void changeCurrentPlayer() {
-		Player temp = opponentPlayer;
-		opponentPlayer = currentPlayer;
-		currentPlayer = temp;
-	}
+	
+	
+	
+	
+	
+	
+	
+	// End of set up methods
+		
+	// GETTERS AND SETTERS
 	
 	/**
 	 * @return	The name of current player
@@ -64,6 +75,21 @@ public class PlayerController {
 			currentPlayer.setColor(Color.BLACK);
 		else
 			currentPlayer.setColor(Color.WHITE);
+	}
+	
+	
+	
+	// END OF GETTERS AND SETTERS
+	
+	// methods
+	
+	/**
+	 * Switch the current player when the game turn progress
+	 */
+	public void changeCurrentPlayer() {
+		Player temp = opponentPlayer;
+		opponentPlayer = currentPlayer;
+		currentPlayer = temp;
 	}
 	
 	/**

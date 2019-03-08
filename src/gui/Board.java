@@ -104,7 +104,7 @@ public class Board {
 		double gameHeight = screenBounds.getHeight();
 		
 		double boardWidth = gameWidth - 200;		// window width - right pip home area	
-		double boardheight = gameHeight - 50 - 50;		// Window height - topborder - bottomborder
+		double boardheight = gameHeight - 100 - 100;		// Window height - topborder - bottomborder
 		
 		jail = new Jail(boardheight);		
 		
@@ -116,8 +116,8 @@ public class Board {
 		gameContainer.setPrefSize(gameWidth, gameHeight);
 		board.setPrefSize(boardWidth, boardheight);
 		
-		topBorder.setPrefSize(boardWidth, 50);
-		bottomBorder.setPrefSize(boardWidth, 50);
+		topBorder.setPrefSize(boardWidth, 100);
+		bottomBorder.setPrefSize(boardWidth, 100);
 
 		// Set up board
 		

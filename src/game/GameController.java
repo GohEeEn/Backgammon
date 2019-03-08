@@ -540,7 +540,6 @@ public class GameController{
 			}
 		}
 		
-		
 		// return array list containing int[3]
 		// int goes-> int[0] is starting position, int[1] is ending position, and [2] is 0 for a move and 1 for a piece take
 
@@ -550,6 +549,11 @@ public class GameController{
 		}
 		
 		return possibleMoves;
+	}
+	
+	public String[] getStringsForMapOfMoves(ArrayList<int[]> allMoves) {
+		// all moves must actually contain moves (ie it must actually be possible for player to move before this method is called)
+		return null;
 	}
 	
 	public boolean doesMovePossibilityAlreadyExist(ArrayList<int[]> listOfPossibleMoves, int[] theMove) {

@@ -19,6 +19,9 @@ public class Main extends Application {
 
 	/** Instance variables */
 	Board board;
+	
+	private double maxWidth = 1300;
+	private double maxheight = 800; 
 
 	/** Set stage upon running the program */
 	@Override
@@ -38,7 +41,15 @@ public class Main extends Application {
 	
 		Rectangle2D screen = Screen.getPrimary().getVisualBounds();
 		Rectangle2D screenBounds = new Rectangle2D(0,0,(double)(screen.getWidth() - 50), (double)(screen.getHeight() - 50));		// Screen dimensions
-		Scene scene = new Scene(root, screenBounds.getWidth(), screenBounds.getHeight());
+		System.out.println(screenBounds.toString());
+		Scene scene;
+		if(screenBounds.getWidth() >= maxWidth && screenBounds.getHeight() >= maxheight) {
+			// Max size
+			scene = new Scene(root, maxWidth, maxheight);
+		}
+		else {
+			scene = new Scene(root, screenBounds.getWidth(), screenBounds.getHeight());
+		}
 
 		primaryStage.setTitle("Backgammon");	// Set the application name 
 		primaryStage.setScene(scene);	

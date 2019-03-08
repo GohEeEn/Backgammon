@@ -25,20 +25,17 @@ public class GameController{
 	// VARIALES
 
 	// INSTANCE VARIABLES
-	
-	private static GameController thisGameController;
-	
-	private  static Dice dice;
-	private  static Board board;
-	private  static TextBox textBox;
-	private  static PlayerController playerController;
-	private  static EventsController eventController;
+	private Dice dice;
+	private Board board;
+	private TextBox textBox;
+	private PlayerController playerController;
+	private EventsController eventController;
 	
 	/** Boolean variable to indicate if the players have been instantiated with their name */
-	private static boolean playersNotInstantiated;
+	private boolean playersNotInstantiated;
 	
 	/** The degree of rotation of the board */
-	private static double rotation;
+	double rotation;
 	//private boolean sameErrorInRow;
 	
 	// FUNCTION VARIABLES (TO "CATCH" COMMANDS)
@@ -56,9 +53,6 @@ public class GameController{
 	 * Default constructor that initialize 
 	 */
 	protected GameController() {
-		thisGameController = this;		// Saving the constructed instance
-		
-		t = true;
 		playersNotInstantiated = true;
 		//sameErrorInRow = false;	// TODO
 		rotation = 0;
@@ -109,9 +103,9 @@ public class GameController{
 	// run the game after the players have been initialised
 	public void runGame() { 
 		
-		//while() {
-			//String  currentPlayer = playerController.getCurrentPlayerColor();
-		//}
+		while() {
+			String  currentPlayer = playerController.getCurrentPlayerColor();
+		}
 		
 	}
 	
@@ -267,7 +261,7 @@ public class GameController{
 					moveTo   = convertPipNumbering(moveTo);
 				}
 				
-				board.moveDisks(moveFrom, moveTo);
+				board.movePiece(moveFrom, moveTo);
 				
 				/* Display the remaining disk moves */
 				if (dice.getNumberOfMoves() > 1) {

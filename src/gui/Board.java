@@ -362,11 +362,18 @@ public class Board {
 		}
 	}
 	
+	// START OF STATIC METHODS
+	// All of these will be called staticly, but will have a helper that then calls the specific instance
+	
+	
 	/**
 	 * Add the disk that got hit to Jail
 	 * @param moveFrom	The index of pip where the disk hit happen
 	 */
-	public void addToJail(int moveFrom) {
+	public static void addToJail(int moveFrom) {
+		thisBoard.addToJail_Instance(moveFrom);	
+	}
+	private void addToJail_Instance(int moveFrom) {
 		jail.push(getPipArray(moveFrom).updatePoppedDisks());
 		jail.updateJail();
 	}
@@ -377,7 +384,7 @@ public class Board {
 	 * @param moveFromIndex
 	 * @param moveToIndex
 	 */
-	public void moveDisks(int moveFromIndex, int moveToIndex) {
+	public void movePiece(int moveFromIndex, int moveToIndex) {
 		if (!pipArray[moveFromIndex].isEmpty()) {
 			pipArray[moveToIndex].updatePushedDisks(pipArray[moveFromIndex].updatePoppedDisks());
 		}
@@ -408,7 +415,7 @@ public class Board {
 	public VBox getBoard() {
 		return this.board;
 	}
-	
+
 	public BorderPane getLeftBoard() {
 		return this.leftBoard;
 	}
@@ -422,6 +429,8 @@ public class Board {
 	 * @param pipIndex	The given pip index ( 0 - 23 )
 	 * @return	The colour of disks on any pip
 	 */
+	
+
 	public String getDiskColorOnPip(int pipIndex) {
 		return pipArray[pipIndex].returnDiskColor();
 	}

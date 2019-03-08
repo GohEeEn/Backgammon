@@ -13,6 +13,14 @@ import javafx.scene.layout.Priority;
  * @author Ee En Goh - 17202691
  */
 public class TextBox {
+	
+	// Constants
+	private final double WIDTH_OFWHOLECONTAINER = 200;
+	private final double WIDTH_OFROLLBUTTON = 150;
+	private final double HEIGHT_OFWHOLECONTAINER;
+	private final double HEIGHT_OFINPUTCONTAINER = 100;
+	// End of constants
+	// Variables
 
 	BorderPane textContainer;
 
@@ -23,8 +31,13 @@ public class TextBox {
 
 	HBox inputBox;
 	HBox outputBox;
+	
+	
+	// End of variables
 
-	public TextBox() {
+	public TextBox(double heightOfScreen) {
+		HEIGHT_OFWHOLECONTAINER = heightOfScreen;
+		
 		textContainer = new BorderPane();
 		
 		inputField = new TextField();
@@ -46,8 +59,8 @@ public class TextBox {
 		HBox.setHgrow(inputField, Priority.ALWAYS);
 		HBox.setHgrow(outputField, Priority.ALWAYS);
 
-		inputField.setPrefHeight(50);
-		outputField.setPrefHeight(100);
+		inputField.setPrefSize(WIDTH_OFWHOLECONTAINER, HEIGHT_OFINPUTCONTAINER);
+		outputField.setPrefSize(WIDTH_OFWHOLECONTAINER,HEIGHT_OFWHOLECONTAINER - HEIGHT_OFINPUTCONTAINER);
 
 		outputField.setText("> Welcome to Backgammon");
 		outputField.setEditable(false);
@@ -55,10 +68,9 @@ public class TextBox {
 		outputField.setScrollTop(Double.MIN_VALUE);
 
 		rollDiceBtn.setText("Roll Dice");
-		rollDiceBtn.setPrefWidth(200.0);
-		rollDiceBtn.setPrefHeight(50.0);
+		rollDiceBtn.setPrefSize(WIDTH_OFROLLBUTTON, HEIGHT_OFINPUTCONTAINER);
 
-		textContainer.setPrefHeight(100);
+		textContainer.setPrefSize(WIDTH_OFWHOLECONTAINER,HEIGHT_OFWHOLECONTAINER);
 		textContainer.setCenter(outputBox);
 		textContainer.setBottom(inputBox);
 

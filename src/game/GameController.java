@@ -8,11 +8,13 @@ import gui.Board;
 import gui.EndGame;
 import gui.TextBox;
 import javafx.event.EventHandler;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.stage.Screen;
 
 /**
  * Class that consists of operations that control the flow of the backgammon game
@@ -39,7 +41,6 @@ public class GameController{
 	//private boolean sameErrorInRow;
 	
 	// FUNCTION VARIABLES (TO "CATCH" COMMANDS)
-	private static boolean t;
 	
 	
 	// END OF VARIABLES
@@ -53,11 +54,15 @@ public class GameController{
 	 * Default constructor that initialize 
 	 */
 	protected GameController() {
+
+		Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+		screenBounds = new Rectangle2D(0,0,(double)(screenBounds.getWidth() - 50), (double)(screenBounds.getHeight() - 50));		// Screen dimensions
+		
 		playersNotInstantiated = true;
 		//sameErrorInRow = false;	// TODO
 		rotation = 0;
-		board = new Board();
-		textBox = new TextBox();
+		board = new Board(screenBounds);
+		textBox = new TextBox(screenBounds.getHeight());
 		dice = new Dice();
 		playerController = new PlayerController();
 		eventController = new EventsController();
@@ -103,9 +108,7 @@ public class GameController{
 	// run the game after the players have been initialised
 	public void runGame() { 
 		
-		while() {
-			String  currentPlayer = playerController.getCurrentPlayerColor();
-		}
+		
 		
 	}
 	

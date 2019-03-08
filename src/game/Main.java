@@ -32,7 +32,7 @@ public class Main extends Application {
 		root.setCenter(gameController.getGameContainer());
 		
 		/* Place the text board in the bottom of the root */
-		root.setBottom(gameController.getTextBox());
+		root.setRight(gameController.getTextBox());
 
 		root.getStyleClass().add("root");
 	

@@ -23,9 +23,7 @@ public class Board {
 	private final double diskRadius = 20;
 	
 	// Variables
-	
-	private static Board thisBoard;		// The instance
-	
+		
 	Rectangle2D screenBounds;
 	
 	/* The whole container of UI of this game */
@@ -70,12 +68,9 @@ public class Board {
 	/**
 	 * Constructor to initialise the whole game
 	 */
-	public Board() {
-		thisBoard = this;		// save instance
+	public Board(Rectangle2D screenBounds) {
 		
-		Rectangle2D screen = Screen.getPrimary().getVisualBounds();
-		screenBounds = new Rectangle2D(0,0,(double)(screen.getWidth() - 50), (double)(screen.getHeight() - 50));		// Screen dimensions
-
+		this.screenBounds = screenBounds;
 		
 		gameContainer = new HBox();		// Whole board container
 		board = new VBox();				
@@ -109,7 +104,7 @@ public class Board {
 		double gameHeight = screenBounds.getHeight();
 		
 		double boardWidth = gameWidth - 200;		// window width - right pip home area	
-		double boardheight = gameHeight - 100 - 50 - 50;		// Window height - height of input/output area - topborder - bottomborder
+		double boardheight = gameHeight - 50 - 50;		// Window height - topborder - bottomborder
 		
 		jail = new Jail(boardheight);		
 		
@@ -370,10 +365,8 @@ public class Board {
 	 * Add the disk that got hit to Jail
 	 * @param moveFrom	The index of pip where the disk hit happen
 	 */
-	public static void addToJail(int moveFrom) {
-		thisBoard.addToJail_Instance(moveFrom);	
-	}
-	private void addToJail_Instance(int moveFrom) {
+
+	private void addToJail(int moveFrom) {
 		jail.push(getPipArray(moveFrom).updatePoppedDisks());
 		jail.updateJail();
 	}

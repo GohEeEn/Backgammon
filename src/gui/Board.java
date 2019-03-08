@@ -204,28 +204,28 @@ public class Board {
 
 			switch (i) {
 			
-				case 0:
+				case 23:
 					pipArray[i].initDisks(2, Color.WHITE, Color.BLACK);
 					break;
-				case 5:
-					pipArray[i].initDisks(5, Color.BLACK, Color.WHITE);
-					break;
-				case 7:
-					pipArray[i].initDisks(3, Color.BLACK, Color.WHITE);
-					break;
-				case 11:
-					pipArray[i].initDisks(5, Color.WHITE, Color.BLACK);
-					break;
-				case 12:
+				case 8:
 					pipArray[i].initDisks(5, Color.BLACK, Color.WHITE);
 					break;
 				case 16:
-					pipArray[i].initDisks(3, Color.WHITE, Color.BLACK);
+					pipArray[i].initDisks(3, Color.BLACK, Color.WHITE);
 					break;
-				case 18:
+				case 12:
 					pipArray[i].initDisks(5, Color.WHITE, Color.BLACK);
 					break;
-				case 23:
+				case 11:
+					pipArray[i].initDisks(5, Color.BLACK, Color.WHITE);
+					break;
+				case 7:
+					pipArray[i].initDisks(3, Color.WHITE, Color.BLACK);
+					break;
+				case 5:
+					pipArray[i].initDisks(5, Color.WHITE, Color.BLACK);
+					break;
+				case 0:
 					pipArray[i].initDisks(2, Color.BLACK, Color.WHITE);
 					break;
 			}

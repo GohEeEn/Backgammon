@@ -108,8 +108,11 @@ public class GameController{
 	// run the game after the players have been initialised
 	public void runGame() { 
 		
+		//changePerspective();
 		
+			
 		
+		System.out.print("gam run and move done");
 	}
 	
 	// END OF SET UP METHODS
@@ -423,6 +426,11 @@ public class GameController{
 		
 	}
 	
+	
+	private void endTurn() {
+		changePerspective();
+	}
+	
 	/**
 	 * Boolean method to check if the given pip index is in bound
 	 * @param index	The given pip index
@@ -447,7 +455,14 @@ public class GameController{
 	 */
 	private int convertPipNumbering(int pipIndex) {
 
-		return (23 - pipIndex);
+		if(playerController.getCurrentPlayerColor().equals("white")) {
+			// white
+			return pipIndex;
+		}
+		else {
+			// black
+			return 23-pipIndex;
+		}
 	}
 	
 	/** Method to access the container that has the game GUI */

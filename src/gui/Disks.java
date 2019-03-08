@@ -20,8 +20,6 @@ public class Disks {
 	
 	
 	
-	
-	
 	// setup
 	
 	public static void SetDiskSize(double radius) {
@@ -45,6 +43,8 @@ public class Disks {
 	
 	// End of set up
 	
+	// Methods
+	
 	/**
 	 * @return The circle object / disk 
 	 */
@@ -59,4 +59,6 @@ public class Disks {
 	public Paint getColor() {
 		return this.circle.getFill();
 	}
+	
+	// End of methods
 }

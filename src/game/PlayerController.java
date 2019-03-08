@@ -11,10 +11,10 @@ public class PlayerController {
 	// Variables
 
 	/** Player that is using black checker */
-	private  static Player playerB;
+	private  static Player playerB;		// player 1
 	
 	/** Player that is using white checker */
-	private  static Player playerW;
+	private  static Player playerW;		// player 2
 	
 	/** Player in this game round */
 	private  static Player currentPlayer;

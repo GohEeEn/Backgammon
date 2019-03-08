@@ -51,6 +51,9 @@ public class EventsController {
 	/** Increase the current game turn, by following the game progress */
 	public void setTurnCount() {
 		this.turnCount++;
+		if(turnCount>2) {
+			turnCount = 1;
+		}
 		// TODO DEBUG
 		// System.out.println(" Current turn count : " + turnCount);
 	}

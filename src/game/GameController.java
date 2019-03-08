@@ -110,6 +110,10 @@ public class GameController{
 		
 		//changePerspective();
 		
+		//board.movePiece(convertPipNumbering(23), convertPipNumbering(22));
+		//changePerspective();
+		//board.movePiece(convertPipNumbering(23), convertPipNumbering(22));
+		
 			
 		
 		System.out.print("gam run and move done");

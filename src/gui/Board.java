@@ -207,7 +207,7 @@ public class Board {
 				case 23:
 					pipArray[i].initDisks(2, Color.WHITE, Color.BLACK);
 					break;
-				case 8:
+				case 18:
 					pipArray[i].initDisks(5, Color.BLACK, Color.WHITE);
 					break;
 				case 16:

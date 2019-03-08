@@ -470,7 +470,8 @@ public class GameController{
 	
 	/* getMapOfAllPossibleMoves is given a array of rolls (rolls that the player has left to use).
 	  for now: it will return a list containing all moves for each individual roll and 
-	  from the "total" roll number (from a certain pip position).
+	  from the "total" roll number (from a certain pip position). each int will be like startposition, endposition, typeOfMove
+	  0 for a move, and 1 for a take.
 	  
 	  So basicly: it expects user to move one dice at a time, or use all dice for 1 pip.
 	 */
@@ -551,9 +552,54 @@ public class GameController{
 		return possibleMoves;
 	}
 	
-	public String[] getStringsForMapOfMoves(ArrayList<int[]> allMoves) {
+	private String[] getStringsForMapOfMoves(ArrayList<int[]> allMoves) {
 		// all moves must actually contain moves (ie it must actually be possible for player to move before this method is called)
-		return null;
+		int isMove = 0;
+		int isAttack = 1;
+		
+		String[] listofMoves = new String[allMoves.size()];
+		int indexInMovesList = 0;
+		for (int[] move : allMoves) {
+			
+			listofMoves[indexInMovesList] = getStringOfMove(move);
+			
+			indexInMovesList++;
+		}
+		
+		return listofMoves;
+	}
+	
+	private String getStringOfMove(int[] theMove) {
+		// Convert move to string
+		int isMove = 0;
+		int isAttack = 1;
+		int isLeavingJail = 2;
+		int isEnteringHome = 3;
+		
+		String moveAsString = "";
+		if(theMove[2] == isLeavingJail) {
+			// Bar off
+			moveAsString += "bar-" + theMove[1];	// bar-finnishPosition
+		}
+		else {
+			if(theMove[2] == isEnteringHome) {
+				// player move(possible) piece to home
+				moveAsString += theMove[0] + "-off";
+			}
+			else {
+				// Is a move or a attack
+				if(theMove[2] == isAttack) {
+					// is attack
+					moveAsString += theMove[0] + "-*" + theMove[1];
+				}
+				else {
+					// is a move
+					moveAsString += theMove[0] + "-" + theMove[1];
+				}
+			}
+		}
+		
+		return moveAsString;
 	}
 	
 	public boolean doesMovePossibilityAlreadyExist(ArrayList<int[]> listOfPossibleMoves, int[] theMove) {

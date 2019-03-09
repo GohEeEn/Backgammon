@@ -3,7 +3,7 @@ package game;
 import javafx.scene.paint.Color;
 
 /**
- * @author YeohB
+ * @author Ee En Goh - 17202691
  *
  */
 public class PlayerController {
@@ -27,14 +27,7 @@ public class PlayerController {
 		opponentPlayer = playerB;
 	}
 	
-	/**
-	 * Switch the current player when the game turn progress
-	 */
-	public void changeCurrentPlayer() {
-		Player temp = opponentPlayer;
-		opponentPlayer = currentPlayer;
-		currentPlayer = temp;
-	}
+	// ---- Getter and Setter Methods -----
 	
 	/**
 	 * @return	The name of current player
@@ -66,6 +59,17 @@ public class PlayerController {
 			currentPlayer.setColor(Color.WHITE);
 	}
 	
+	// ----- Functionalities -----
+	
+	/**
+	 * Switch the current player when the game turn progress
+	 */
+	public void changeCurrentPlayer() {
+		Player temp = opponentPlayer;
+		opponentPlayer = currentPlayer;
+		currentPlayer = temp;
+	}
+	
 	/**
 	 * @return The information about the current player
 	 */
@@ -83,9 +87,12 @@ public class PlayerController {
 			return true;
 		return false;
 	}
-/*
-	public boolean isValidColor(String color) {
-		return ("black".compareTo(color) == 0) || ("white".compareTo(color) == 0);
+
+	/**
+	 * Boolean method to check if the current player has disk in jail
+	 * @return True if there is, else no
+	 */
+	public boolean currentPlayerDiskInJail() {
+		return currentPlayer.getPlayerJailState();
 	}
-*/
 }

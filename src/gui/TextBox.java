@@ -9,7 +9,7 @@ import javafx.scene.layout.Priority;
 
 /**
  * A class that in charge of the functionality and GUI definition of command input and output text box
- * @author YeohB - 17357376
+ * 
  * @author Ee En Goh - 17202691
  */
 public class TextBox {
@@ -158,14 +158,8 @@ public class TextBox {
 		output(output);
 	}
 	
-	/**
-	 * Method to check if the dice roll button is disabled
-	 * @return	True if the dice roll button is disabled, else false
-	 */
-	public boolean getDiceRollBtnDisabled() {
-		return this.diceRollDisabled;
-	}
-	
+	// ----- Input Field Methods -----
+
 	/**
 	 * Method to disable the clicking of dice-roll red button 
 	 * @param disable	Boolean value to indicate the disable of the dice-roll button
@@ -176,10 +170,10 @@ public class TextBox {
 	}
 
 	/**
-	 * Method to get input from user, command or normal message
+	 * Method to clear the input box, for the convenience of next command input
 	 */
-	public String getUserInput() {
-		return inputField.getText();
+	public void clearInputField() {
+		this.inputField.setText("");
 	}
 	
 	/**
@@ -191,13 +185,24 @@ public class TextBox {
 		clearInputField();
 	}
 	
+	// ----- End of Input Field Methods -----
+	
+	// ----- Getter Methods ------
+	
 	/**
-	 * Method to clear the input box, for the convenience of next command input
+	 * Method to check if the dice roll button is disabled
+	 * @return	True if the dice roll button is disabled, else false
 	 */
-	public void clearInputField() {
-		this.inputField.setText("");
+	public boolean getDiceRollBtnDisabled() {
+		return this.diceRollDisabled;
 	}
-
+	
+	/**
+	 * Method to get input from user, command or normal message
+	 */
+	public String getUserInput() {
+		return inputField.getText();
+	}
 	/**
 	 * @return the BorderPane that contains all the I/O graphs
 	 */
@@ -225,4 +230,6 @@ public class TextBox {
 	public Button getDiceButton() {
 		return this.rollDiceBtn;
 	}
+	
+	// ----- End of Getter Methods ------
 }

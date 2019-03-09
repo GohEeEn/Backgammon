@@ -2,7 +2,7 @@ package game;
 
 /**
  * A class that hold the responses to any defined event, like message output or instructions on the output field box. 
- * @author YeohB - 17357376
+ * 
  * @author Ee En Goh - 17202691
  */
 public class EventsController {

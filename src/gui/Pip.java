@@ -6,7 +6,7 @@ import javafx.scene.paint.Color;
 
 /**
  * Pip class 
- * @author YeohB - 17357376
+ *
  * @author Ee En Goh - 17202691
  */
 
@@ -157,13 +157,13 @@ public class Pip extends LinkedStack<Disks> {
 	}
 	
 	/**
-	 * Boolean method to check if the disk in this pip can be hit by opponent's disk
+	 * Boolean method to check if the disk sit on this pip and vulnerable to be hit by opponent's disk
 	 * @return	True if there is only 1 disk on the pip, else false
 	 */
-/*	public boolean validDiskHit() {	// TODO
+	public boolean isBlot() {	
 		
 		if(diskCount == 1) 
 			return true;
 		return false;
-	} */
+	}
 }

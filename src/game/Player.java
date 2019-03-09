@@ -4,7 +4,7 @@ import javafx.scene.paint.Color;
 
 /**
  * The class that has the information about a player, including the name, the current play score and the disk color used 
- * @author YeohB - 17357376
+ *
  * @author Ee En Goh - 17202691
  */
 
@@ -21,8 +21,8 @@ public class Player {
 	/** The color of disk that this player is using */
 	private Color color;
 	
-	/** The degree of rotation of the game board for better user experience */
-	// private int rotation;
+	/** Boolean value to shows that the current player has checker in jail, thus it's top priority to move the disk out of it */
+	private boolean diskInJail = false;
 	
 	/**
 	 * Constructs a player object - essentially creating a player for the game
@@ -34,6 +34,8 @@ public class Player {
 		this.color = color;
 		score = 0;
 	}
+	
+	// ----- Getter and Setter Methods -----
 	
 	/**
 	 * Set the current player's name
@@ -77,5 +79,13 @@ public class Player {
 	 */
 	public void setColor(Color color) {
 		this.color = color;
+	}
+	
+	public boolean getPlayerJailState() {
+		return diskInJail;
+	}
+	
+	public void setPlayerJailState(boolean state) {
+		diskInJail = state;
 	}
 }

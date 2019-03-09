@@ -7,17 +7,18 @@ import javafx.scene.shape.Rectangle;
 
 /**
  * The instance of Jail class is the gap area between the left and right boards, which is also the position to place the hit checker
- * @author YeohB - 17357376
+ * 
  * @author Ee En Goh - 17202691
  */
 public class Jail extends LinkedStack<Disks> {
 
+	/** Border of jail in GUI */
 	private Rectangle rectangle;
 	
 	Jail() {
-		setPrefSize(50, 600);
+		setPrefSize(50, 200);
 		setAlignment(Pos.CENTER);
-		setStyle("-fx-background-color: #42210B;");
+		setStyle("-fx-background-color: #C19A6B;");
 	}
 	
 	/**
@@ -50,6 +51,10 @@ public class Jail extends LinkedStack<Disks> {
 
 			getChildren().add(disk.getCircle());
 		}
-		
+	}
+
+	
+	public Color diskColorInJail() {
+		return (Color)top().getColor();
 	}
 }

@@ -10,7 +10,7 @@ import javafx.scene.paint.Color;
 
 /**
  * Class that define the GUI of the game board
- * @author YeohB - 17357376
+ * 
  * @author Ee En Goh - 17202691
  */
 
@@ -38,11 +38,13 @@ public class Board {
 	// private Pip pip ;
 	private Pip[] pipArray ;
 	
+	/*
 	private HBox topRightQuad;
 	private HBox topLeftQuad;
 	private HBox bottomLeftQuad;
 	private HBox bottomRightQuad;
-
+	 */
+	
 	private HBox topLeftLabelContainer;
 	private HBox topRightLabelContainer;
 	private HBox bottomLeftLabelContainer;
@@ -103,8 +105,8 @@ public class Board {
 		board.getChildren().addAll(topBorder, middle, bottomBorder);
 		gameContainer.getChildren().addAll(board, sideBox);
 
-		topBorder.setStyle("-fx-background-color: #42210B;");
-		bottomBorder.setStyle("-fx-background-color: #42210B;");
+		topBorder.setStyle("-fx-background-color: #C19A6B; ");
+		bottomBorder.setStyle("-fx-background-color: #C19A6B;");
 
 		leftBoard.setStyle("-fx-background-color: #A67C52;");
 		rightBoard.setStyle("-fx-background-color: #A67C52;");
@@ -138,7 +140,7 @@ public class Board {
 		blackHome.setStyle("-fx-border-color: white; -fx-border-width: 5px;");
 		whiteHome.setStyle("-fx-border-color: white; -fx-border-width: 5px;");
 
-		sideBox.setStyle("-fx-background-color: #42210B;");
+		sideBox.setStyle("-fx-background-color: #C19A6B;");
 		diskArea.setStyle("-fx-border-color: black; -fx-border-width: 8px; -fx-background-color: #5b3208;");
 	}
 
@@ -271,7 +273,7 @@ public class Board {
 
 				labelContainer.getChildren().add(box);
 
-				label.setStyle("-fx-font-size: 30px; -fx-text-fill: white;");
+				label.setStyle("-fx-font-size: 30px; -fx-text-fill: white; -fx-font-weight: bold;");
 			}
 		}
 
@@ -285,28 +287,30 @@ public class Board {
 
 				labelContainer.getChildren().add(box);
 
-				label.setStyle("-fx-font-size: 30px; -fx-text-fill: white;");
+				label.setStyle("-fx-font-size: 30px; -fx-text-fill: white; -fx-font-weight: bold;");
 			}
 		}
 
 		return labelContainer;
 	}
 	
-	public void setPipLabelRegion(double rotatation) {
-		if (rotatation == 0) {	
+	
+	public void setPipLabelRegion(double rotation) {
+		if (rotation == 0) {	
 			topBorder.setLeft(topLeftLabelContainer);
 			topBorder.setRight(topRightLabelContainer);
 			bottomBorder.setLeft(bottomLeftLabelContainer);
 			bottomBorder.setRight(bottomRightLabelContainer);
 		}
 
-		else if (rotatation == 180) {
+		else if (rotation == 180) {
 			topBorder.setLeft(bottomLeftLabelContainer);
 			topBorder.setRight(bottomRightLabelContainer);
 			bottomBorder.setLeft(topLeftLabelContainer);
 			bottomBorder.setRight(topRightLabelContainer);
 		}
 	}
+	
 	
 	/**
 	 * Add the disk that got hit to Jail
@@ -317,16 +321,28 @@ public class Board {
 		jail.updateJail();
 	}
 	
+	
+	public void successHit(int moveFrom, int moveTo) {
+		
+		// Pop the opponent's disk which got hit and push it into jail
+		jail.push(getPipArray(moveTo).updatePoppedDisks());
+		jail.updateJail();
+		
+		// Pop current player disk from where it originally sit at and push it into the blot
+		getPipArray(moveTo).updatePushedDisks(getPipArray(moveFrom).updatePoppedDisks());
+	}
 
 	/**
-	 * Move disk from user selection to a valid entry
+	 * Move disk from user selection to a valid entry ( moveFrom pip is not empty checked )
 	 * @param moveFromIndex
 	 * @param moveToIndex
 	 */
 	public void moveDisks(int moveFromIndex, int moveToIndex) {
 		
-		if (!pipArray[moveFromIndex].isEmpty()) {
+		if (!pipArray[moveFromIndex].isEmpty()) { // Check if the moveFrom pip is not empty, else no checker to make disk move
 			pipArray[moveToIndex].updatePushedDisks(pipArray[moveFromIndex].updatePoppedDisks());
+		}else {
+			System.out.println("Error : The given pip is empty");
 		}
 	}
 	

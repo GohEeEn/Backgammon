@@ -41,6 +41,8 @@ public class GameController{
 	//private boolean sameErrorInRow;
 	
 	// FUNCTION VARIABLES (TO "CATCH" COMMANDS)
+	private boolean playerWantsToQuite = false;
+	
 	
 	
 	// END OF VARIABLES
@@ -114,7 +116,6 @@ public class GameController{
 		//changePerspective();
 		//board.movePiece(convertPipNumbering(23), convertPipNumbering(22));
 		
-			
 		
 		System.out.print("gam run and move done");
 	}

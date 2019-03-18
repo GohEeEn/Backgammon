@@ -4,7 +4,7 @@ import java.util.Random;
 
 /**
  * Dice class that has every functionalities that related to dice roll
- * @author YeohB - 17357376
+ *
  * @author Ee En Goh - 17202691
  */
 public class Dice {
@@ -17,7 +17,11 @@ public class Dice {
 	/** Integer array that stores both 2 dice roll values per game turn */ 
 	private int[] diceRoll;
 	
+	/** Number of disk moves at the current game turn */
 	private int numberOfMoves;
+	
+	/** Boolean value to indicate if both the current dice roll value are the same */
+	private boolean beaver;
 	
 	/**
 	 * Constructor that creates a new Random object
@@ -26,7 +30,10 @@ public class Dice {
 		this.rand = new Random();	
 		diceRoll = new int[4];
 		numberOfMoves = 0;
+		beaver = false;
 	}
+	
+	// ----- Getter and Setter Methods ----- 
 	
 	/**
 	 * Generate a random number in the range 1 - 6 for each dice
@@ -35,8 +42,6 @@ public class Dice {
 	public int getRandNum() {
 		return 1 + rand.nextInt(6);
 	}
-	
-	/* Getter methods */
 
 	/**
 	 * Getter method that get the dice roll value of the current to be used for moving disk
@@ -45,6 +50,10 @@ public class Dice {
 	 */
 	public int getDiceRoll(int index) {
 		return this.diceRoll[index];
+	}
+	
+	public int[] getDiceRollSet() {
+		return this.diceRoll;
 	}
 
 	/**
@@ -56,6 +65,36 @@ public class Dice {
 		this.diceRoll[0] = value1;
 		this.diceRoll[1] = value2;
 	}
+	
+	/**
+	 * @return The total number of move choices can be made 
+	 */
+	public int getNumberOfMoves() {
+		return this.numberOfMoves;
+	}
+	
+	/*
+	public void setNumberOfMoves() {
+		this.numberOfMoves--;
+	}
+	*/
+	
+	/**
+	 * @return True if the dice roll value in the current round is a beaver play, else false
+	 */
+	public boolean isBeaverPlay() {
+		return this.beaver;
+	}
+	
+	/**
+	 * Restore the state of dice roll in current game play<br>
+	 * Beaver / Normal Play -> Normal Play
+	 */
+	public void restorePlayState() {
+		this.beaver = false;
+	}
+	
+	// ----- End of Getter and Setter Methods -----
 	
 	/**
 	 * Method that executes different way of the value assignment to the array, depends on the given instruction in String
@@ -75,10 +114,10 @@ public class Dice {
 				if(compareTo() == 0) {
 					diceRoll[3] = diceRoll[2] = diceRoll[0] = diceRoll[1]; 		//TODO
 					numberOfMoves = 4;
+					beaver = true;
 					return returnFourDiceRolls();
 				}
 		}
-		
 		numberOfMoves = 2;
 		return returnTwoDiceRolls();
 	}
@@ -87,7 +126,7 @@ public class Dice {
 	 * @return String generated for notify the player that he/she got a normal dice play
 	 */
 	private String returnTwoDiceRolls() {
-		return "Rolled: " + diceRoll[0] + " and " + diceRoll[1] + " , the current player can make AT MOST " + (diceRoll[0] + diceRoll[1]) + " disk move(s) in a command";
+		return "Rolled: " + diceRoll[0] + " and " + diceRoll[1] + " , the current player can make " + (diceRoll[0] + diceRoll[1]) + " disk move(s)";
 	}
 	
 	/**
@@ -143,28 +182,15 @@ public class Dice {
 	
 	/** 
 	 * Method that used compare the both 2 dice-roll value, and return a defined-integer value to shows the comparing result 
-	 * @return 0 if they are equal, 1 if dice 1 > dice 0, else -1<br>( dice 1 < dice 0 )
+	 * @return 0 if they are equal, 1 if dice 1 > dice 0, else -1 for dice 1 < dice 0
 	 */
 	public int compareTo() {
 		
-		if (diceRoll[0] == diceRoll[1]) {
+		if (diceRoll[0] == diceRoll[1])
 			return 0;
-		}
-		
-		else if (diceRoll[0] <  diceRoll[1]) {
+		else if (diceRoll[0] <  diceRoll[1]) 
 			return 1;
-		}
-		
-		else {
+		else
 			return -1;
-		}
-	}
-
-	public int getNumberOfMoves() {
-		return this.numberOfMoves;
-	}
-	
-	public void setNumberOfMoves() {
-		this.numberOfMoves--;
 	}
 }

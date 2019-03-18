@@ -1,11 +1,12 @@
 package gui;
 
 import data_structures.LinkedStack;
+import data_structures.StackEmptyException;
 import javafx.scene.paint.Color;
 
 /**
  * Pip class 
- * @author YeohB - 17357376
+ *
  * @author Ee En Goh - 17202691
  */
 
@@ -110,8 +111,11 @@ public class Pip extends LinkedStack<Disks> {
 		
 		if(isEmpty()) {			
 			size = -100;
-		}else if(size() >= 5)
+		}else if(size() >= 5) {
 			size = top().getCircle().getTranslateY() + 30.0;
+			System.out.println("Entered Push Disk\n");
+			// updateDisks();
+		}
 		else 
 			size = top().getCircle().getTranslateY() + 40.0;
 		
@@ -141,25 +145,25 @@ public class Pip extends LinkedStack<Disks> {
 	 * @return The color of disk (s) on any pip (stack, look for the top element)
 	 */
 	public String returnDiskColor() {
+	
 		String color;
-
-		if (top().getColor() == Color.BLACK) {
+			
+		if (top().getColor() == Color.BLACK) 
 			color = "black";
-		} else {
-			color = "white";
-		}
-
+		else 
+			color = "white";		
+		
 		return color;
 	}
 	
 	/**
-	 * Boolean method to check if the disk in this pip can be hit by opponent's disk
+	 * Boolean method to check if the disk sit on this pip and vulnerable to be hit by opponent's disk
 	 * @return	True if there is only 1 disk on the pip, else false
 	 */
-/*	public boolean validDiskHit() {	// TODO
+	public boolean isBlot() {	
 		
 		if(diskCount == 1) 
 			return true;
 		return false;
-	} */
+	}
 }

@@ -3,61 +3,61 @@ package game;
 import javafx.scene.paint.Color;
 
 /**
- * @author YeohB
+ * @author Ee En Goh - 17202691
  *
  */
 public class PlayerController {
-	
+
 	// Variables
 
 	/** Player that is using black checker */
 	private  static Player playerB;		// player 1
-	
+
 	/** Player that is using white checker */
 	private  static Player playerW;		// player 2
-	
+
 	/** Player in this game round */
 	private  static Player currentPlayer;
-	
+
 	/** The opponent player */
 	private  static Player opponentPlayer;
-	
-	
-	
-	
+
+
+
+
 	// End of variables
-	
+
 	// Set up methods
-	
+
 	PlayerController() {
 		playerW = new Player(null, Color.WHITE);
 		playerB = new Player(null, Color.BLACK);
 		currentPlayer = playerW;
 		opponentPlayer = playerB;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
+
 	// End of set up methods
-		
+
 	// GETTERS AND SETTERS
-	
+
 	/**
 	 * @return	The name of current player
 	 */
 	public String getCurrentPlayerName() {
 		return currentPlayer.getPlayerName();
 	}
-	
+
 	public void setCurrentPlayerName(String name) {
 		currentPlayer.setPlayerName(name);
 	}
-	
+
 	/**
 	 * @return	The disk color of the current player using
 	 */
@@ -66,7 +66,7 @@ public class PlayerController {
 			return "black";
 		return "white";
 	}
-	
+
 	/**
 	 * @param color The new disk color given to the current player
 	 */
@@ -76,13 +76,14 @@ public class PlayerController {
 		else
 			currentPlayer.setColor(Color.WHITE);
 	}
-	
-	
-	
+
+
+
 	// END OF GETTERS AND SETTERS
-	
+
 	// methods
-	
+	// ----- Functionalities -----
+
 	/**
 	 * Switch the current player when the game turn progress
 	 */
@@ -91,14 +92,14 @@ public class PlayerController {
 		opponentPlayer = currentPlayer;
 		currentPlayer = temp;
 	}
-	
+
 	/**
 	 * @return The information about the current player
 	 */
 	public String displayCurrentPlayerInfo() {
-		return getCurrentPlayerName() + ", your disk color is " + getCurrentPlayerColor().toUpperCase();
+		return getCurrentPlayerName() + ", your disk color is " + getCurrentPlayerColor().toUpperCase() + "\n";
 	}
-	
+
 	/**
 	 * Method that shows if the current player is using the disk with target color
 	 * @param s	String, which indicates the target disk color
@@ -109,13 +110,12 @@ public class PlayerController {
 			return true;
 		return false;
 	}
-/*
-	public boolean isValidColor(String color) {
-		return ("black".compareTo(color) == 0) || ("white".compareTo(color) == 0);
-	}
-*/
-	
-	public boolean isCurrentPlayerInJail() {
-		return currentPlayer.doesPlayerHavePieceInJail();
+
+	/**
+	 * Boolean method to check if the current player has disk in jail
+	 * @return True if there is, else no
+	 */
+	public boolean currentPlayerDiskInJail() {
+		return currentPlayer.getPlayerJailState();
 	}
 }

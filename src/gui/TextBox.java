@@ -9,11 +9,11 @@ import javafx.scene.layout.Priority;
 
 /**
  * A class that in charge of the functionality and GUI definition of command input and output text box
- * @author YeohB - 17357376
+ *
  * @author Ee En Goh - 17202691
  */
 public class TextBox {
-	
+
 	// Constants
 	private final double WIDTH_OFWHOLECONTAINER = 200;
 	private final double WIDTH_OFROLLBUTTON = 150;
@@ -31,22 +31,24 @@ public class TextBox {
 
 	HBox inputBox;
 	HBox outputBox;
-	
-	
-	// End of variables
+
+	/** A boolean value that used to check if the dice roll red button is currently disabled */
+	private boolean diceRollDisabled;
 
 	public TextBox(double heightOfScreen) {
 		HEIGHT_OFWHOLECONTAINER = heightOfScreen;
-		
+
 		textContainer = new BorderPane();
-		
+
 		inputField = new TextField();
-		
+
 		outputField = new TextArea();
 		rollDiceBtn = new Button();
-		
+
 		inputBox = new HBox(inputField, rollDiceBtn);
 		outputBox = new HBox(outputField);
+
+		diceRollDisabled = false; // TODO
 
 		initTextBox();
 	}
@@ -62,10 +64,12 @@ public class TextBox {
 		inputField.setPrefSize(WIDTH_OFWHOLECONTAINER, HEIGHT_OFINPUTCONTAINER);
 		outputField.setPrefSize(WIDTH_OFWHOLECONTAINER,HEIGHT_OFWHOLECONTAINER - HEIGHT_OFINPUTCONTAINER);
 
-		outputField.setText("> Welcome to Backgammon");
+		/* Initialize the outputField  */
+
+		outputField.setText(">> Welcome to Backgammon <<");
 		outputField.setEditable(false);
 		outputField.setWrapText(true);
-		outputField.setScrollTop(Double.MIN_VALUE);
+		outputField.setScrollTop(Double.MAX_VALUE); // TODO
 
 		rollDiceBtn.setText("Roll Dice");
 		rollDiceBtn.setPrefSize(WIDTH_OFROLLBUTTON, HEIGHT_OFINPUTCONTAINER);
@@ -79,35 +83,42 @@ public class TextBox {
 		rollDiceBtn.setStyle("-fx-background-color: #d11919;");
 	}
 	/**
-	 * Method to output customized message on output field
-	 * @param s	The given message to displayed on the output field
+	 * Method to output general message on output field
+	 * @param s	General message given
+	 */
+	public void generalOutput(String s) {
+		outputField.appendText("\n" + s);
+	}
+
+	/**
+	 * Method to output customized feedback message on output field
+	 * @param s	Customized feedback given
 	 */
 	public void output(String s) {
 		outputField.appendText("\n> " + s);
 	}
-	
+
 	/**
 	 * Method to display standard error message
 	 * @param error	The keyword that specify the type of error
 	 */
 	public void outputError(String error) {
 		String s = "";
-		
-		switch (error) {
+
+		switch (error.toLowerCase()) {
 			case "move":
-				s = "Invalid move, please try again";
+				s = "Invalid move, please try again\n";
 				break;
 			case "input":
-				s = "Invalid input, please try again";
+				s = "Invalid input, please try again\n";
 				break;
 			case "command":
-				s = "Invalid command, please try again";
+				s = "Invalid command, please try again\n";
 				break;
 		}
-		
 		output(s);
 	}
-	
+
 	/**
 	 * Method to display defined warning messages, based on the warning statement given (parameter)
 	 * @param warning	The warning statement given, that specify the the purpose of warning message
@@ -115,25 +126,30 @@ public class TextBox {
 	public void warningMessage(String warning) {
 		String output = "WARNING: ";
 
-		switch (warning) {
+		switch (warning.toLowerCase()) {
 			case "dice":
-				output += "You must use all dice rolls before continuing";
+				output += "You must use ALL dice rolls before continuing\n";
 				break;
-			case "name": 
-				output += "All players must provide a name first";
+			case "name":
+				output += "All players must provide a name first\n";
+			case "roll":
+				output += "You must ROLL DICE (red button) before this command \n";
+				break;
 		}
+
+		System.out.println("\tWarning message created\t\t: SUCCESS"); // Testing
 		output(output);
 	}
-	
+
 	/**
 	 * Method to display all the commands available in this program to use their functionalities
-	 * @param command	The related keyword to get the command required 
+	 * @param command	The related keyword to get the command required
 	 */
 	public void displayHelp(String command) {
 
-		String output = "\t\t< Commands >\n\tUSAGE : ";
+		String output = "\t< Commands >\n\tUSAGE : ";
 
-		switch (command) {
+		switch (command.toLowerCase()) {
 			case ".name":
 				output += "To change names\t- .name [oldName] [newName]";
 				break;
@@ -147,19 +163,50 @@ public class TextBox {
 				output += "To end turn\t- next";
 				break;
 			case "all":
-				output += "To change names\t- .name [oldName] [newName]\n" + "\tUSAGE : To move\t- .move [moveFrom] [moveTo]\n" + "\tUSAGE : To quit\t- quit\n" + "\tUSAGE : To end turn\t- next\n";
+				output += "To change names\t\t- .name [oldName] [newName]\n" + "\tUSAGE : To move\t\t\t\t- .move [moveFrom] [moveTo]\n" + "\tUSAGE : To move without rules\t- cheat [moveFrom] [moveTo]\n" + "\tUSAGE : To quit\t\t\t\t- quit\n" + "\tUSAGE : To end turn\t\t\t- next\n";
 				break;
 		}
 
 		output(output);
 	}
-	
+
+	// ----- Input Field Methods -----
+
 	/**
-	 * Method to disable the clicking of dice-roll red button 
+	 * Method to disable the clicking of dice-roll red button
 	 * @param disable	Boolean value to indicate the disable of the dice-roll button
 	 */
 	public void disableDiceRollBtn(boolean disable) {
+		this.diceRollDisabled = disable;
 		this.rollDiceBtn.setDisable(disable);
+	}
+
+	/**
+	 * Method to clear the input box, for the convenience of next command input
+	 */
+	public void clearInputField() {
+		this.inputField.setText("");
+	}
+
+	/**
+	 * Method to display the player's command input with the current player's name
+	 * @param player	The name of the current player
+	 */
+	public void printUserInput(String player) {
+		outputField.appendText("\n\n[@" + player + "] " + getUserInput());
+		clearInputField();
+	}
+
+	// ----- End of Input Field Methods -----
+
+	// ----- Getter Methods ------
+
+	/**
+	 * Method to check if the dice roll button is disabled
+	 * @return	True if the dice roll button is disabled, else false
+	 */
+	public boolean getDiceRollBtnDisabled() {
+		return this.diceRollDisabled;
 	}
 
 	/**
@@ -168,23 +215,6 @@ public class TextBox {
 	public String getUserInput() {
 		return inputField.getText();
 	}
-	
-	/**
-	 * Method to display the player's command input with the current player's name
-	 * @param player	The name of the current player
-	 */
-	public void printUserInput(String player) {
-		outputField.appendText("\n[@" + player + "] " + getUserInput());
-		clearInputField();
-	}
-	
-	/**
-	 * Method to clear the input box, for the convenience of next command input
-	 */
-	public void clearInputField() {
-		this.inputField.setText("");
-	}
-
 	/**
 	 * @return the BorderPane that contains all the I/O graphs
 	 */
@@ -212,4 +242,6 @@ public class TextBox {
 	public Button getDiceButton() {
 		return this.rollDiceBtn;
 	}
+
+	// ----- End of Getter Methods ------
 }

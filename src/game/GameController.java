@@ -2,8 +2,7 @@ package game;
 
 import java.util.ArrayList;
 
-import com.sun.javafx.collections.MappingChange.Map;
-
+import data_structures.StackEmptyException;
 import gui.Board;
 import gui.EndGame;
 import gui.TextBox;
@@ -18,12 +17,12 @@ import javafx.stage.Screen;
 
 /**
  * Class that consists of operations that control the flow of the backgammon game
- * @author YeohB - 17357376
+ *
  * @author Ee En Goh - 17202691
  * @version This class will control the logistics of the game, and not the mechanics. To be finished
  */
 public class GameController{
-	
+
 	// VARIALES
 
 	// INSTANCE VARIABLES
@@ -32,36 +31,39 @@ public class GameController{
 	private TextBox textBox;
 	private PlayerController playerController;
 	private EventsController eventController;
-	
+
+	private int turnNumber;	// Used for debugging
+
 	/** Boolean variable to indicate if the players have been instantiated with their name */
 	private boolean playersNotInstantiated;
-	
+
 	/** The degree of rotation of the board */
 	double rotation;
-	//private boolean sameErrorInRow;
-	
+
 	// FUNCTION VARIABLES (TO "CATCH" COMMANDS)
 	private boolean playerWantsToQuite = false;
-	
-	
-	
+
+
+
 	// END OF VARIABLES
-	
-	
-	
-	
+
+
+
+
 	// SET UP METHODS
-	
+
 	/**
-	 * Default constructor that initialize 
+	 * Default constructor that initialize
 	 */
 	protected GameController() {
 
 		Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
 		screenBounds = new Rectangle2D(0,0,(double)(screenBounds.getWidth() - 50), (double)(screenBounds.getHeight() - 50));		// Screen dimensions
-		
+
+		//sameErrorInRow = false;
+		turnNumber = 0;
+
 		playersNotInstantiated = true;
-		//sameErrorInRow = false;	// TODO
 		rotation = 0;
 		board = new Board(screenBounds);
 		textBox = new TextBox(screenBounds.getHeight());
@@ -70,63 +72,131 @@ public class GameController{
 		eventController = new EventsController();
 		initUIListener();
 		initGame();
-		
+
 		//GameOver("the winner");
 	}
-	
+
 	private void initGame() {
 		onGameStart();
-		
-		runGame();
+		// runGame();
 	}
-	
+
+	// ----- Game States -----
+
 	/**
 	 * Game start method
 	 */
 	public void onGameStart() {
-		
-		if(eventController.getTurnCount() < 2){ // TODO : Different version, my turnCount starts from 0  
+
+		if(eventController.getTurnCount() == 0){
+
 			textBox.disableDiceRollBtn(true);
 			textBox.output(eventController.promptPlayerForName());
-			
+
+			if(eventController.initializedPlayer == 2) {
+				eventController.setTurnCount();
+			}
+
 		}else{
-			
-			if(playersNotInstantiated) // Case to avoid beaver game play when deciding who is start the game
+
+			if(playersNotInstantiated) { // Case to avoid beaver game play when deciding who is start the game
 				textBox.output(dice.rollDice("turn"));
-			else
+			}else
 				textBox.output(dice.rollDice("move"));
-			
-			playersNotInstantiated = false;
-			
-			if (dice.compareTo() == 1) { // Second die is higher
+
+			if (dice.compareTo() == 1) { // Second die is higher TODO
 				changePerspective();
 			}
+
+			playersNotInstantiated = false;
 
 			textBox.output(playerController.getCurrentPlayerName() + eventController.announceStartingPlayer());
 			textBox.output(eventController.promptPlayerToMove());
 		}
 	}
-	
+
 	// run the game after the players have been initialised
-	public void runGame() { 
-		
+	public void runGame() {
+
 		//changePerspective();
-		
+
 		//board.movePiece(convertPipNumbering(23), convertPipNumbering(22));
 		//changePerspective();
 		//board.movePiece(convertPipNumbering(23), convertPipNumbering(22));
-		
-		
+
+
 		System.out.print("gam run and move done");
 	}
-	
+
 	// END OF SET UP METHODS
-	
+
 	/**
-	 * UI Listener instantiation 
+	 * Method to convert labels on pip numbering when the player’s perspective changed
+	 * @param pipIndex	int, the original pip index on the current board
+	 * @return The new pip index after converted
+	 */
+	private int convertPipNumbering(int pipIndex) {
+		return (23 - pipIndex);
+	}
+
+	/**
+	 * Method to change the perspective of the players when turn changed
+	 */
+	private void changePerspective() {
+
+		// System.out.println("Current Player : " + playerController.getCurrentPlayerName());
+		playerController.changeCurrentPlayer();
+
+		if (playerController.isColorEqual("white")) {
+			rotation = 0;
+		} else {
+			rotation = 180;
+		}
+
+		// DEBUG
+		// System.out.println("Rotation: " + rotation );
+
+		board.setPipLabelRegion(rotation);
+
+		if(!playersNotInstantiated)
+			eventController.setTurnCount();
+
+		System.out.println("\tPerspective change\t\t: SUCCESS"); // Testing
+
+	}
+
+	/**
+	 * Display a pop-window that announce the end of game and the winner
+	 * @param winner
+	 */
+	public void GameOver(String winner) {
+
+		EndGame endGame = new EndGame(winner);
+		getGameContainer().getChildren().clear();
+		getGameContainer().getChildren().add(endGame.getEndGame_PopUp());
+	}
+
+	// ----- End of Game States -----
+
+	// ----- Getter Methods -----
+
+	/** Method to access the container that has the game GUI */
+	public HBox getGameContainer() {
+		return board.getGameContainer();
+	}
+
+	/** Method to access the text box container */
+	public BorderPane getTextBox() {
+		return textBox.getTextBox();
+	}
+
+	// ----- End of Getter Methods -----
+
+	/**
+	 * UI Listener instantiation
 	 */
 	private void initUIListener() {
-		
+
 		// Handling the command typed in the input field
 		textBox.getInputField().setOnKeyPressed(new EventHandler<KeyEvent>() {
 			@Override
@@ -135,33 +205,46 @@ public class GameController{
 					String text = textBox.getUserInput();
 					String parts[] = text.split(" ");
 
+					System.out.println("\n> Doing command " + turnNumber + " now"); // DEBUG
+
 					if(!playersNotInstantiated)
 						textBox.printUserInput(playerController.getCurrentPlayerName());
-					
-					/* If it's a command */
-					if (parts[0].startsWith(".")) { 
-						runCommand(parts);
-					}
+
+					/* ----- Command Cases ----- */
 
 					/* If quitting */
-					else if (text.contains("quit")) {
+					if (text.contains("quit")) {
 						textBox.output("Exiting..");
+						System.out.println("\tExit Game\t\t\t: SUCCESS\n");	// Testing
 						System.exit(0);
 					}
 
-					/* If ending turn */
-					else if (text.contains("next")) {
-						runCommand(parts);
-					}
-					
+
 					/* Command to read all the available command and their format */
 					else if(text.contains("help")) {
 						textBox.displayHelp("all");
+
 					}
+
+					/* If it's a command or an ending turn */
+					else if (parts[0].startsWith(".") || text.contains("next")) {
+						runCommand(parts);
+					}
+
+					/* Command to move any specific checkers to the given position (Testing) by ignoring all the rules */
+					else if(text.contains("cheat")) {
+						runCommand(parts);
+					}
+
 					/* Else just texting */
 					else {
 						textBox.output(text);
+						System.out.println("\tNo command given but string");
 					}
+
+					textBox.clearInputField();
+					System.out.println("\tCurrent turn number \t\t: " + eventController.getTurnCount());
+					System.out.println("> Command " + turnNumber++ + " done"); // DEBUG
 				}
 			}
 		});
@@ -177,55 +260,58 @@ public class GameController{
 		});
 	}
 
+	// ----- Command Executors -----
+
 	/**
 	 * Method to interpret what the user types into the command panel
 	 * @param args	The break down of command input inserted on the text area
 	 */
 	private void runCommand(String[] args){
 
-		/** User command expected here : .move to move the checker */
-		String command = args[0];	
+		/** User specific command expected here : .move to move the checker */
+		String command = args[0];
 
+		/** First argument as a string passed from user command */
+		String argv1 = "";
+
+		/** Second argument as a string passed from user command */
+		String argv2 = "";
+
+		/** The pip index where a disk moved from */
 		int moveFrom = -1;
+
+		/** The pip index where the specified disk moved to */
 		int moveTo   = -1;
 
 		/**
 		 * If user chooses to move
 		 * -> Only when it is not in player instantiation stage
 		 */
-		if (command.contains(".move")) {
-			
-			if(playersNotInstantiated) { 			// Case to avoid the player to make disk move before instantiation 
-				System.out.println("Entered");
-				
-				//if(!sameErrorInRow) {
-					textBox.warningMessage("name");
-				//	sameErrorInRow = true;
-				//	return;
-				//}
-					textBox.clearInputField();
-				 	onGameStart();
-				
+		if (command.contains(".move") || command.contains("cheat")) { //TODO
+
+			if(playersNotInstantiated) { 			// Case to avoid the player to make disk move before instantiation
+				textBox.warningMessage("name");
+				onGameStart();
 				return;
 			}
-			
-		
+
+
 		/* String object that declared to store the command arguments given by the players in the text box */
 		String argv1, argv2;
-		
+
 		try{
-			
-			argv1 = args[1]; 		
+
+			argv1 = args[1];
 			argv2 = args[2];
-		
+
 		}catch(ArrayIndexOutOfBoundsException e) {
-			
+
 			textBox.outputError("command");
 			textBox.output("Insufficient numbers of arguments given for this command");
 			return;
 		}
 			//	System.out.println("argv : " + argv1 + " " + argv2); DEBUG
-			
+
 			/**
 			 * NOTE: The implementation of "jail" is only to demonstrate the ability to move
 			 * to/from the jail. The user will not be able to choose to move to the jail in
@@ -233,135 +319,91 @@ public class GameController{
 			 */
 
 			// ( Must to move the checker(s) in the jail out from it if the current player has this situation, otherwise skip round )
-			
+
 			/* If user wants to move to the jail */
-		
-			if (argv2.contains("jail")) {			
-				
-				/* Call function in board to add/remove disks */
-				if (isWithinBounds(Integer.parseInt(argv1) - 1)) {
 
-					moveFrom = Integer.parseInt(argv1) - 1;
+			if (argv2.contains("jail")) {
 
-					board.getJail().push(board.getPipArray(moveFrom).updatePoppedDisks());
-					board.getJail().updateJail();
-				}
-			}
+				argv1 = args[1]; 	// expected an int , the index where the disks will be moved from
+				argv2 = args[2];	// expected an int , the index where the disks will be moved to
 
-			/* If user wants to move from the jail */
-			else if (argv1.contains("jail")) {
-				
-				if (isWithinBounds(Integer.parseInt(argv2) - 1)) {
-					System.out.println("Enter function");
-					moveTo = Integer.parseInt(argv2) - 1;
-					
-					board.getPipArray(moveTo).updatePushedDisks(board.getJail().pop());
-					board.getJail().updateJail();
-				}
-			}
-			
-			/* Normal disk move : the player inserts the command to move checker(s) from 1 coordinate to another */
-			
-			else if(true) {
-				
+				/* Convert user input string into integer */
 				moveFrom = Integer.parseInt(argv1) - 1;
 				moveTo   = Integer.parseInt(argv2) - 1;
-				
-				if(rotation == 180) {
-					moveFrom = convertPipNumbering(moveFrom);
-					moveTo   = convertPipNumbering(moveTo);
+
+				if(!(isWithinBounds(moveFrom)||isWithinBounds(moveTo))) {
+
+					textBox.outputError("input");
+					System.out.println("\tError message 1 created\t\t: SUCCESS [Pip Index Out of Range]"); // Testing
+					return;
 				}
-				
-				board.movePiece(moveFrom, moveTo);
-				
-				/* Display the remaining disk moves */
-				if (dice.getNumberOfMoves() > 1) {
-					
-					textBox.output(dice.returnRemainingRolls(moveFrom, moveTo));	// TODO
-					System.out.println(dice.getNumberOfMoves());
-					
-				} else { // Current game round end
-					
-					textBox.output(eventController.promptPlayerToEnterNext());
-					eventController.setEndOfTurn(true);
-					
+
+			}catch(ArrayIndexOutOfBoundsException e) {	// Case for not enough command argument given
+
+				textBox.outputError("command");
+				textBox.output("Insufficient numbers of arguments given for the command above");
+				System.out.println("\tError message 1A created\t\t: SUCCESS"); // Testing
+
+				return;
+
+			}catch(RuntimeException e) {				// Case for invalid argument given
+
+				textBox.outputError("input");
+				textBox.output("Invalid argument(s) format, integer expected");
+				System.out.println("\tError message 1B created\t\t: SUCCESS [Argument Format Error]"); // Testing
+
+				return;
+
+			}finally{
+
+				/*
+			 	* 	This command ignores any game rules and even the given dice-roll value
+			 	* 	but just move 1 checker which is in given pip index to any other pip
+			 	*/
+				if(command.contains("cheat")){ // TODO
+					commandCheat(moveFrom,moveTo);
 				}
-				
-			}else{
-				
-			//	if(!sameErrorInRow) {
+
+				/* Normal disk move : the player inserts the command to move checker(s) from 1 coordinate to another */
+				else if(isLegalMove(Integer.parseInt(argv1) - 1, Integer.parseInt(argv2) - 1)!=0 && command.contains(".move")) { // TODO
+					commandMove(moveFrom, moveTo);
+
+				}else{
+
 					textBox.outputError("move");
-			//		sameErrorInRow = true;
-			//		return;
-			//	}
-				textBox.clearInputField();
+					System.out.println("\tError message 2 created\t\t: SUCCESS [Invalid Move Given]"); // Testing
+					return;
+				}
 			}
 		}
-		
 		/* Command to instantiate the player's name or rename */
 		else if(command.contains(".name")) {
-			
+
 			try {
-				// sameErrorInRow = false;			// Invert case used to oppose naming command error
 				String currentName  = args[1];
-			
-				if (playersNotInstantiated) {
-					playerController.setCurrentPlayerName(currentName);
-					textBox.output(playerController.displayCurrentPlayerInfo());
-					changePerspective(); // TODO
-					onGameStart();
-				}else {
-					System.out.println("Rename Entered");
-					String newName = args[2];
-					if (currentName.compareTo(playerController.getCurrentPlayerName()) == 0) {
-						playerController.setCurrentPlayerName(newName);
-						textBox.output(playerController.displayCurrentPlayerInfo());
-					} else {
-						textBox.outputError("input");
-						textBox.displayHelp(".name");
-					}
-				}
-				
-			}catch(ArrayIndexOutOfBoundsException e) {
-				
-				textBox.outputError("command");
-				textBox.output("Insufficient numbers of arguments given for this command");
+				commandName(currentName);
+
+			}catch(RuntimeException e) {	// try-catch invalid argument exception
+
+				textBox.outputError("input");
+				textBox.output("Insufficient numbers of arguments given for command above");
+				System.out.println("\tError message 3 created\t\t: SUCCESS [Naming Error] "); // Testing
+
 				return;
 			}
 		}
-		
+
 		/* Command to switch the player in order to end the current game turn */
-		else if(command.contains("next")) {
-			
-			if (playersNotInstantiated) {
-				
-				textBox.warningMessage("name");
-				textBox.output(eventController.promptPlayerForName());
-			
-			} else if (eventController.isEndOfTurn()) {
-				
-				textBox.output("Your turn will now end.."); 
-				System.out.println(playerController.getCurrentPlayerColor());
-				changePerspective();
-				textBox.output(playerController.getCurrentPlayerName() + eventController.promptPlayerToRollDice());
-				textBox.disableDiceRollBtn(false);
-				eventController.setEndOfTurn(false);
-				
-			} else {
-				
-				//if(!sameErrorInRow) {
-					textBox.outputError("input");
-					textBox.warningMessage("dice");
-				//	sameErrorInRow = true;
-				//	return;
-				//}
-				textBox.output(eventController.promptPlayerToMove());
-			}
-			
+		else if(command.contains("next") && textBox.getDiceRollBtnDisabled()) {
+			commandNext();
+
 		}else{
 			textBox.outputError("command");
 			textBox.displayHelp("all");
+			System.out.println("\tError message 5 created\t\t: SUCCESS"); // Testing
 		}
+
+		// create a block for each game turn
 		textBox.clearInputField();
 	}
 
@@ -371,13 +413,20 @@ public class GameController{
 	 * @param moveTo	The pip index where the checker is will move to
 	 * @return			0 if is not a valid move, 1 if can move, and 2 if can take an enemy piece
 	 */
-	
+
 	private int isLegalMove(int moveFrom, int moveTo) {
-		
-		if (rotation == 180) {
+	 * Method to execute the functionality of valid disk moves, according to the given pip indices
+	 * @param moveFrom	The pip index where the disk moved from
+	 * @param moveTo	The pip index where the disk moved to
+	 */
+	public void commandMove(int moveFrom, int moveTo){
+
+		if(rotation == 180) {
 			moveFrom = convertPipNumbering(moveFrom);
-			moveTo = convertPipNumbering(moveTo);
+			moveTo   = convertPipNumbering(moveTo);
 		}
+<<<<<<< HEAD
+		// from ferdia
 
 		if (isWithinBounds(moveFrom) && isWithinBounds(moveTo)) {			// Test if the given pip indexes are valid
 			System.out.println("Range: SUCCESS");
@@ -404,59 +453,194 @@ public class GameController{
 			}
 		}
 		return 0;
+
+			// From vincent
+		board.moveDisks(moveFrom, moveTo);
+
+		/* Display the remaining disk moves */
+		if (dice.getNumberOfMoves() > 1) {
+
+			textBox.output(dice.returnRemainingRolls(moveFrom, moveTo));
+			System.out.println("\tRemaining disk move(s)\t\t: " + dice.getNumberOfMoves() + " moves");
+
+		} /* End the current game round */
+		else {
+			dice.restorePlayState(); // restore the dice roll play states -> normal play
+			textBox.output(eventController.promptPlayerToEnterNext());
+			eventController.setEndOfTurn(true);
+		}
 	}
 
 	/**
-	 * Method to change the perspective of the players when turn changed
+	 * Method to execute the functionality of disk move cheat, which the player can move any disk on the board to any pip preferred
+	 * @param moveFrom	The pip index where the disk moved from
+	 * @param moveTo	The pip index where the disk moved to
 	 */
-	private void changePerspective() {
-		// TODO DEBUG
-		// System.out.println("Current Player : " + playerController.getCurrentPlayerName());
-		playerController.changeCurrentPlayer();
-		
-		if (playerController.isColorEqual("white")) {
-			rotation = 0;
-		} else {
-			rotation = 180;
+	public void commandCheat(int moveFrom, int moveTo){
+
+		if(rotation == 180) { // change player perspective
+
+			moveFrom = convertPipNumbering(moveFrom);
+			moveTo   = convertPipNumbering(moveTo);
 		}
-		
-		// TODO DEBUG 
-		// System.out.println("Rotation: " + rotation );
-		
-		board.setPipLabelRegion(rotation);
-		eventController.setTurnCount();
-		
-		// TODO DEBUG
-		// System.out.println("Perspective change successful");
-		
+
+		// move a specific checker to any pip without following any rules
+		board.moveDisks(moveFrom, moveTo);
+
+		textBox.output(eventController.promptPlayerToEnterNext());
+		System.out.println("\tCheating\t\t\t: SUCCESS"); 			// Testing
+		// changePerspective();
+		eventController.setEndOfTurn(true);
 	}
-	
-	
+
+	/**
+	 * Method to initialize a player with a given name or rename the player in his/her game turn
+	 * @param currentName	String that indicated as the name of the current player
+	 */
+	public void commandName(String name){
+
+		if (playersNotInstantiated) { // Instantiation Case
+
+			playerController.setCurrentPlayerName(name);
+			textBox.output(playerController.displayCurrentPlayerInfo());
+			changePerspective();
+			System.out.println("\tInstantiate Current Player\t: SUCCESS");	// Testing
+			onGameStart();
+
+		}else{	// Renaming Case
+
+			playerController.setCurrentPlayerName(name);
+			textBox.output(playerController.displayCurrentPlayerInfo());
+			System.out.println("\tRenaming Current Player\t: SUCCESS");	// Testing
+
+		}
+	}
+
+	/**
+	 * Method that do the execution of change the game turn and the current player
+	 */
+	public void commandNext(){
+
+		if (playersNotInstantiated) {
+
+			textBox.warningMessage("name");
+			textBox.output(eventController.promptPlayerForName());
+
+		} else if (eventController.isEndOfTurn()) {
+
+			textBox.output("Your turn will now end..\n");
+
+			System.out.println(playerController.getCurrentPlayerColor()); // TODO
+			changePerspective();
+			textBox.output(playerController.getCurrentPlayerName() + eventController.promptPlayerToRollDice());
+			textBox.disableDiceRollBtn(false);
+			eventController.setEndOfTurn(false);
+
+		} else {
+
+			textBox.warningMessage("dice");
+			textBox.output(eventController.promptPlayerToMove());
+			System.out.println("\tError message 4 created\t\t: SUCCESS"); // Testing
+		}
+	}
+
+	// ----- End of Command Executors -----
+
+	// ----- Move Validator -----
+
+	/**
+	 * int method that check if the move instruction given is valid<br>
+	 * - Pip Convertion when the player perspective changed<br>
+	 * - Roll Dice first in game in order to get a new dice roll set value<br>
+	 * - Check if the given pip indexes are valid <br>
+	 * - Check if the move is mathematically valid<br>
+	 * - Check if the pip is empty OR the disk(s) in the pip with index moveTo is same as the player's disk colour<br>
+	 * @param moveFrom	The pip index where the checker is will move from
+	 * @param moveTo	The pip index where the checker is will move to
+	 * @return			0 if it is not a valid move, 1 if it is, and 2 if a valid hit off can be done
+	 */
+	private int isLegalMove(int moveFrom, int moveTo) {
+
+		if (rotation == 180) {
+			moveFrom = convertPipNumbering(moveFrom);
+			moveTo = convertPipNumbering(moveTo);
+		}
+
+
+		if(textBox.getDiceRollBtnDisabled() && eventController.getTurnCount() > 1) { 	// run .move command only when the dice roll has been played
+			textBox.warningMessage("roll");												// warning message : roll dice first
+			return 0;
+		}
+
+		// Test if the given pip indexes are valid and if the move is mathematically valid
+		if (isWithinBounds(moveFrom) && isWithinBounds(moveTo) && dice.isMoveAccordingToDiceRoll(moveFrom, moveTo)) {
+
+			System.out.println("\tPip Index Valid\t\t\t: SUCCESS");
+			System.out.println("\tMove Given Valid\t\t\t: SUCCESS");
+
+			try {
+				// Test if the pip is empty OR the disk(s) in the pip with index moveTo is same as the player's disk colour
+				if (board.getPipArray(moveTo).isEmpty() || playerController.isColorEqual(board.getDiskColorOnPip(moveFrom))) {
+
+					if(board.getPipArray(moveTo).isEmpty())
+						System.out.println("\tPip moveFrom Not Empty\t\t: SUCCESS");
+					else
+						System.out.println("\tPip Color Meet\t\t\t: SUCCESS");
+					// System.out.println("Dice: " + Math.abs(moveFrom - moveTo));
+
+					return 1;
+
+				} // Valid Disk Hit Case
+				else if(board.getPipArray(moveTo).isBlot() && !board.getDiskColorOnPip(moveTo).equals(playerController.getCurrentPlayerColor())){
+					return 2;
+				}
+
+			}catch(StackEmptyException e) {
+				System.out.println("\tError message 6 created\t\t: SUCCESS"); // Testing
+				textBox.outputError("input");
+			}
+		}
+		return 0;
+	}
+
+
 	private void endTurn() {
 		changePerspective();
 	}
-	
+
 	/**
 	 * Boolean method to check if the given pip index is in bound
 	 * @param index	The given pip index
 	 * @return	True if the given pip index is in bound ( 0 to 23 ), else false
 	 */
 	private boolean isWithinBounds(int index) {
-		
-		// DEBUG 
+
+		// DEBUG
 		// System.out.println("Index : " + index);
-		
+
 		if(index < 0 && index > 23) {
 			textBox.output("Invalid move, try again");
 			return false;
 		}
 		return true;
 	}
-	
+
+	/*
+	 	getMapOfAllPossibleMoves is given a array of rolls (rolls that the player has left to use).
+	  	for now: it will return a list containing all moves for each individual roll and
+	  	from the "total" roll number (from a certain pip position).
+
+	  	So basicly: it expects user to move one dice at a time, or use all dice for 1 disk move.
+	  	TODO Beaver Case filled - Refactor may required
+	 */
 	/**
-	 * Method to convert labels on pip numbering when the player’s perspective changed
-	 * @param pipIndex	int, the original pip index on the current board
-	 * @return The new pip index after converted
+	 * Method that return a list, containing all moves for each individual roll and
+	 * from the "total" roll number
+	 * Each array in the return ArrayList contains 3 elements : <br>
+	 * int[0] - Starting position,<br>
+	 * int[1] - Ending position,<br>
+	 * int[2] - Move type (0 - normal move, 1 - hit move, 2 - board-entering move, 3 - bear-off move)<br>
+	 * @return The ArrayList with all the integer arrays that indicates the valid moves
 	 */
 	private int convertPipNumbering(int pipIndex) {
 
@@ -468,134 +652,163 @@ public class GameController{
 			// black
 			return 23-pipIndex;
 		}
-	}
-	
-	/** Method to access the container that has the game GUI */
-	public HBox getGameContainer() {
-		return board.getGameContainer();
-	}
+	public ArrayList<int[]> getMapOfAllPossibleMoves(){
 
-	/** Method to access the text box container */
-	public BorderPane getTextBox() {
-		return textBox.getTextBox();
-	}
-	
-	public void GameOver(String winner) {
-		
-		EndGame endOfGame_Window = new EndGame(winner);
-		getGameContainer().getChildren().clear();
-		getGameContainer().getChildren().add(endOfGame_Window.getEndGame_PopUp());
-		
-	}
-	
-	/* getMapOfAllPossibleMoves is given a array of rolls (rolls that the player has left to use).
-	  for now: it will return a list containing all moves for each individual roll and 
-	  from the "total" roll number (from a certain pip position). each int will be like startposition, endposition, typeOfMove
-	  0 for a move, and 1 for a take.
-	  
-	  So basicly: it expects user to move one dice at a time, or use all dice for 1 pip.
-	 */
-	public ArrayList<int[]> getMapOfAllPossibleMoves(int[] rolls){
 		// Different playing states -> jail and normal move
 		ArrayList<int[]> possibleMoves = new ArrayList<int[]>();
-		
-		if(playerController.isCurrentPlayerInJail()) {
-			// Then the current player is in jail, and must roll pieces out of jail
+
+		/*
+		 * Case 1 : If the current player has checker(s) in jail
+		 * - must roll pieces out of jail, then only normal move can be made
+		 * - else end current game turn (no valid move to get out from jail)
+		 */
+		if(playerController.currentPlayerDiskInJail()) {
+
 			// so: must check the "enemy home quarter" of the current player and the positions there that are free,
 			// and must check if can "escape jail"
-			
-			
-			
-		}
-		else {
-			// player can move pieces
-			
-			// iterate through board pips that the current player owns, 
-			//and check what moves are possible with current dice rolls
-			int currentPipPosition = 23;
-			while(currentPipPosition >= 0){
-				
-				// Check each individual roll for the pip
-				int totalRoll = 0;
-				for (int roll_individual : rolls) {
-					int positionAreMoveingTo = currentPipPosition - roll_individual;
-					int checkIfLegalMove = isLegalMove(currentPipPosition, positionAreMoveingTo);
-					if(checkIfLegalMove == 1) {
-						// Is legal Move
-						int[] legalMove = {currentPipPosition,positionAreMoveingTo,0};
-						if(!doesMovePossibilityAlreadyExist(possibleMoves, legalMove)) {
-							possibleMoves.add(legalMove);
-						}
-					}
-					else if(checkIfLegalMove == 2) {
-						// Is legal enemy take
-						int[] legalTake = {currentPipPosition,positionAreMoveingTo,1};
-						if(!doesMovePossibilityAlreadyExist(possibleMoves, legalTake)) {
-							possibleMoves.add(legalTake);
-						}
-						// else the move already exists
-					}
-					totalRoll += roll_individual;
+			// int value 24 is used to indicate stack in jail
+
+			int sumDiceRoll = 0;
+
+			for (int roll_individual : dice.getDiceRollSet()){
+
+				sumDiceRoll += roll_individual;
+
+				// Check for valid board-entering move that can be done by using 1 of the dice roll value
+				if(board.getPipArray(roll_individual).isEmpty() || board.getDiskColorOnPip(roll_individual).equals(playerController.getCurrentPlayerColor())) {
+
+					int validMove[] = { 24 , roll_individual , 2 };
+					if(!doesMovePossibilityAlreadyExist(possibleMoves, validMove))
+						possibleMoves.add(validMove);
 				}
-				
-				// Check moveing with total of rolls
-				int positionAreMoveingTo = currentPipPosition - totalRoll;
-				int checkIfLegalMove = isLegalMove(currentPipPosition, positionAreMoveingTo);
-				if(checkIfLegalMove == 1) {
-					// Legal move
-					int[] legalMove = {currentPipPosition,positionAreMoveingTo,0};
-					if(!doesMovePossibilityAlreadyExist(possibleMoves, legalMove)) {
-						possibleMoves.add(legalMove);
-					}
+
+				// Check for valid board-entering move that can be done by using the sum of the dice roll value
+				if((board.getPipArray(sumDiceRoll).isEmpty() || board.getDiskColorOnPip(sumDiceRoll).equals(playerController.getCurrentPlayerColor()))&& sumDiceRoll != roll_individual) {
+
+					int validMove[] = { 24 , sumDiceRoll , 2 };
+					if(!doesMovePossibilityAlreadyExist(possibleMoves, validMove))
+						possibleMoves.add(validMove);
 				}
-				else if(checkIfLegalMove == 2) {
-					// Legal take
-					int[] legalTake = {currentPipPosition,positionAreMoveingTo,1};
-					if(!doesMovePossibilityAlreadyExist(possibleMoves, legalTake)) {
-						possibleMoves.add(legalTake);
-					}
-				}
-				
-				
-				currentPipPosition--;
 			}
+
+		}else { /* Case when the current player has checker in jail but no valid move to enter the game board */
+			textBox.output(playerController.getCurrentPlayerName() + " , you have no valid disk move in current game turn");
+			changePerspective(); // change player turns
+			return null;
 		}
-		
-		// return array list containing int[3]
-		// int goes-> int[0] is starting position, int[1] is ending position, and [2] is 0 for a move and 1 for a piece take
+
+		/*
+		 * Case 2 : Normal Move & Checker Hit cases
+		 * - Normal move can be made
+		 * - Checker hit move can be made
+		 */
+
+		// Iterate through board pips that the current player owns,
+		// and check what moves are possible with current dice rolls
+		int currentPipPosition = 23;
+		while(currentPipPosition >= 0){
+
+			/* Sum of the dice roll value */
+			int totalRoll = 0;
+
+			/* Pip index that the current checker is going to move to */
+			int positionAreMovingTo;
+
+			/* The return value of isLegalMove() method that indicate the move type */
+			int checkIfLegalMove;
+			int moveType = -1;
+
+			for (int roll_individual : dice.getDiceRollSet()) {
+
+				// ----- Check each individual roll for the pip -----
+
+				positionAreMovingTo = currentPipPosition - roll_individual;
+				checkIfLegalMove = isLegalMove(currentPipPosition, positionAreMovingTo);
+
+				// Case 1 : Legal normal move
+				if(checkIfLegalMove == 1)
+					moveType = 0;
+
+				// Case 2 : Legal hit move
+				else if(checkIfLegalMove == 2)
+					moveType = 1;
+
+				if(checkIfLegalMove == 0) {
+					continue;
+				}else {
+					int[] legalMove = {currentPipPosition,positionAreMovingTo,moveType};
+
+					// Else the move already exists or
+					if(!doesMovePossibilityAlreadyExist(possibleMoves, legalMove))
+						possibleMoves.add(legalMove);
+				}
+
+				// ----- End of checking individual roll value -----
+
+				totalRoll += roll_individual;
+
+				// ----- Check disk move with different combination sum of dice rolls -----
+
+				positionAreMovingTo = currentPipPosition - totalRoll;
+				checkIfLegalMove = isLegalMove(currentPipPosition, positionAreMovingTo);
+
+				// Case 1 : Legal normal move
+				if(checkIfLegalMove == 1)
+					moveType = 0;
+
+				// Case 2 : Legal hit move
+				else if(checkIfLegalMove == 2)
+					moveType = 1;
+
+				if(checkIfLegalMove == 0) {
+					continue;
+				}else {
+					int[] legalMove = {currentPipPosition,positionAreMovingTo,moveType};
+
+					// Else the move already exists or
+					if(!doesMovePossibilityAlreadyExist(possibleMoves, legalMove))
+						possibleMoves.add(legalMove);
+				}
+
+				// ----- End of checking disk move with different combination sum of dice rolls -----
+			}
+			currentPipPosition--;
+		}
 
 		if(possibleMoves.isEmpty()) {
 			// No moves are possible		(I will make an exception)
-			
+			textBox.output(playerController.getCurrentPlayerName() + " , you have no valid disk move in current game turn");
+			changePerspective();	 // change player turns
+			return null;
 		}
-		
+
 		return possibleMoves;
 	}
-	
+
 	private String[] getStringsForMapOfMoves(ArrayList<int[]> allMoves) {
 		// all moves must actually contain moves (ie it must actually be possible for player to move before this method is called)
 		int isMove = 0;
 		int isAttack = 1;
-		
+
 		String[] listofMoves = new String[allMoves.size()];
 		int indexInMovesList = 0;
 		for (int[] move : allMoves) {
-			
+
 			listofMoves[indexInMovesList] = getStringOfMove(move);
-			
+
 			indexInMovesList++;
 		}
-		
+
 		return listofMoves;
 	}
-	
+
 	private String getStringOfMove(int[] theMove) {
 		// Convert move to string
 		int isMove = 0;
 		int isAttack = 1;
 		int isLeavingJail = 2;
 		int isEnteringHome = 3;
-		
+
 		String moveAsString = "";
 		if(theMove[2] == isLeavingJail) {
 			// Bar off
@@ -618,10 +831,158 @@ public class GameController{
 				}
 			}
 		}
-		
 		return moveAsString;
 	}
-	
+
+	public boolean doesMovePossibilityAlreadyExist(ArrayList<int[]> listOfPossibleMoves, int[] theMove) {
+		if(listOfPossibleMoves.contains(theMove)) {
+			return true;
+		}
+		return false;
+	}
+
+	public void GameOver(String winner) {
+
+		EndGame endOfGame_Window = new EndGame(winner);
+		getGameContainer().getChildren().clear();
+		getGameContainer().getChildren().add(endOfGame_Window.getEndGame_PopUp());
+
+	}
+
+	/* getMapOfAllPossibleMoves is given a array of rolls (rolls that the player has left to use).
+	  for now: it will return a list containing all moves for each individual roll and
+	  from the "total" roll number (from a certain pip position). each int will be like startposition, endposition, typeOfMove
+	  0 for a move, and 1 for a take.
+
+	  So basicly: it expects user to move one dice at a time, or use all dice for 1 pip.
+	 */
+	public ArrayList<int[]> getMapOfAllPossibleMoves(int[] rolls){
+		// Different playing states -> jail and normal move
+		ArrayList<int[]> possibleMoves = new ArrayList<int[]>();
+
+		if(playerController.isCurrentPlayerInJail()) {
+			// Then the current player is in jail, and must roll pieces out of jail
+			// so: must check the "enemy home quarter" of the current player and the positions there that are free,
+			// and must check if can "escape jail"
+
+
+
+		}
+		else {
+			// player can move pieces
+
+			// iterate through board pips that the current player owns,
+			//and check what moves are possible with current dice rolls
+			int currentPipPosition = 23;
+			while(currentPipPosition >= 0){
+
+				// Check each individual roll for the pip
+				int totalRoll = 0;
+				for (int roll_individual : rolls) {
+					int positionAreMoveingTo = currentPipPosition - roll_individual;
+					int checkIfLegalMove = isLegalMove(currentPipPosition, positionAreMoveingTo);
+					if(checkIfLegalMove == 1) {
+						// Is legal Move
+						int[] legalMove = {currentPipPosition,positionAreMoveingTo,0};
+						if(!doesMovePossibilityAlreadyExist(possibleMoves, legalMove)) {
+							possibleMoves.add(legalMove);
+						}
+					}
+					else if(checkIfLegalMove == 2) {
+						// Is legal enemy take
+						int[] legalTake = {currentPipPosition,positionAreMoveingTo,1};
+						if(!doesMovePossibilityAlreadyExist(possibleMoves, legalTake)) {
+							possibleMoves.add(legalTake);
+						}
+						// else the move already exists
+					}
+					totalRoll += roll_individual;
+				}
+
+				// Check moveing with total of rolls
+				int positionAreMoveingTo = currentPipPosition - totalRoll;
+				int checkIfLegalMove = isLegalMove(currentPipPosition, positionAreMoveingTo);
+				if(checkIfLegalMove == 1) {
+					// Legal move
+					int[] legalMove = {currentPipPosition,positionAreMoveingTo,0};
+					if(!doesMovePossibilityAlreadyExist(possibleMoves, legalMove)) {
+						possibleMoves.add(legalMove);
+					}
+				}
+				else if(checkIfLegalMove == 2) {
+					// Legal take
+					int[] legalTake = {currentPipPosition,positionAreMoveingTo,1};
+					if(!doesMovePossibilityAlreadyExist(possibleMoves, legalTake)) {
+						possibleMoves.add(legalTake);
+					}
+				}
+
+
+				currentPipPosition--;
+			}
+		}
+
+		// return array list containing int[3]
+		// int goes-> int[0] is starting position, int[1] is ending position, and [2] is 0 for a move and 1 for a piece take
+
+		if(possibleMoves.isEmpty()) {
+			// No moves are possible		(I will make an exception)
+
+		}
+
+		return possibleMoves;
+	}
+
+	private String[] getStringsForMapOfMoves(ArrayList<int[]> allMoves) {
+		// all moves must actually contain moves (ie it must actually be possible for player to move before this method is called)
+		int isMove = 0;
+		int isAttack = 1;
+
+		String[] listofMoves = new String[allMoves.size()];
+		int indexInMovesList = 0;
+		for (int[] move : allMoves) {
+
+			listofMoves[indexInMovesList] = getStringOfMove(move);
+
+			indexInMovesList++;
+		}
+
+		return listofMoves;
+	}
+
+	private String getStringOfMove(int[] theMove) {
+		// Convert move to string
+		int isMove = 0;
+		int isAttack = 1;
+		int isLeavingJail = 2;
+		int isEnteringHome = 3;
+
+		String moveAsString = "";
+		if(theMove[2] == isLeavingJail) {
+			// Bar off
+			moveAsString += "bar-" + theMove[1];	// bar-finnishPosition
+		}
+		else {
+			if(theMove[2] == isEnteringHome) {
+				// player move(possible) piece to home
+				moveAsString += theMove[0] + "-off";
+			}
+			else {
+				// Is a move or a attack
+				if(theMove[2] == isAttack) {
+					// is attack
+					moveAsString += theMove[0] + "-*" + theMove[1];
+				}
+				else {
+					// is a move
+					moveAsString += theMove[0] + "-" + theMove[1];
+				}
+			}
+		}
+
+		return moveAsString;
+	}
+
 	public boolean doesMovePossibilityAlreadyExist(ArrayList<int[]> listOfPossibleMoves, int[] theMove) {
 		if(listOfPossibleMoves.contains(theMove)) {
 			return true;

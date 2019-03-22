@@ -364,7 +364,9 @@ public class Board {
 	
 	public void removeFromJail(int moveTo) {
 		// Remove from the jail
-		Disks theDiskInJail = jail.pop();
+		Disks theDiskInJail = jail.removePipFromJail();
+		
+		System.out.println("Removeing color " + theDiskInJail.getColor());
 		
 		//add to the board position
 		getPipArray(moveTo).updatePushedDisks(theDiskInJail);

@@ -501,17 +501,17 @@ public class GameController{
 	
 	private void commandAttack(int moveFrom, int attackPosition) {
 		
+		String remainingMoves = dice.returnRemainingRolls(Math.abs(moveFrom-attackPosition));
+		
 		moveFrom = convertPipNumbering(moveFrom);
 		attackPosition   = convertPipNumbering(attackPosition);
 		
 		board.successHit(moveFrom, attackPosition);
 		
 		playerController.setEnemyPlayerInJail();	// mark that the enemy player is in the jail now
-		
-		String remainingMoves = dice.returnRemainingRolls(Math.abs(moveFrom-attackPosition));
-		
+				
 		/* Display the remaining disk moves */
-		if (dice.getNumberOfDiceLeft() > 1) {
+		if (dice.getNumberOfDiceLeft() >= 1) {
 			// Still have moves left
 			textBox.output(remainingMoves);		// Remove the dice used
 			System.out.println("\tRemaining disk move(s)\t\t: " + dice.getNumberOfDiceLeft() + " moves");
@@ -530,16 +530,16 @@ public class GameController{
 	
 	private void commandJailLeave(int movePosition) {
 		
+		String remainingMoves = dice.returnRemainingRolls(Math.abs(movePosition+1));
+		
 		movePosition   = convertPipNumbering(movePosition);
 		
 		board.removeFromJail(movePosition);
 		
 		playerController.currentPlayerLeavesJail();	// mark that the enemy player is in the jail now
-		
-		String remainingMoves = dice.returnRemainingRolls(Math.abs(movePosition+1));
-		
+				
 		/* Display the remaining disk moves */
-		if (dice.getNumberOfDiceLeft() > 1) {
+		if (dice.getNumberOfDiceLeft() >= 1) {
 			// Still have moves left
 			textBox.output(remainingMoves);		// Remove the dice used
 			System.out.println("\tRemaining disk move(s)\t\t: " + dice.getNumberOfDiceLeft() + " moves");
@@ -755,21 +755,23 @@ public class GameController{
 
 				sumDiceRoll += roll_individual;
 				
-				int position = 25-roll_individual;
+				int position = 24-roll_individual;
 
 				// Check for valid board-entering move that can be done by using 1 of the dice roll value
-				if(board.getPipArray(convertPipNumbering(position)).isEmpty() || board.checkIfCurrentPlayerOwnsPipPosition(convertPipNumbering(position), playerController.getCurrentPlayerColor())){
+				if(position >= 18 && (board.getPipArray(convertPipNumbering(position)).isEmpty() || board.checkIfCurrentPlayerOwnsPipPosition(convertPipNumbering(position), playerController.getCurrentPlayerColor()))
+						|| board.getPipArray(convertPipNumbering(position)).isPointVulnerable()){
 
-					int validMove[] = { 24 , position , 2 };
+					int validMove[] = { 24 , position + 1 , 2 };
 					if(!doesMovePossibilityAlreadyExist(possibleMoves, validMove))
 						possibleMoves.add(validMove);
 				}
 			}
 			
 			// Check for valid board-entering move that can be done by using the sum of the dice roll value
-			if((board.getPipArray(sumDiceRoll).isEmpty() || board.getDiskColorOnPip(sumDiceRoll).equals(playerController.getCurrentPlayerColor()))) {
-
-				int validMove[] = { 24 , (24-sumDiceRoll) , 2 };
+			int position = 24-sumDiceRoll;
+			if(position >= 18 && (board.getPipArray(position).isEmpty() || board.getDiskColorOnPip(position).equals(playerController.getCurrentPlayerColor()))) {
+					
+				int validMove[] = { 24 , (position + 1) , 2 };
 				if(!doesMovePossibilityAlreadyExist(possibleMoves, validMove))
 					possibleMoves.add(validMove);
 			}

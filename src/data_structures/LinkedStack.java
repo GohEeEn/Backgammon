@@ -147,7 +147,7 @@ public class LinkedStack<E> extends StackPane implements Iterable<E>, StackInter
 	@Override
 	public E pop() {
 		if (isEmpty()) {
-			throw new StackEmptyException();
+			return null;
 		}
 
 		E temp = top.getElement();

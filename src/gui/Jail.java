@@ -57,4 +57,8 @@ public class Jail extends LinkedStack<Disks> {
 	public Color diskColorInJail() {
 		return (Color)top().getColor();
 	}
+	
+	public Disks removePipFromJail() {
+		return (Disks)this.pop();
+	}
 }

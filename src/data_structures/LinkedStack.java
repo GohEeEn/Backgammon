@@ -126,7 +126,7 @@ public class LinkedStack<E> extends StackPane implements Iterable<E>, StackInter
 	public E top() {
 		
 		if (isEmpty()) {
-			throw new StackEmptyException();
+			return null;
 		}
 
 		return top.getElement();

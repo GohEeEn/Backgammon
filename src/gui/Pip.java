@@ -90,13 +90,18 @@ public class Pip extends LinkedStack<Disks> {
 	 * @return The removed disk, a Disk object 
 	 */
 	public Disks updatePoppedDisks() {
-		
-		diskCount--;
-		// Debugging purposes
-		// System.out.println("Popped Disk number: " + top().getDiskNumber());
-			
-		getChildren().remove(top().getCircle());
-		return pop();
+		if(!isEmpty()) {
+			diskCount--;
+			// Debugging purposes
+			// System.out.println("Popped Disk number: " + top().getDiskNumber());
+				
+			getChildren().remove(top().getCircle());
+			return pop();	
+		}
+		else {
+			// is empty
+			return null;
+		}
 	}
 	
 	/**
@@ -112,7 +117,12 @@ public class Pip extends LinkedStack<Disks> {
 		if(isEmpty()) {			
 			size = -100;
 		}else if(size() >= 5) {
-			size = top().getCircle().getTranslateY() + 30.0;
+			if(top() != null) {
+				size = top().getCircle().getTranslateY() + 30.0;
+			} else {
+				size = 30;
+			}
+			
 			System.out.println("Entered Push Disk\n");
 			// updateDisks();
 		}
@@ -147,20 +157,27 @@ public class Pip extends LinkedStack<Disks> {
 	public String returnDiskColor() {
 	
 		String color;
-			
-		if (top().getColor() == Color.BLACK) 
-			color = "black";
-		else 
-			color = "white";		
 		
-		return color;
+		if(!isEmpty()) {
+			if (top().getColor() == Color.BLACK) 
+				color = "black";
+			else 
+				color = "white";		
+			
+			return color;			
+		}
+		else {
+			return null;
+		}
+			
+
 	}
 	
 	/**
 	 * Boolean method to check if the disk sit on this pip and vulnerable to be hit by opponent's disk
 	 * @return	True if there is only 1 disk on the pip, else false
 	 */
-	public boolean isBlot() {	
+	public boolean isPointVulnerable() {	
 		
 		if(diskCount == 1) 
 			return true;

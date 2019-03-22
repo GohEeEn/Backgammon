@@ -361,6 +361,11 @@ public class Board {
 		jail.push(getPipArray(moveFrom).updatePoppedDisks());
 		jail.updateJail();
 	}
+	
+	private void removeFromJail(int moveTo) {
+		jail.push(getPipArray(moveFrom).updatePoppedDisks());
+		jail.updateJail();
+	}
 
 
 	public void successHit(int moveFrom, int moveTo) {
@@ -430,5 +435,16 @@ public class Board {
 
 	public String getDiskColorOnPip(int pipIndex) {
 		return pipArray[pipIndex].returnDiskColor();
+	}
+	
+	public boolean checkIfCurrentPlayerOwnsPipPosition(int pipIndex,String playersColor)  {
+		// check if current player owns pip position
+		if(pipArray[pipIndex].isEmpty()) {
+			return false;
+		}
+		if(getDiskColorOnPip(pipIndex).equals(playersColor)) {
+			return true;
+		}
+		return false;
 	}
 }

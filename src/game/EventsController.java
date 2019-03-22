@@ -22,6 +22,11 @@ public class EventsController {
 		endOfTurn = false;
 	}
 	
+	public String promptPlayerWithName(String currentPlayerColor) {
+		String theMessage = currentPlayerColor + " its your turn!";
+		return theMessage;
+	}
+	
 	/** @return The response message to notify the player n to initialize his/her player name*/
 	public String promptPlayerForName() {
 		return "Player " + ++initializedPlayer + ", please enter your name using [.name] [stringName]: ";
@@ -34,7 +39,7 @@ public class EventsController {
 	
 	/** @return String message to inform the player to make a valid dice move by command */
 	public String promptPlayerToMove() {
-		return "Select a move - [.move] [ moveFrom ] [ moveTo ]";
+		return "Select a move from the below list with: [.move] [moveNumber]";
 	}
 	
 	/** @return String message to inform the player to go to the next game turn  */
@@ -55,9 +60,6 @@ public class EventsController {
 	/** Increase the current game turn, by following the game progress */
 	public void setTurnCount() {
 		this.turnCount++;
-		if(turnCount>2) {
-			turnCount = 1;
-		}
 		// TODO DEBUG
 		// System.out.println(" Current turn count : " + turnCount);
 	}

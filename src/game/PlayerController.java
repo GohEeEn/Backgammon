@@ -66,6 +66,13 @@ public class PlayerController {
 			return "black";
 		return "white";
 	}
+	
+	public String getEnemyPlayerColor() {
+		if(currentPlayer.getColor() == Color.BLACK)
+			return "white";
+		return "black";
+	}
+	
 
 	/**
 	 * @param color The new disk color given to the current player
@@ -92,7 +99,7 @@ public class PlayerController {
 		opponentPlayer = currentPlayer;
 		currentPlayer = temp;
 	}
-
+	
 	/**
 	 * @return The information about the current player
 	 */
@@ -105,7 +112,7 @@ public class PlayerController {
 	 * @param s	String, which indicates the target disk color
 	 * @return True, if the current player is using the disk color same with the target
 	 */
-	public boolean isColorEqual(String color) {
+	public boolean isCurrentPlayerEqual(String color) {
 		if(getCurrentPlayerColor().compareTo(color) == 0)
 			return true;
 		return false;
@@ -115,7 +122,14 @@ public class PlayerController {
 	 * Boolean method to check if the current player has disk in jail
 	 * @return True if there is, else no
 	 */
-	public boolean currentPlayerDiskInJail() {
+	public boolean isCurrentPlayerInJail() {
 		return currentPlayer.getPlayerJailState();
+	}
+	
+	public void setEnemyPlayerInJail() {
+		opponentPlayer.setPlayerJailState(true);
+	}
+	public void currentPlayerLeavesJail() {
+		currentPlayer.setPlayerJailState(false);
 	}
 }

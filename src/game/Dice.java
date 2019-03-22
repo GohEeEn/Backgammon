@@ -101,14 +101,14 @@ public class Dice {
 	 * @param s	String that indicates the specific case(s) of game play
 	 * @return	The string that related to the result of the dice roll (normal 2 dices result or beavers play)
 	 */
-	public String rollDice(String s) {
+	public String rollDice(String command) {
 		
 		setDiceRoll(getRandNum(),getRandNum());
 		
-		switch(s) {
+		switch(command) {
 			case "turn":	// Case for choosing player's turn, no same dice-roll value 
 				while(compareTo() == 0) 
-					setDiceRoll(getRandNum(),getRandNum());
+					return rollDice(command);
 				break;
 			case "move":	// Case in game turn, beaver game-play if both dice-value are the same
 				if(compareTo() == 0) {

@@ -1,5 +1,6 @@
 package game;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -15,7 +16,7 @@ public class Dice {
 	private Random rand;
 	
 	/** Integer array that stores both 2 dice roll values per game turn */ 
-	private int[] diceRoll;
+	private ArrayList<Integer> diceRoll;
 	
 	/** Number of disk moves at the current game turn */
 	private int numberOfMoves;
@@ -28,7 +29,7 @@ public class Dice {
 	 */
 	public Dice() {
 		this.rand = new Random();	
-		diceRoll = new int[4];
+		diceRoll = new ArrayList<Integer>();
 		numberOfMoves = 0;
 		beaver = false;
 	}
@@ -49,10 +50,10 @@ public class Dice {
 	 * @return The dice roll value of the target die
 	 */
 	public int getDiceRoll(int index) {
-		return this.diceRoll[index];
+		return this.diceRoll.get(index);		// Get the dice
 	}
 	
-	public int[] getDiceRollSet() {
+	public ArrayList<Integer> getDiceRollSet() {
 		return this.diceRoll;
 	}
 
@@ -62,14 +63,14 @@ public class Dice {
 	 * @param value2	The new second dice-roll value
 	 */
 	public void setDiceRoll(int value1, int value2) {
-		this.diceRoll[0] = value1;
-		this.diceRoll[1] = value2;
+		this.diceRoll.add(value1);
+		this.diceRoll.add(value2);
 	}
 	
 	/**
 	 * @return The total number of move choices can be made 
 	 */
-	public int getNumberOfMoves() {
+	public int getNumberOfDiceLeft() {
 		return this.numberOfMoves;
 	}
 	
@@ -103,6 +104,8 @@ public class Dice {
 	 */
 	public String rollDice(String command) {
 		
+		diceRoll.clear();// Clear the dice
+		
 		setDiceRoll(getRandNum(),getRandNum());
 		
 		switch(command) {
@@ -112,7 +115,8 @@ public class Dice {
 				break;
 			case "move":	// Case in game turn, beaver game-play if both dice-value are the same
 				if(compareTo() == 0) {
-					diceRoll[3] = diceRoll[2] = diceRoll[0] = diceRoll[1]; 		//TODO
+					diceRoll.add(diceRoll.get(0));
+					diceRoll.add(diceRoll.get(0));
 					numberOfMoves = 4;
 					beaver = true;
 					return returnFourDiceRolls();
@@ -126,15 +130,16 @@ public class Dice {
 	 * @return String generated for notify the player that he/she got a normal dice play
 	 */
 	private String returnTwoDiceRolls() {
-		return "Rolled: " + diceRoll[0] + " and " + diceRoll[1] + " , the current player can make " + (diceRoll[0] + diceRoll[1]) + " disk move(s)";
+		return "Rolled: " + diceRoll.get(0) + " and " + diceRoll.get(1) + " , the current player can make " + (diceRoll.get(0) + diceRoll.get(1)) + " disk move(s)";
 	}
 	
 	/**
 	 * @return String generated for notify the player that he/she got a beaver
 	 */
 	private String returnFourDiceRolls() {
-		return "Rolled: " + diceRoll[0] + ", " + diceRoll[1] + ", " + diceRoll[2] + " and " + diceRoll[3]+ " , you can move at most " + (diceRoll[0] * 4) + " steps in a command";
+		return "Rolled: " + diceRoll.get(0) + ", " + diceRoll.get(1) + ", " + diceRoll.get(2) + " and " + diceRoll.get(3)+ " , you can move at most " + (diceRoll.get(0) * 4) + " steps in a command";
 	}
+	
 	
 	/**
 	 * Boolean method that check if the move instruction given is mathematically valid
@@ -142,9 +147,11 @@ public class Dice {
 	 * @param moveTo	The pip index where the checker is will move to
 	 * @return			True, if the given move is mathematically valid, else false
 	 */
+	/***
 	public boolean isMoveAccordingToDiceRoll(int moveFrom, int moveTo) {
 		return (Math.abs(moveFrom - moveTo)) == diceRoll[0] || (Math.abs(moveFrom - moveTo)) == diceRoll[1];
 	}
+	***/
 	
 	/**
 	 * Method to calculate the remaining move should be made by the players, depends on the disk move(s) have been made previously  
@@ -152,32 +159,62 @@ public class Dice {
 	 * @param moveTo	Where the disk moved to in the previous move
 	 * @return	String, message that related with the remaining move shall be made by the current player
 	 */
-	public String returnRemainingRolls(int moveFrom, int moveTo) { // TODO
+	public String returnRemainingRolls(int diceUsed) { // TODO
 		
-		if(Math.abs(moveFrom - moveTo) == diceRoll[0])
-			diceRoll[0] = 0;
-		else if(Math.abs(moveFrom - moveTo) == diceRoll[1])
-			diceRoll[1] = 0;
-		else if(Math.abs(moveFrom - moveTo) == diceRoll[2])
-			diceRoll[2] = 0;
-		else if(Math.abs(moveFrom - moveTo) == diceRoll[3])
-			diceRoll[3] = 0;
+		boolean containsDice = false;
 		
-		numberOfMoves--;
+		Integer sumOfDiceRolls = 0;
 		
-		int totalAvailableMove = 0;
-		String output = "Remaining moves : ";
-		
-		for(int i = 0 ; i <= numberOfMoves ; i++) { 
-			if(diceRoll[i] != 0) {
-				output += diceRoll[i] + " ";
-				totalAvailableMove += diceRoll[i];
+		// Check if contains this dice roll
+		for (Integer dice : diceRoll) {
+			sumOfDiceRolls += dice;
+			if(diceUsed == dice) {
+				containsDice = true;
+				break;
 			}
 		}
 		
-		output += " , you can still make " + totalAvailableMove + " disk move(s) in total";
 		
-		return output;
+		if(containsDice) {
+			
+			System.out.println("dice used is " + diceUsed);
+			// Remove the dice roll
+			for (Integer dice : diceRoll) {
+				if(diceUsed == dice) {
+					diceRoll.remove(dice);
+					System.out.println("remove dice");
+					break;
+				}
+			}
+			
+			numberOfMoves--;
+			
+			int totalAvailableMove = 0;
+			String output = "Remaining moves : ";
+			
+			for(int i = 0 ; i < numberOfMoves ; i++) { 
+					output += diceRoll.get(i) + " ";
+					totalAvailableMove += diceRoll.get(i);
+				
+			}
+			
+			output += " , you can still make " + totalAvailableMove + " disk move(s) in total";
+			
+			return output;
+		}
+		
+		else {
+			
+			for (Integer dice : diceRoll) {
+				if(sumOfDiceRolls == dice) {
+					numberOfMoves = 0;
+					break;
+				}
+			}
+			return null;
+		}
+		
+
 	}
 	
 	/** 
@@ -186,9 +223,9 @@ public class Dice {
 	 */
 	public int compareTo() {
 		
-		if (diceRoll[0] == diceRoll[1])
+		if (diceRoll.get(0) == diceRoll.get(1))
 			return 0;
-		else if (diceRoll[0] <  diceRoll[1]) 
+		else if (diceRoll.get(0) < diceRoll.get(1)) 
 			return 1;
 		else
 			return -1;

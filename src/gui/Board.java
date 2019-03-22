@@ -362,9 +362,12 @@ public class Board {
 		jail.updateJail();
 	}
 	
-	private void removeFromJail(int moveTo) {
-		jail.push(getPipArray(moveFrom).updatePoppedDisks());
-		jail.updateJail();
+	public void removeFromJail(int moveTo) {
+		// Remove from the jail
+		Disks theDiskInJail = jail.pop();
+		
+		//add to the board position
+		getPipArray(moveTo).updatePushedDisks(theDiskInJail);
 	}
 
 

@@ -266,35 +266,39 @@ public class GameController{
 				
 				// Tell player the moves
 				playerIsReadyToMakeMove = true;
-				CurrentPlayersPossibleMoves = getMapOfAllPossibleMoves();
-				
-				System.out.println("printing out moves");
-				/*
-				for(int i = 0; i < CurrentPlayersPossibleMoves.size();i++) {
-					System.out.println(CurrentPlayersPossibleMoves.get(i).toString());
-				}
-				*/
-				
-				System.out.println("Current move possiblities have been gotten");
-				
-				if(CurrentPlayersPossibleMoves != null) {
-					// print all the moves
-					textBox.printPossibleMoves(getStringsForMapOfMoves(CurrentPlayersPossibleMoves));
-					
-					// Prompt player to make move
-					textBox.output(eventController.promptPlayerToMove());
-				}
-				
-				else {
-					// Player cant make a move and must end turn
-					textBox.output("no moves availible");
-					endTurn();
-				}
-				
+
+				GetCurrentMoves();	// Get the moves, and print them
 
 				
 			}
 		});
+	}
+	
+	private void GetCurrentMoves() {
+		CurrentPlayersPossibleMoves = getMapOfAllPossibleMoves();
+		
+		System.out.println("printing out moves");
+		/*
+		for(int i = 0; i < CurrentPlayersPossibleMoves.size();i++) {
+			System.out.println(CurrentPlayersPossibleMoves.get(i).toString());
+		}
+		*/
+		
+		System.out.println("Current move possiblities have been gotten");
+		
+		if(CurrentPlayersPossibleMoves != null) {
+			// print all the moves
+			textBox.printPossibleMoves(getStringsForMapOfMoves(CurrentPlayersPossibleMoves));
+			
+			// Prompt player to make move
+			textBox.output(eventController.promptPlayerToMove());
+		}
+		
+		else {
+			// Player cant make a move and must end turn
+			textBox.output("no moves availible");
+			endTurn();
+		}
 	}
 
 	// ----- Command Executors -----
@@ -357,24 +361,19 @@ public class GameController{
 							textBox.output("you have selected move :" + getStringOfMove(currentMove));
 							commandMove(currentMove[0] - 1,currentMove[1] - 1);	// Move the piece
 							
-							endTurn();
 						}
 						
 						else if(currentMove[2] == 1) {
 							// Move is: hit
 							textBox.output("you have selected attack :" + getStringOfMove(currentMove));
 							commandAttack(currentMove[0] - 1,currentMove[1] - 1);
-							
-							endTurn();
 
 						}
 						
 						else if(currentMove[2] == 2) {
 							// Move is: Leaving jail
 							textBox.output("you have selected to leave jail :" + getStringOfMove(currentMove));
-							commandMove(moveFrom, moveTo);
-							
-							
+							commandJailLeave(currentMove[1] - 1);
 							
 						}
 						
@@ -475,6 +474,8 @@ public class GameController{
 	 * @param moveTo	The pip index where the disk moved to
 	 */
 	private void commandMove(int moveFrom, int moveTo){
+		System.out.println("The dice is " + (moveFrom - moveTo));
+		String remainingMoves = dice.returnRemainingRolls(moveFrom-moveTo);
 		
 		moveFrom = convertPipNumbering(moveFrom);
 		moveTo   = convertPipNumbering(moveTo);
@@ -482,16 +483,19 @@ public class GameController{
 		
 		board.moveDisks(moveFrom, moveTo);
 
-		/* Display the remaining disk moves */
-		if (dice.getNumberOfMoves() > 1) {
 
-			textBox.output(dice.returnRemainingRolls(moveFrom, moveTo));
-			System.out.println("\tRemaining disk move(s)\t\t: " + dice.getNumberOfMoves() + " moves");
+		/* Display the remaining disk moves */
+		if (dice.getNumberOfDiceLeft() >= 1) {
+
+			textBox.output(remainingMoves);		// Remove the dice used
+			System.out.println("\tRemaining disk move(s)\t\t:" + dice.getNumberOfDiceLeft() + " moves");
+			
+			GetCurrentMoves();	// Get remaining moves
 
 		} /* End the current game round */
 		else {
 			dice.restorePlayState(); // restore the dice roll play states -> normal play
-			textBox.output(eventController.promptPlayerToEnterNext());
+			endTurn();
 		}
 	}
 	
@@ -504,9 +508,23 @@ public class GameController{
 		
 		playerController.setEnemyPlayerInJail();	// mark that the enemy player is in the jail now
 		
-		// end turn
-		dice.restorePlayState(); // restore the dice roll play states -> normal play
-		textBox.output(eventController.promptPlayerToEnterNext());
+		String remainingMoves = dice.returnRemainingRolls(Math.abs(moveFrom-attackPosition));
+		
+		/* Display the remaining disk moves */
+		if (dice.getNumberOfDiceLeft() > 1) {
+			// Still have moves left
+			textBox.output(remainingMoves);		// Remove the dice used
+			System.out.println("\tRemaining disk move(s)\t\t: " + dice.getNumberOfDiceLeft() + " moves");
+			
+			GetCurrentMoves();	// Get remaining moves
+
+		} /* End the current game round */
+		else {
+			// End of turn
+			dice.restorePlayState(); // restore the dice roll play states -> normal play
+			endTurn();
+		}
+		
 		
 	}
 	
@@ -514,13 +532,26 @@ public class GameController{
 		
 		movePosition   = convertPipNumbering(movePosition);
 		
-		
+		board.removeFromJail(movePosition);
 		
 		playerController.currentPlayerLeavesJail();	// mark that the enemy player is in the jail now
 		
-		// end turn
-		dice.restorePlayState(); // restore the dice roll play states -> normal play
-		textBox.output(eventController.promptPlayerToEnterNext());
+		String remainingMoves = dice.returnRemainingRolls(Math.abs(movePosition+1));
+		
+		/* Display the remaining disk moves */
+		if (dice.getNumberOfDiceLeft() > 1) {
+			// Still have moves left
+			textBox.output(remainingMoves);		// Remove the dice used
+			System.out.println("\tRemaining disk move(s)\t\t: " + dice.getNumberOfDiceLeft() + " moves");
+			
+			GetCurrentMoves();	// Get remaining moves
+
+		} /* End the current game round */
+		else {
+			// End of turn
+			dice.restorePlayState(); // restore the dice roll play states -> normal play
+			endTurn();
+		}
 		
 	}
 
@@ -715,6 +746,8 @@ public class GameController{
 			// so: must check the "enemy home quarter" of the current player and the positions there that are free,
 			// and must check if can "escape jail"
 			// int value 24 is used to indicate stack in jail
+			
+			// Can either use individual dice, or the sumr
 
 			int sumDiceRoll = 0;
 
@@ -733,7 +766,6 @@ public class GameController{
 				}
 			}
 			
-			/*
 			// Check for valid board-entering move that can be done by using the sum of the dice roll value
 			if((board.getPipArray(sumDiceRoll).isEmpty() || board.getDiskColorOnPip(sumDiceRoll).equals(playerController.getCurrentPlayerColor()))) {
 
@@ -741,7 +773,7 @@ public class GameController{
 				if(!doesMovePossibilityAlreadyExist(possibleMoves, validMove))
 					possibleMoves.add(validMove);
 			}
-			*/
+			
 			
 		}
 		else {
@@ -757,9 +789,9 @@ public class GameController{
 			// and check what moves are possible with current dice rolls
 			
 			
-			int numberOfDice = dice.getNumberOfMoves();
+			int numberOfDice = dice.getNumberOfDiceLeft();
 			
-			int[] diceRolls = dice.getDiceRollSet();
+			ArrayList<Integer> diceRolls = dice.getDiceRollSet();
 			
 			int currentPipPosition = 23;
 			while(currentPipPosition >= 0){
@@ -782,7 +814,7 @@ public class GameController{
 
 						// ----- Check each individual roll for the pip -----
 
-						positionAreMovingTo = currentPipPosition - diceRolls[i];
+						positionAreMovingTo = currentPipPosition - diceRolls.get(i);
 						if(positionAreMovingTo >= 0) {
 							// moveing to place still within board
 							checkIfLegalMove = isLegalMove(currentPipPosition, positionAreMovingTo);

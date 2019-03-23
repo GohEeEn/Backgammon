@@ -8,73 +8,67 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.stage.Screen;
 
 /**
  * Class that define the GUI of the game board
- *
+ * 
  * @author Ee En Goh - 17202691
  */
 
 public class Board {
-
-	// Constants
+	
+	// ----- CONSTANTS -----
 	private final double pipWidth = 78.5;
 	private final double diskRadius = 20;
+	// ----- END OF CONSTANTS -----
 
-	// Variables
-
+	// ----- VARIABLES -----
+		
 	Rectangle2D screenBounds;
-
+	
 	/* The whole container of UI of this game */
 	private HBox gameContainer;
-
+	
 	private VBox board;
 
 	/* Upper Part : Game Board */
-
+	
 	private BorderPane leftBoard ;
 	private BorderPane rightBoard ;
 
 	private BorderPane topBorder ;
 	private BorderPane bottomBorder;
-
+	
 	/** Vertical Box that the home checkers removed to when bear off happens */
 	private VBox sideBox;
-
+	
 	// private HBox labelContainer;
-
+	
 	private Jail jail ;
-	// private Pip pip ;
 	private Pip[] pipArray ;
-
+	
 	/*
 	private HBox topRightQuad;
 	private HBox topLeftQuad;
 	private HBox bottomLeftQuad;
 	private HBox bottomRightQuad;
 	 */
-
+	
 	private HBox topLeftLabelContainer;
 	private HBox topRightLabelContainer;
 	private HBox bottomLeftLabelContainer;
 	private HBox bottomRightLabelContainer;
-
-
-
-	//  END OF Variables
-
-
-
-
+	
+	// ----- END OF VARIABLES -----
+	
 	/**
 	 * Constructor to initialise the whole game
 	 */
 	public Board(Rectangle2D screenBounds) {
-
+		
 		this.screenBounds = screenBounds;
-
-		gameContainer = new HBox();		// Whole board container
+		
+		gameContainer = new HBox();				// Whole board container
 		board = new VBox();
 
 		topBorder = new BorderPane();			// Top bar of board
@@ -83,16 +77,15 @@ public class Board {
 		leftBoard = new BorderPane();			// Left half of board
 		rightBoard = new BorderPane();			// Right half of board
 
-
 		sideBox = new VBox();
-
+		
 		topLeftLabelContainer = new HBox();
 		topRightLabelContainer = new HBox();
 		bottomLeftLabelContainer = new HBox();
 		bottomRightLabelContainer = new HBox();
-
+		
 		pipArray = new Pip[24];
-
+		
 		initBoard();
 		initPipNumber();
 	}
@@ -100,21 +93,32 @@ public class Board {
 	/**
 	 * Initialize and set up the game board
 	 */
-
 	private void initBoard() {
+		
 		double gameWidth = screenBounds.getWidth();
 		double gameHeight = screenBounds.getHeight();
 
-		double boardWidth = gameWidth - 200;		// window width - right pip home area
-		double boardheight = gameHeight - 100 - 100;		// Window height - topborder - bottomborder
+		double boardWidth = gameWidth - 200;			// Window Width  - right pip home area
+		double boardheight = gameHeight - 100 - 100;	// Window Height - topborder - bottomborder
 
 		jail = new Jail(boardheight);
-
+		
 		HBox middle = new HBox();
 
 		HBox topLeftLabel = new HBox();
 		topLeftLabel.setPrefWidth(475);
+		
+		/*
+		gameContainer.setPrefWidth(1100);
+		board.setPrefWidth(1000);
+		topBorder.setPrefSize(900, 100);
+		bottomBorder.setPrefSize(900, 100);
 
+		leftBoard.setPrefSize(475, 600);
+		rightBoard.setPrefSize(475, 600);
+		//rightBoard.setRight(sideBox);
+		leftBoard.setRight(jail);
+		*/
 		gameContainer.setPrefSize(gameWidth, gameHeight);
 		board.setPrefSize(boardWidth, boardheight);
 
@@ -124,7 +128,6 @@ public class Board {
 		// Set up board
 
 		int widthOfHalfBoard = (int)(	(boardWidth - 50)/2	);		// (boardWidth - Jail)/2
-		//int heightOfHalfBoard = (int)(				);
 
 		leftBoard.setPrefSize(widthOfHalfBoard, boardheight);
 		rightBoard.setPrefSize(widthOfHalfBoard, boardheight);
@@ -133,7 +136,7 @@ public class Board {
 		//rightBoard.setRight(sideBox);
 		leftBoard.setRight(jail);
 
-		Disks.SetDiskSize(diskRadius);
+		Disks.setDiskSize(diskRadius);
 		initPips();
 		initSideBox();
 
@@ -147,16 +150,16 @@ public class Board {
 		leftBoard.setStyle("-fx-background-color: #A67C52;");
 		rightBoard.setStyle("-fx-background-color: #A67C52;");
 	}
-
+	
 	/**
 	 * Set up the container to store the doubling cube and disks for future sprints
 	 */
 	private void initSideBox() {
 
 		BorderPane diskArea = new BorderPane();
-		diskArea.setPrefHeight(screenBounds.getHeight());
+		diskArea.setPrefHeight(600);
 
-		sideBox.setPrefWidth(200);
+		sideBox.setPrefWidth(100);
 		sideBox.setAlignment(Pos.CENTER);
 		sideBox.getChildren().add(diskArea);
 
@@ -165,8 +168,8 @@ public class Board {
 		StackPane whiteHome = new StackPane();
 
 		doublingCube.setPrefSize(50, 50);
-		blackHome.setPrefSize(100, 250);
-		whiteHome.setPrefSize(100, 250);
+		blackHome.setPrefSize(50, 250);
+		whiteHome.setPrefSize(50, 250);
 
 		diskArea.setTop(blackHome);
 		diskArea.setCenter(doublingCube);
@@ -185,12 +188,13 @@ public class Board {
 	 */
 	private void initPips() {
 
-		double rotatePip = 180.0;
+		double rotatePip = 180.0;		
 		Color color = Color.BLACK;
 
 		for (int i = 0; i < 24; i++) {
+			
 			if (i >= 12) {
-				rotatePip = 0;
+				rotatePip = 0;	
 			}
 
 			if (i % 2 == 0) {
@@ -205,7 +209,7 @@ public class Board {
 			pipArray[i].initPip(color, rotatePip);
 
 			switch (i) {
-
+			
 				case 23:
 					pipArray[i].initDisks(2, Color.WHITE, Color.BLACK);
 					break;
@@ -239,12 +243,12 @@ public class Board {
 	 * Set and update each HBox of pips to their respective quadrants
 	 */
 	private void updatePips() {
-
+		
 		HBox topRightQuad = createSetOfPoints(19, 24);
 		HBox topLeftQuad = createSetOfPoints(13, 18);
 		HBox bottomLeftQuad = createSetOfPoints(12, 7);
 		HBox bottomRightQuad = createSetOfPoints(6, 1);
-
+		
 		rightBoard.setBottom(bottomRightQuad);
 		leftBoard.setBottom(bottomLeftQuad);
 		leftBoard.setTop(topLeftQuad);
@@ -263,7 +267,7 @@ public class Board {
 
 		pipContainer.setAlignment(Pos.CENTER);
 		pipContainer.setPrefSize(leftBoard.getPrefWidth(), 250.0);
-		pipContainer.setSpacing((leftBoard.getPrefWidth() - (6 * (40.0))) / 6);
+		pipContainer.setSpacing((leftBoard.getPrefWidth() - 6 * (40.0)) / 6);
 
 		if (leftValue > rightValue) {
 			for (int i = leftValue - 1; i >= rightValue - 1; i--) {
@@ -278,12 +282,12 @@ public class Board {
 
 		return pipContainer;
 	}
-
+	
 	/**
-	 * Initialize the pip index to each container for display later
+	 * Initialize the pip index to each container for display later 
 	 */
 	private void initPipNumber() {
-
+		
 		topBorder.setLeft(labelPip(13, 18, topLeftLabelContainer));
 		topBorder.setRight(labelPip(19, 24, topRightLabelContainer));
 		bottomBorder.setLeft(labelPip(12, 7, bottomLeftLabelContainer));
@@ -298,16 +302,16 @@ public class Board {
 	 * @return	HBox with the pip index inserted and ready for display
 	 */
 	private HBox labelPip(int leftNumber, int rightNumber, HBox labelContainer) {
-
+		
 		if (leftNumber > rightNumber) {
 			for (int i = leftNumber; i >= rightNumber; i--) {
 				Label label = new Label(Integer.toString(i));
 				HBox box = new HBox(label);
 
 				box.setAlignment(Pos.CENTER);
-
+				// box.setPrefWidth(78.5);
 				box.setPrefWidth(pipWidth);
-
+				
 				labelContainer.getChildren().add(box);
 
 				label.setStyle("-fx-font-size: 30px; -fx-text-fill: white; -fx-font-weight: bold;");
@@ -320,6 +324,7 @@ public class Board {
 				HBox box = new HBox(label);
 
 				box.setAlignment(Pos.CENTER);
+				// box.setPrefWidth(78.5);
 				box.setPrefWidth(pipWidth);
 
 				labelContainer.getChildren().add(box);
@@ -330,10 +335,10 @@ public class Board {
 
 		return labelContainer;
 	}
-
-
+	
+	
 	public void setPipLabelRegion(double rotation) {
-		if (rotation == 0) {
+		if (rotation == 0) {	
 			topBorder.setLeft(topLeftLabelContainer);
 			topBorder.setRight(topRightLabelContainer);
 			bottomBorder.setLeft(bottomLeftLabelContainer);
@@ -347,38 +352,39 @@ public class Board {
 			bottomBorder.setRight(topRightLabelContainer);
 		}
 	}
-
-	// START OF STATIC METHODS
-	// All of these will be called staticly, but will have a helper that then calls the specific instance
-
-
+	
+	
 	/**
 	 * Add the disk that got hit to Jail
 	 * @param moveFrom	The index of pip where the disk hit happen
 	 */
-
-	private void addToJail(int moveFrom) {
+	public void addToJail(int moveFrom) {
 		jail.push(getPipArray(moveFrom).updatePoppedDisks());
 		jail.updateJail();
 	}
 	
 	public void removeFromJail(int moveTo) {
+		
 		// Remove from the jail
 		Disks theDiskInJail = jail.removePipFromJail();
 		
-		System.out.println("Removeing color " + theDiskInJail.getColor());
+		System.out.println("Removing color " + theDiskInJail.getColor());
 		
 		//add to the board position
 		getPipArray(moveTo).updatePushedDisks(theDiskInJail);
 	}
-
-
+	
+	/**
+	 * Method to make a successfull hit disk move
+	 * @param moveFrom 
+	 * @param moveTo
+	 */
 	public void successHit(int moveFrom, int moveTo) {
-
+		
 		// Pop the opponent's disk which got hit and push it into jail
 		jail.push(getPipArray(moveTo).updatePoppedDisks());
 		jail.updateJail();
-
+		
 		// Pop current player disk from where it originally sit at and push it into the blot
 		getPipArray(moveTo).updatePushedDisks(getPipArray(moveFrom).updatePoppedDisks());
 	}
@@ -389,14 +395,14 @@ public class Board {
 	 * @param moveToIndex
 	 */
 	public void moveDisks(int moveFromIndex, int moveToIndex) {
-
+		
 		if (!pipArray[moveFromIndex].isEmpty()) { // Check if the moveFrom pip is not empty, else no checker to make disk move
 			pipArray[moveToIndex].updatePushedDisks(pipArray[moveFromIndex].updatePoppedDisks());
 		}else {
 			System.out.println("Error : The given pip is empty");
 		}
 	}
-
+	
 	/**
 	 * @return VBox that contains the game GUI
 	 */
@@ -418,38 +424,39 @@ public class Board {
 	public Jail getJail() {
 		return this.jail;
 	}
-
+	
 	public VBox getBoard() {
 		return this.board;
 	}
-
+	
 	public BorderPane getLeftBoard() {
 		return this.leftBoard;
 	}
-
+	
 	public BorderPane getRightBoard() {
 		return this.rightBoard;
 	}
-
+	
 	/**
 	 * Method to get the colour of disks on any pip on the game board with the given pip index
 	 * @param pipIndex	The given pip index ( 0 - 23 )
 	 * @return	The colour of disks on any pip
 	 */
-
-
 	public String getDiskColorOnPip(int pipIndex) {
 		return pipArray[pipIndex].returnDiskColor();
 	}
 	
+	/**
+	 * Boolean method that check if the current player own the pip position at given pipIndex
+	 * @param pipIndex 
+	 * @param playersColor The disk color of the current player
+	 */
 	public boolean checkIfCurrentPlayerOwnsPipPosition(int pipIndex,String playersColor)  {
+		
 		// check if current player owns pip position
-		if(pipArray[pipIndex].isEmpty()) {
-			return false;
-		}
-		if(getDiskColorOnPip(pipIndex).equals(playersColor)) {
+		if(getDiskColorOnPip(pipIndex).equals(playersColor))
 			return true;
-		}
+		
 		return false;
 	}
 }

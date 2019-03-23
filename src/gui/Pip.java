@@ -90,17 +90,17 @@ public class Pip extends LinkedStack<Disks> {
 	 * @return The removed disk, a Disk object 
 	 */
 	public Disks updatePoppedDisks() {
-		if(!isEmpty()) {
+		
+		if(!this.isEmpty()){ // if current pip is not empty
 			diskCount--;
 			// Debugging purposes
 			// System.out.println("Popped Disk number: " + top().getDiskNumber());
-				
+			
 			getChildren().remove(top().getCircle());
-			return pop();	
-		}
-		else {
-			// is empty
-			return null;
+			return pop();
+		}else{
+			System.out.println("The current pip is empty");
+			return null; 
 		}
 	}
 	
@@ -117,11 +117,10 @@ public class Pip extends LinkedStack<Disks> {
 		if(isEmpty()) {			
 			size = -100;
 		}else if(size() >= 5) {
-			if(top() != null) {
+			if(top()!=null)
 				size = top().getCircle().getTranslateY() + 30.0;
-			} else {
+			else
 				size = 30;
-			}
 			
 			System.out.println("Entered Push Disk\n");
 			// updateDisks();
@@ -157,20 +156,13 @@ public class Pip extends LinkedStack<Disks> {
 	public String returnDiskColor() {
 	
 		String color;
+			
+		if (top().getColor() == Color.BLACK) 
+			color = "black";
+		else 
+			color = "white";		
 		
-		if(!isEmpty()) {
-			if (top().getColor() == Color.BLACK) 
-				color = "black";
-			else 
-				color = "white";		
-			
-			return color;			
-		}
-		else {
-			return null;
-		}
-			
-
+		return color;
 	}
 	
 	/**

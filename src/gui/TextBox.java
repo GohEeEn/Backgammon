@@ -9,19 +9,19 @@ import javafx.scene.layout.Priority;
 
 /**
  * A class that in charge of the functionality and GUI definition of command input and output text box
- *
+ * 
  * @author Ee En Goh - 17202691
  */
 public class TextBox {
 
-	// Constants
+	// ----- CONSTANTS -----
 	private final double WIDTH_OFWHOLECONTAINER = 200;
 	private final double WIDTH_OFROLLBUTTON = 150;
 	private final double HEIGHT_OFWHOLECONTAINER;
 	private final double HEIGHT_OFINPUTCONTAINER = 100;
-	// End of constants
-	// Variables
-
+	// ----- END OF CONSTANTS -----
+	
+	// ----- VARIABLES -----
 	BorderPane textContainer;
 
 	TextField inputField;
@@ -31,25 +31,27 @@ public class TextBox {
 
 	HBox inputBox;
 	HBox outputBox;
-
+	// ----- END OF VARIABLES -----
+	
 	/** A boolean value that used to check if the dice roll red button is currently disabled */
 	private boolean diceRollDisabled;
 
 	public TextBox(double heightOfScreen) {
+		
 		HEIGHT_OFWHOLECONTAINER = heightOfScreen;
-
+		
 		textContainer = new BorderPane();
-
+		
 		inputField = new TextField();
-
+		
 		outputField = new TextArea();
 		rollDiceBtn = new Button();
-
+		
 		inputBox = new HBox(inputField, rollDiceBtn);
 		outputBox = new HBox(outputField);
 
 		diceRollDisabled = false; // TODO
-
+		
 		initTextBox();
 	}
 
@@ -65,16 +67,20 @@ public class TextBox {
 		outputField.setPrefSize(WIDTH_OFWHOLECONTAINER,HEIGHT_OFWHOLECONTAINER - HEIGHT_OFINPUTCONTAINER);
 
 		/* Initialize the outputField  */
-
+		
 		outputField.setText(">> Welcome to Backgammon <<");
 		outputField.setEditable(false);
 		outputField.setWrapText(true);
 		outputField.setScrollTop(Double.MAX_VALUE); // TODO
 
 		rollDiceBtn.setText("Roll Dice");
+		//rollDiceBtn.setPrefWidth(200.0);
+		//rollDiceBtn.setPrefHeight(50.0);
+		//textContainer.setPrefHeight(200);
+		
 		rollDiceBtn.setPrefSize(WIDTH_OFROLLBUTTON, HEIGHT_OFINPUTCONTAINER);
-
 		textContainer.setPrefSize(WIDTH_OFWHOLECONTAINER,HEIGHT_OFWHOLECONTAINER);
+		
 		textContainer.setCenter(outputBox);
 		textContainer.setBottom(inputBox);
 
@@ -82,6 +88,7 @@ public class TextBox {
 		outputField.setStyle("-fx-text-fill: black;");
 		rollDiceBtn.setStyle("-fx-background-color: #d11919;");
 	}
+
 	/**
 	 * Method to output general message on output field
 	 * @param s	General message given
@@ -89,7 +96,7 @@ public class TextBox {
 	public void generalOutput(String s) {
 		outputField.appendText("\n" + s);
 	}
-
+	
 	/**
 	 * Method to output customized feedback message on output field
 	 * @param s	Customized feedback given
@@ -97,14 +104,14 @@ public class TextBox {
 	public void output(String s) {
 		outputField.appendText("\n> " + s);
 	}
-
+	
 	/**
 	 * Method to display standard error message
 	 * @param error	The keyword that specify the type of error
 	 */
 	public void outputError(String error) {
 		String s = "";
-
+		
 		switch (error.toLowerCase()) {
 			case "move":
 				s = "Invalid move, please try again\n";
@@ -118,7 +125,7 @@ public class TextBox {
 		}
 		output(s);
 	}
-
+	
 	/**
 	 * Method to display defined warning messages, based on the warning statement given (parameter)
 	 * @param warning	The warning statement given, that specify the the purpose of warning message
@@ -130,20 +137,20 @@ public class TextBox {
 			case "dice":
 				output += "You must use ALL dice rolls before continuing\n";
 				break;
-			case "name":
+			case "name": 
 				output += "All players must provide a name first\n";
 			case "roll":
 				output += "You must ROLL DICE (red button) before this command \n";
 				break;
 		}
-
+		
 		System.out.println("\tWarning message created\t\t: SUCCESS"); // Testing
 		output(output);
 	}
-
+	
 	/**
 	 * Method to display all the commands available in this program to use their functionalities
-	 * @param command	The related keyword to get the command required
+	 * @param command	The related keyword to get the command required 
 	 */
 	public void displayHelp(String command) {
 
@@ -169,11 +176,11 @@ public class TextBox {
 
 		output(output);
 	}
-
+	
 	// ----- Input Field Methods -----
 
 	/**
-	 * Method to disable the clicking of dice-roll red button
+	 * Method to disable the clicking of dice-roll red button 
 	 * @param disable	Boolean value to indicate the disable of the dice-roll button
 	 */
 	public void disableDiceRollBtn(boolean disable) {
@@ -187,7 +194,7 @@ public class TextBox {
 	public void clearInputField() {
 		this.inputField.setText("");
 	}
-
+	
 	/**
 	 * Method to display the player's command input with the current player's name
 	 * @param player	The name of the current player
@@ -196,11 +203,11 @@ public class TextBox {
 		outputField.appendText("\n\n[@" + player + "] " + getUserInput());
 		clearInputField();
 	}
-
+	
 	// ----- End of Input Field Methods -----
-
+	
 	// ----- Getter Methods ------
-
+	
 	/**
 	 * Method to check if the dice roll button is disabled
 	 * @return	True if the dice roll button is disabled, else false
@@ -208,7 +215,7 @@ public class TextBox {
 	public boolean getDiceRollBtnDisabled() {
 		return this.diceRollDisabled;
 	}
-
+	
 	/**
 	 * Method to get input from user, command or normal message
 	 */
@@ -242,11 +249,10 @@ public class TextBox {
 	public Button getDiceButton() {
 		return this.rollDiceBtn;
 	}
-
+	
 	// ----- End of Getter Methods ------
 	
-	// Function methods
-	
+	// ----- FUNCTIONALITY -----
 	public void printPossibleMoves(String[] possibleMoves) {
 		// Print eg number + move
 		int index = 0;
@@ -254,4 +260,5 @@ public class TextBox {
 			this.output(possibleMoves[i]);
 		}
 	}
+	// ----- END OF FUNCTIONALITY -----
 }

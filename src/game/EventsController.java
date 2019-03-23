@@ -22,9 +22,11 @@ public class EventsController {
 		endOfTurn = false;
 	}
 	
-	public String promptPlayerWithName(String currentPlayerColor) {
-		String theMessage = currentPlayerColor + " its your turn!";
-		return theMessage;
+	/**
+	 * @return The respond message to notify the player that it is his/her game turn
+	 */
+	public String promptPlayerWithName(String currentPlayerColor) { // TODO
+		return currentPlayerColor + " its your turn!";
 	}
 	
 	/** @return The response message to notify the player n to initialize his/her player name*/

@@ -8,56 +8,38 @@ import javafx.scene.paint.Color;
  */
 public class PlayerController {
 
-	// Variables
-
 	/** Player that is using black checker */
-	private  static Player playerB;		// player 1
-
+	private Player playerB;
+	
 	/** Player that is using white checker */
-	private  static Player playerW;		// player 2
-
+	private Player playerW;
+	
 	/** Player in this game round */
-	private  static Player currentPlayer;
-
+	private Player currentPlayer;
+	
 	/** The opponent player */
-	private  static Player opponentPlayer;
-
-
-
-
-	// End of variables
-
-	// Set up methods
-
+	private Player opponentPlayer;
+	
 	PlayerController() {
 		playerW = new Player(null, Color.WHITE);
 		playerB = new Player(null, Color.BLACK);
 		currentPlayer = playerW;
 		opponentPlayer = playerB;
 	}
-
-
-
-
-
-
-
-
-	// End of set up methods
-
-	// GETTERS AND SETTERS
-
+	
+	// ---- Getter and Setter Methods -----
+	
 	/**
 	 * @return	The name of current player
 	 */
 	public String getCurrentPlayerName() {
 		return currentPlayer.getPlayerName();
 	}
-
+	
 	public void setCurrentPlayerName(String name) {
 		currentPlayer.setPlayerName(name);
 	}
-
+	
 	/**
 	 * @return	The disk color of the current player using
 	 */
@@ -67,13 +49,6 @@ public class PlayerController {
 		return "white";
 	}
 	
-	public String getEnemyPlayerColor() {
-		if(currentPlayer.getColor() == Color.BLACK)
-			return "white";
-		return "black";
-	}
-	
-
 	/**
 	 * @param color The new disk color given to the current player
 	 */
@@ -83,14 +58,11 @@ public class PlayerController {
 		else
 			currentPlayer.setColor(Color.WHITE);
 	}
-
-
-
-	// END OF GETTERS AND SETTERS
-
-	// methods
+	
+	// ---- End of Getter and Setter Methods -----
+	
 	// ----- Functionalities -----
-
+	
 	/**
 	 * Switch the current player when the game turn progress
 	 */
@@ -106,13 +78,13 @@ public class PlayerController {
 	public String displayCurrentPlayerInfo() {
 		return getCurrentPlayerName() + ", your disk color is " + getCurrentPlayerColor().toUpperCase() + "\n";
 	}
-
+	
 	/**
 	 * Method that shows if the current player is using the disk with target color
 	 * @param s	String, which indicates the target disk color
 	 * @return True, if the current player is using the disk color same with the target
 	 */
-	public boolean isCurrentPlayerEqual(String color) {
+	public boolean isColorEqual(String color) {
 		if(getCurrentPlayerColor().compareTo(color) == 0)
 			return true;
 		return false;
@@ -122,14 +94,23 @@ public class PlayerController {
 	 * Boolean method to check if the current player has disk in jail
 	 * @return True if there is, else no
 	 */
-	public boolean isCurrentPlayerInJail() {
+	public boolean currentPlayerDiskInJail() {
 		return currentPlayer.getPlayerJailState();
 	}
 	
+	/**
+	 * Method that called to set the opponent player in jail state [ Triggered when hit move is done ]
+	 */
 	public void setEnemyPlayerInJail() {
 		opponentPlayer.setPlayerJailState(true);
 	}
+	
+	/**
+	 * Method to set the current player in normal state [ Triggered when all the disks of the current player are entering the board ]
+	 */
 	public void currentPlayerLeavesJail() {
 		currentPlayer.setPlayerJailState(false);
 	}
+	
+	// ----- End of functionalities -----
 }

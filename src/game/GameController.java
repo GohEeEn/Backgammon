@@ -60,7 +60,6 @@ public class GameController{
 	 * Default constructor that initialize
 	 */
 	protected GameController(Rectangle2D screenBounds) {
-
 		
 		//sameErrorInRow = false;
 		turnNumber = 0;

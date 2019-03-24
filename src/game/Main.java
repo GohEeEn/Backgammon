@@ -32,13 +32,12 @@ public class Main extends Application {
 		Rectangle2D screenBounds = new Rectangle2D(0,0,(double)(screen.getWidth() - 100), (double)(screen.getHeight() - 100));		// Screen dimensions
 		System.out.println(screenBounds.toString());
 		Scene scene;
-		/*
-		if(screenBounds.getWidth() >= maxWidth || screenBounds.getHeight() >= maxHeight) {
+		
+		if(screenBounds.getWidth() >= MAX_WIDTH || screenBounds.getHeight() >= MAX_HEIGHT) {
 			// Max size
-			screenBounds = new Rectangle2D(0, 0, maxWidth, maxHeight);
+			screenBounds = new Rectangle2D(0, 0, MAX_WIDTH, MAX_HEIGHT);
 		}
-		*/
-		screenBounds = new Rectangle2D(0, 0, MAX_WIDTH, MAX_HEIGHT);
+		
 
 		BorderPane root = new BorderPane();
 		

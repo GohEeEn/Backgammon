@@ -20,31 +20,37 @@ public class Main extends Application {
 	/** Instance variables */
 	Board board;
 	
-	private double maxWidth = 1300;
-	private double maxheight = 800; 
+	private final double MAX_WIDTH = 1200;
+	private final double MAX_HEIGHT = 600; 
 
 	/** Set stage upon running the program */
 	@Override
 	public void start(Stage primaryStage) throws Exception {
+		
+		// Get dimensions
+		Rectangle2D screen = Screen.getPrimary().getVisualBounds();
+		Rectangle2D screenBounds = new Rectangle2D(0,0,(double)(screen.getWidth() - 100), (double)(screen.getHeight() - 100));		// Screen dimensions
+		System.out.println(screenBounds.toString());
+		Scene scene;
+		/*
+		if(screenBounds.getWidth() >= maxWidth || screenBounds.getHeight() >= maxHeight) {
+			// Max size
+			screenBounds = new Rectangle2D(0, 0, maxWidth, maxHeight);
+		}
+		*/
+		screenBounds = new Rectangle2D(0, 0, MAX_WIDTH, MAX_HEIGHT);
 
 		BorderPane root = new BorderPane();
 		
-		GameController gameController = new GameController(); 
+		GameController gameController = new GameController(screenBounds); 
 		
 
 		root.getStyleClass().add("root");
+		
+		scene = new Scene(root, screenBounds.getWidth(), screenBounds.getHeight());
+
 	
-		Rectangle2D screen = Screen.getPrimary().getVisualBounds();
-		Rectangle2D screenBounds = new Rectangle2D(0,0,(double)(screen.getWidth() - 50), (double)(screen.getHeight() - 50));		// Screen dimensions
-		System.out.println(screenBounds.toString());
-		Scene scene;
-		if(screenBounds.getWidth() >= maxWidth && screenBounds.getHeight() >= maxheight) {
-			// Max size
-			scene = new Scene(root, maxWidth, maxheight);
-		}
-		else {
-			scene = new Scene(root, screenBounds.getWidth(), screenBounds.getHeight());
-		}
+
 		
 		/* Place the game board in the center of the root */
 		root.setCenter(gameController.getGameContainer());

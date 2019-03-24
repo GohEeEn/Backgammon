@@ -59,11 +59,9 @@ public class GameController{
 	/**
 	 * Default constructor that initialize
 	 */
-	protected GameController() {
+	protected GameController(Rectangle2D screenBounds) {
 
-		Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
-		screenBounds = new Rectangle2D(0,0,(double)(screenBounds.getWidth() - 50), (double)(screenBounds.getHeight() - 50));		// Screen dimensions
-
+		
 		//sameErrorInRow = false;
 		turnNumber = 0;
 

@@ -41,7 +41,7 @@ public class GameController{
 	double rotation;
 	
 	// ----- FUNCTIONAL VARIABLES for commands ----- TODO
-	private boolean playerWantsToQuit = false;
+	// private boolean playerWantsToQuit = false;
 	private ArrayList<int[]> CurrentPlayersPossibleMoves;
 	private boolean playerIsReadyToMakeMove = false;
 	// ----- END OF FUNCTIONAL VARIABLES for commands -----
@@ -49,12 +49,8 @@ public class GameController{
 	/**
 	 * Default constructor that initialize 
 	 */
-	protected GameController() {
+	protected GameController(Rectangle2D screenBounds) {
 	
-		// Screen dimensions
-		Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
-		screenBounds = new Rectangle2D(0,0,(double)(screenBounds.getWidth() - 50), (double)(screenBounds.getHeight() - 50));		
-			
 		turnNumber = 0;
 		
 		playersNotInstantiated = true;
@@ -84,28 +80,25 @@ public class GameController{
 			
 			textBox.disableDiceRollBtn(true);
 			textBox.output(eventController.promptPlayerForName());
-			
-			if(eventController.initializedPlayer == 2) {
-				eventController.setTurnCount();
-			}
-			
+		
 		}else{	// Roll the dice and choose perspective
-			/*
-			if(playersNotInstantiated) { // Case to avoid beaver game play when deciding who is start the game
+			
+			// Case to avoid beaver game play when deciding who is start the game, that happens only right after the instantiation
+			if(playersNotInstantiated) { 				
+				
 				textBox.output(dice.rollDice("turn"));
+				
+				if (dice.compareTo() == 1)  // Second die is higher then first, so white will go first (so change perspective);
+					changePerspective();
+			
 			}else
 				textBox.output(dice.rollDice("move"));
-			*/
-			textBox.output(dice.rollDice("turn")); // TODO
 			
-			if (dice.compareTo() == 1) { // Second die is higher then first, so white will go first (so change perspective);
-				changePerspective();
-			}
-
 			playersNotInstantiated = false;
 			
 			textBox.output(playerController.getCurrentPlayerName() + eventController.announceStartingPlayer());
 			textBox.output(eventController.promptPlayerToMove());
+			
 			commandNext(); // TODO
 		}
 	}
@@ -290,7 +283,30 @@ public class GameController{
 		/** The pip index where the specified disk moved to */
 		// int moveTo   = -1;
 
-		if(command.contains(".rotation")) {
+		/* Command to instantiate the player's name or rename */
+		if(command.contains(".name")) {
+			
+			try {
+				String currentName  = args[1];
+				commandName(currentName);
+			
+			}catch(RuntimeException e) {	// try-catch invalid argument exception
+				
+				textBox.outputError("input");	
+				textBox.output("Insufficient numbers of arguments given for command above");
+				System.out.println("\tError message 3 created\t\t: SUCCESS [Naming Error] "); // Testing
+				
+				return;
+			}
+		}
+		
+		else if(playersNotInstantiated) { 			// Case to avoid the player to make any other command instead of .name in player instantiation 
+			textBox.warningMessage("name");
+			onGameStart();
+			return;
+		}
+		
+		else if(command.contains(".rotation")) {
 			textBox.output("the rotation is " + rotation);
 		}
 		
@@ -299,12 +315,6 @@ public class GameController{
 		 * -> Only when it is not in player instantiation stage
 		 */
 		else if (command.contains(".move")) // || command.contains("cheat")) { //TODO
-			
-			if(playersNotInstantiated) { 			// Case to avoid the player to make disk move before instantiation 
-				textBox.warningMessage("name");
-				onGameStart();
-				return;
-			}
 			
 			if(playerIsReadyToMakeMove){ // The player is ready to make a move
 				
@@ -397,8 +407,7 @@ public class GameController{
 		}
 			
 		else if(command.contains("cheat")){
-				
-			System.out.println("help");
+			
 			try {
 				argv1 = args[1];
 				argv2 = args[2];
@@ -412,22 +421,6 @@ public class GameController{
 			}
 		}	
 			
-		/* Command to instantiate the player's name or rename */
-		else if(command.contains(".name")) {
-			
-			try {
-				String currentName  = args[1];
-				commandName(currentName);
-				
-			}catch(RuntimeException e) {	// try-catch invalid argument exception
-				
-				textBox.outputError("input");	
-				textBox.output("Insufficient numbers of arguments given for command above");
-				System.out.println("\tError message 3 created\t\t: SUCCESS [Naming Error] "); // Testing
-				
-				return;
-			}
-		}
 		
 		/* Command to switch the player in order to end the current game turn */
 		else if(command.contains("next") && textBox.getDiceRollBtnDisabled()) {
@@ -585,10 +578,21 @@ public class GameController{
 		
 		if (playersNotInstantiated) { // Instantiation Case
 			
+			// Assign the given player name
 			playerController.setCurrentPlayerName(name);
-			textBox.output(playerController.displayCurrentPlayerInfo());
-			changePerspective(); 
+			textBox.output(playerController.displayCurrentPlayerInfo()); 
 			System.out.println("\tInstantiate Current Player\t: SUCCESS");	// Testing
+			
+			// Increment of the number of player initialized
+			eventController.setInitializedPlayer();
+			System.out.println("\tNo of initialized player\t: " + eventController.getInitializedPlayer());
+			
+			// End of player instantiation after 2 player's name instantiated -> start the game turn
+			if(eventController.getInitializedPlayer() == 2) 
+				eventController.setTurnCount();
+			
+			changePerspective();
+			
 			onGameStart();
 					
 		}else{	// Renaming Case
@@ -1032,7 +1036,7 @@ public class GameController{
 
 		changePerspective();		// Changes current player as well
 		textBox.output(playerController.getCurrentPlayerName() + eventController.promptPlayerToRollDice());
-		textBox.disableDiceRollBtn(false);		// enabling
+		textBox.disableDiceRollBtn(false);		// Enabling dice roll button 
 		
 		commandNext();
 	}

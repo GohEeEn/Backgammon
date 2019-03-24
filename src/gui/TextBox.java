@@ -14,7 +14,7 @@ import javafx.scene.layout.Priority;
  */
 public class TextBox {
 
-	// ----- CONSTANTS -----
+	// ----- CONSTANTS (Size of the text box) -----
 	private final double WIDTH_OFWHOLECONTAINER = 200;
 	private final double WIDTH_OFROLLBUTTON = 150;
 	private final double HEIGHT_OFWHOLECONTAINER;
@@ -106,7 +106,10 @@ public class TextBox {
 	}
 	
 	/**
-	 * Method to display standard error message
+	 * Method to display standard error message<br>
+	 * "move"    - Invalid move<br>
+	 * "input"   - Invalid input<br>
+	 * "command" - Invalid command<br>
 	 * @param error	The keyword that specify the type of error
 	 */
 	public void outputError(String error) {
@@ -127,7 +130,10 @@ public class TextBox {
 	}
 	
 	/**
-	 * Method to display defined warning messages, based on the warning statement given (parameter)
+	 * Method to display defined warning messages, based on the warning statement given (parameter)<br>
+	 * "dice"	- Using all the dice roll before end the game turn<br>
+	 * "name"	- All players must provide a name first<br>
+	 * "roll"	- Roll dice (red button) before this command<br>
 	 * @param warning	The warning statement given, that specify the the purpose of warning message
 	 */
 	public void warningMessage(String warning) {
@@ -255,7 +261,7 @@ public class TextBox {
 	// ----- FUNCTIONALITY -----
 	public void printPossibleMoves(String[] possibleMoves) {
 		// Print eg number + move
-		int index = 0;
+		// int index = 0;
 		for (int i = 0; i < possibleMoves.length;i++) {
 			this.output(possibleMoves[i]);
 		}

@@ -20,36 +20,36 @@ public class Main extends Application {
 	/** Instance variables */
 	Board board;
 	
-	private double maxWidth = 1300;
-	private double maxheight = 800; 
+	// ----- CONSTANTS (Size of the program) -----
+	private final double MAX_WIDTH = 1200;
+	private final double MAX_HEIGHT = 600;
+	// ----- END OF CONSTANTS -----
 
 	/** Set stage upon running the program */
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 
-		BorderPane root = new BorderPane();
-		
-		GameController gameController = new GameController(); 
-		
-
-		root.getStyleClass().add("root");
-	
+		// Get dimensions
 		Rectangle2D screen = Screen.getPrimary().getVisualBounds();
-		Rectangle2D screenBounds = new Rectangle2D(0,0,(double)(screen.getWidth() - 50), (double)(screen.getHeight() - 50));		// Screen dimensions
+		Rectangle2D screenBounds = new Rectangle2D(0,0,(double)(screen.getWidth() - 100), (double)(screen.getHeight() - 100));		// Screen dimensions
 		System.out.println(screenBounds.toString());
 		Scene scene;
-		if(screenBounds.getWidth() >= maxWidth && screenBounds.getHeight() >= maxheight) {
+		
+		if(screenBounds.getWidth() >= MAX_WIDTH || screenBounds.getHeight() >= MAX_HEIGHT) {
 			// Max size
-			scene = new Scene(root, maxWidth, maxheight);
+			screenBounds = new Rectangle2D(0, 0, MAX_WIDTH, MAX_HEIGHT);
 		}
-		else {
-			scene = new Scene(root, screenBounds.getWidth(), screenBounds.getHeight());
-		}
+		
+		BorderPane root = new BorderPane();
+		GameController gameController = new GameController(screenBounds); 
+		root.getStyleClass().add("root");
+		
+		scene = new Scene(root, screenBounds.getWidth(), screenBounds.getHeight());
 		
 		/* Place the game board in the center of the root */
 		root.setCenter(gameController.getGameContainer());
 		
-		/* Place the text board in the bottom of the root */
+		/* Place the text board in the right-side of the root */
 		root.setRight(gameController.getTextBox());
 
 		primaryStage.setTitle("Backgammon");	// Set the application name 

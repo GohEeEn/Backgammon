@@ -15,8 +15,7 @@ public class Dice {
 	/** Used to generate random dice roll value */
 	private Random rand;
 	
-	/** Integer array that stores both 2 dice roll values per game turn */ 
-	// private int[] diceRoll;
+	/** ArrayList that stores both 2 dice roll values per game turn */ 
 	private ArrayList<Integer> diceRoll;
 	
 	/** Number of disk moves at the current game turn */
@@ -50,7 +49,6 @@ public class Dice {
 	 * @return The dice roll value of the target die
 	 */
 	public int getDiceRoll(int index) {
-		// return this.diceRoll[index];
 		return this.diceRoll.get(index);
 	}
 	
@@ -99,25 +97,28 @@ public class Dice {
 	// ----- End of Getter and Setter Methods -----
 	
 	/**
-	 * Method that executes different way of the value assignment to the array, depends on the given instruction in String
-	 * @param s	String that indicates the specific case(s) of game play
+	 * Method that executes different way of the value assignment to the array, depends on the given instruction in String<br>
+	 * "turn"	- Case for choosing player's turn, no same dice-roll value<br>
+	 * "move"	- Case in game turn, beaver game-play if both dice-value are the same<br>
+	 * @param command	String that indicates the specific case(s) of game play
 	 * @return	The string that related to the result of the dice roll (normal 2 dices result or beavers play)
 	 */
 	public String rollDice(String command) {
+		
+		diceRoll.clear(); // Clear the previous dice roll value
 		
 		setDiceRoll(getRandNum(),getRandNum());
 		
 		switch(command) {
 			case "turn":	// Case for choosing player's turn, no same dice-roll value 
 				while(compareTo() == 0) 
-					setDiceRoll(getRandNum(),getRandNum());
+					// setDiceRoll(getRandNum(),getRandNum());
+					return rollDice(command);
 				break;
 			case "move":	// Case in game turn, beaver game-play if both dice-value are the same
 				if(compareTo() == 0) {
 					
 					// Adding 2 new dice roll entries into the ArrayList
-					// diceRoll[3] = diceRoll[2] = diceRoll[0] = diceRoll[1]; 		//TODO
-					
 					diceRoll.add(diceRoll.get(0));
 					diceRoll.add(diceRoll.get(0));
 					

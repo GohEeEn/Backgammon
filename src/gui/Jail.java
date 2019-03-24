@@ -15,8 +15,8 @@ public class Jail extends LinkedStack<Disks> {
 	/** Border of jail in GUI */
 	private Rectangle rectangle;
 	
-	Jail(double boardheight) {
-		setPrefSize(50, 200);
+	Jail(double height) {
+		setPrefSize(50, height);
 		setAlignment(Pos.CENTER);
 		setStyle("-fx-background-color: #C19A6B;");
 	}

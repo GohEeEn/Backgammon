@@ -14,7 +14,7 @@ public class EventsController {
 	private boolean endOfTurn;
 	
 	/** Numbers of player that has done the player name initialization */
-	public int initializedPlayer;
+	private int initializedPlayer;
 	
 	EventsController(){
 		turnCount = 0;		// TODO
@@ -31,7 +31,7 @@ public class EventsController {
 	
 	/** @return The response message to notify the player n to initialize his/her player name*/
 	public String promptPlayerForName() {
-		return "Player " + ++initializedPlayer + ", please enter your name using [.name] [stringName]: ";
+		return "Player " + ( getInitializedPlayer() + 1 ) + ", please enter your name using [.name] [stringName]: ";
 	}
 	
 	/** @return String message to notify the player to roll dice (ie. click the dice-roll button) */
@@ -59,11 +59,19 @@ public class EventsController {
 		return this.turnCount;
 	}
 	
+	public int getInitializedPlayer(){
+		return this.initializedPlayer;
+	}
+	
 	/** Increase the current game turn, by following the game progress */
 	public void setTurnCount() {
-		this.turnCount++;
+		++ this.turnCount;
 		// TODO DEBUG
 		// System.out.println(" Current turn count : " + turnCount);
+	}
+	
+	public void setInitializedPlayer(){
+		++ this.initializedPlayer;
 	}
 	
 	public void setEndOfTurn(boolean end) {

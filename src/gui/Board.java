@@ -107,18 +107,7 @@ public class Board {
 
 		HBox topLeftLabel = new HBox();
 		topLeftLabel.setPrefWidth(475);
-		
-		/*
-		gameContainer.setPrefWidth(1100);
-		board.setPrefWidth(1000);
-		topBorder.setPrefSize(900, 100);
-		bottomBorder.setPrefSize(900, 100);
-
-		leftBoard.setPrefSize(475, 600);
-		rightBoard.setPrefSize(475, 600);
-		//rightBoard.setRight(sideBox);
-		leftBoard.setRight(jail);
-		*/
+	
 		gameContainer.setPrefSize(gameWidth, gameHeight);
 		board.setPrefSize(boardWidth, boardheight);
 
@@ -127,7 +116,8 @@ public class Board {
 
 		// Set up board
 
-		int widthOfHalfBoard = (int)(	(boardWidth - 50)/2	);		// (boardWidth - Jail)/2
+		int widthOfHalfBoard = (int)(	(boardWidth - 50)/2	);		// (boardWidth - Jail)/2		
+
 
 		leftBoard.setPrefSize(widthOfHalfBoard, boardheight);
 		rightBoard.setPrefSize(widthOfHalfBoard, boardheight);

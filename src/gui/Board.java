@@ -5,10 +5,8 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.stage.Screen;
 
 /**
  * Class that define the GUI of the game board
@@ -16,7 +14,6 @@ import javafx.stage.Screen;
  * @author Ee En Goh - 17202691
  * @author Ferdia Fagan - 16372803
  */
-
 public class Board {
 
 	// Constants
@@ -357,10 +354,12 @@ public class Board {
 	 * @param moveFrom	The index of pip where the disk hit happen
 	 */
 
+	/*
 	private void addToJail(int moveFrom) {
 		jail.push(getPipArray(moveFrom).updatePoppedDisks());
 		jail.updateJail();
 	}
+	*/
 	
 	public void removeFromJail(int moveTo) {
 		// Remove from the jail

@@ -250,7 +250,6 @@ public class TextBox {
 	
 	public void printPossibleMoves(String[] possibleMoves) {
 		// Print eg number + move
-		int index = 0;
 		for (int i = 0; i < possibleMoves.length;i++) {
 			this.output(possibleMoves[i]);
 		}

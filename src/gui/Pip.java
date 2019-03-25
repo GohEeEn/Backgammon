@@ -1,7 +1,6 @@
 package gui;
 
 import data_structures.LinkedStack;
-import data_structures.StackEmptyException;
 import javafx.scene.paint.Color;
 
 /**

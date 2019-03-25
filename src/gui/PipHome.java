@@ -2,7 +2,6 @@ package gui;
 
 import data_structures.LinkedStack;
 import javafx.geometry.Pos;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 public class PipHome extends LinkedStack<Disks> {

@@ -13,7 +13,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.stage.Screen;
 
 /**
  * Class that consists of operations that control the flow of the backgammon game
@@ -41,7 +40,6 @@ public class GameController{
 	double rotation;
 
 	// FUNCTION VARIABLES for commands
-	private boolean playerWantsToQuite = false;
 	
 	private ArrayList<int[]> CurrentPlayersPossibleMoves;
 	
@@ -295,6 +293,7 @@ public class GameController{
 	 * Method to interpret what the user types into the command panel
 	 * @param args	The break down of command input inserted on the text area
 	 */
+	@SuppressWarnings("finally")
 	private void runCommand(String[] args){
 
 		/** User specific command expected here : .move to move the checker */
@@ -976,11 +975,8 @@ public class GameController{
 
 	private String[] getStringsForMapOfMoves(ArrayList<int[]> allMoves) {
 		// all moves must actually contain moves (ie it must actually be possible for player to move before this method is called)
-		int isMove = 0;
-		int isAttack = 1;
 
 		String[] listofMoves = new String[allMoves.size()];
-		int indexInMovesList = 0;
 		for (int i = 0; i < allMoves.size();i++) {
 
 			listofMoves[i] = i + "-> " + getStringOfMove(allMoves.get(i));
@@ -991,7 +987,6 @@ public class GameController{
 
 	private String getStringOfMove(int[] theMove) {
 		// Convert move to string
-		int isMove = 0;
 		int isAttack = 1;
 		int isLeavingJail = 2;
 		int isEnteringHome = 3;

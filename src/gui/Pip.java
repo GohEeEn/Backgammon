@@ -8,6 +8,7 @@ import javafx.scene.paint.Color;
  * Pip class 
  *
  * @author Ee En Goh - 17202691
+ * @author Ferdia Fagan - 16372803
  */
 
 public class Pip extends LinkedStack<Disks> {

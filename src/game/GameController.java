@@ -212,17 +212,8 @@ public class GameController{
 						textBox.printUserInput(playerController.getCurrentPlayerName());
 
 					/* ----- Command Cases ----- */
-
-					/* If quitting */
-					if (text.contains("quit")) {
-						textBox.output("Exiting..");
-						System.out.println("\tExit Game\t\t\t: SUCCESS\n");	// Testing
-						System.exit(0);
-					}
-
-
 					/* Command to read all the available command and their format */
-					else if(text.contains("help")) {
+					if(text.contains("help")) {
 						textBox.displayHelp("all");
 
 					}
@@ -376,6 +367,8 @@ public class GameController{
 						
 						else if(currentMove[2] == 3) {
 							// Move is: Bear off
+							textBox.output("you have selected to bear off :" + getStringOfMove(currentMove));
+							commandBearOff(currentMove[1] - 1);
 						}
 						
 					}
@@ -455,6 +448,11 @@ public class GameController{
 			textBox.output("Current player is: " + playerController.getCurrentPlayerName() + "   " + playerController.getCurrentPlayerColor());
 		}
 		
+		// Quite command 
+		else if(command.contains(".quit")) {
+			GameOver("********");
+		}
+		
 		else{
 			textBox.outputError("command");
 			textBox.displayHelp("all");
@@ -527,7 +525,7 @@ public class GameController{
 	
 	private void commandJailLeave(int movePosition) {
 		
-		String remainingMoves = dice.returnRemainingRolls(Math.abs(movePosition+1));
+		String remainingMoves = dice.returnRemainingRolls(movePosition+1);
 		
 		movePosition   = convertPipNumbering(movePosition);
 		
@@ -550,6 +548,29 @@ public class GameController{
 			endTurn();
 		}
 		
+	}
+	
+	public void commandBearOff(int movePosition){
+		String remainingMoves = dice.returnRemainingRolls(movePosition+1); 
+		
+		movePosition   = convertPipNumbering(movePosition);
+		
+		board.bearOff(movePosition);
+		
+		/* Display the remaining disk moves */
+		if (dice.getNumberOfDiceLeft() >= 1) {
+			// Still have moves left
+			textBox.output(remainingMoves);		// Remove the dice used
+			System.out.println("\tRemaining disk move(s)\t\t: " + dice.getNumberOfDiceLeft() + " moves");
+			
+			GetCurrentMoves();	// Get remaining moves
+
+		} /* End the current game round */
+		else {
+			// End of turn
+			dice.restorePlayState(); // restore the dice roll play states -> normal play
+			endTurn();
+		}
 	}
 
 	/**
@@ -775,8 +796,79 @@ public class GameController{
 			
 			
 		}
-		else {
+		else if(!playerController.isCurrentPlayerInJail()) {
 			System.out.println("player is not in jail");
+			
+			// check if player has all pips in 0-6
+			
+			/*
+			// Count the pieces in 0-6 pip position of current player	TO DO
+			int i = 0; // will be changed, just to test bear off
+			
+			// Player has all pips in 0-6
+			if(i==0) {			// bear off (case 3)
+				// CASE 3: BEAR OFF
+				// All the current pieces are in the pip positions 0-6, and so can move home
+				// Get moves
+				
+				
+					// Loop through each position in players 0-6
+					int numberOfDice = dice.getNumberOfDiceLeft();
+					
+					ArrayList<Integer> diceRolls = dice.getDiceRollSet();
+					int diceSumTotal = 0;
+					for (Integer dice : diceRolls) {
+						diceSumTotal += dice;
+						
+						int positionOnBoard = dice - 1;
+						// Check if piece is on dice roll position
+						if(board.checkIfCurrentPlayerOwnsPipPosition(positionOnBoard, board.getPipArray(positionOnBoard).returnDiskColor())) {					// pipPosition[diceRoll] has pieces on it
+							// Can move this piece
+							int[] legalMove = {positionOnBoard + 1, positionOnBoard + 1, 3};
+							
+							possibleMoves.add(legalMove);
+						}
+						// iterate through pip positions towards 6
+						positionOnBoard--;
+						while(positionOnBoard>=0) {
+							
+							if(board.checkIfCurrentPlayerOwnsPipPosition(positionOnBoard, board.getPipArray(positionOnBoard).returnDiskColor())) {					// pipPosition[diceRoll] has pieces on it
+								// Can move this piece
+								int[] legalMove = {positionOnBoard + 1, positionOnBoard + 1, 3};
+								
+								possibleMoves.add(legalMove);
+							}
+							
+							
+							positionOnBoard--;
+						}
+						
+						// iterate through pip positions towards 0
+						positionOnBoard = dice;
+						while(positionOnBoard<6) {
+							
+							if(board.checkIfCurrentPlayerOwnsPipPosition(positionOnBoard, board.getPipArray(positionOnBoard).returnDiskColor())) {					// pipPosition[diceRoll] has pieces on it
+								// Can move this piece
+								int[] legalMove = {positionOnBoard + 1, positionOnBoard + 1, 3};
+								
+								possibleMoves.add(legalMove);
+							}
+							
+							positionOnBoard++;
+						}
+						
+					}
+				
+			}
+			}
+			
+			
+			// Player has not all pips in 0-6
+			else {			// move (case 2)
+				
+			}
+			
+			*/
 			
 			/*
 			 * Case 2 : Normal Move & Checker Hit cases
@@ -868,6 +960,7 @@ public class GameController{
 				currentPipPosition--;
 			}	
 		}
+		
 
 
 

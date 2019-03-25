@@ -7,6 +7,7 @@ import java.util.Random;
  * Dice class that has every functionalities that related to dice roll
  *
  * @author Ee En Goh - 17202691
+ * @author Ferdia Fagan - 16372803
  */
 public class Dice {
 

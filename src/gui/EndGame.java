@@ -1,9 +1,13 @@
 package gui;
 
 import javafx.scene.control.Button;
+
+
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+
+//@author Ferdia Fagan - 16372803
 
 public class EndGame {
 

@@ -37,6 +37,17 @@ public class Players implements Iterable<Player>, Iterator<Player> {
     public Player getCurrent() {
         return players.get(currentPlayer);
     }
+    
+    public Player getEnemy() {
+    	if(currentPlayer == 0) {
+    		// enemy is player 2
+    		return players.get(1);
+    	}
+    	else {
+    		// enemy is player 1
+    		return players.get(0);
+    	}
+    }
 
     public void advanceCurrentPlayer() {
         currentPlayer++;

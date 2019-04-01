@@ -11,6 +11,7 @@ import javafx.scene.layout.Priority;
  * A class that in charge of the functionality and GUI definition of command input and output text box
  * 
  * @author Ee En Goh - 17202691
+ * @author Ferdia Fagan - 16372803
  */
 public class TextBox {
 
@@ -261,7 +262,6 @@ public class TextBox {
 	// ----- FUNCTIONALITY -----
 	public void printPossibleMoves(String[] possibleMoves) {
 		// Print eg number + move
-		// int index = 0;
 		for (int i = 0; i < possibleMoves.length;i++) {
 			this.output(possibleMoves[i]);
 		}

@@ -11,8 +11,8 @@ import javafx.stage.Stage;
 
 /**
  * 
- * @author YeohB - 17357376
- *
+ * @author Ferdia Fagan - 16372803
+ * @author Ee En Goh - 17202691
  */
 
 public class Main extends Application {
@@ -20,15 +20,13 @@ public class Main extends Application {
 	/** Instance variables */
 	Board board;
 	
-	// ----- CONSTANTS (Size of the program) -----
 	private final double MAX_WIDTH = 1200;
-	private final double MAX_HEIGHT = 600;
-	// ----- END OF CONSTANTS -----
+	private final double MAX_HEIGHT = 600; 
 
 	/** Set stage upon running the program */
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-
+		
 		// Get dimensions
 		Rectangle2D screen = Screen.getPrimary().getVisualBounds();
 		Rectangle2D screenBounds = new Rectangle2D(0,0,(double)(screen.getWidth() - 100), (double)(screen.getHeight() - 100));		// Screen dimensions
@@ -40,8 +38,16 @@ public class Main extends Application {
 			screenBounds = new Rectangle2D(0, 0, MAX_WIDTH, MAX_HEIGHT);
 		}
 		
+
 		BorderPane root = new BorderPane();
+		
 		GameController gameController = new GameController(screenBounds); 
+		
+
+		root.getStyleClass().add("root");
+		
+		scene = new Scene(root, screenBounds.getWidth(), screenBounds.getHeight());
+		
 		root.getStyleClass().add("root");
 		
 		scene = new Scene(root, screenBounds.getWidth(), screenBounds.getHeight());

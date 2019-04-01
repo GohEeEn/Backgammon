@@ -6,7 +6,7 @@ import javafx.scene.shape.Circle;
 
 /**
  * Disk class that include the UI definition of a disk and its basic operations
- * @author YeohB - 17357376
+ * @author Ferdia Fagan - 16372803
  * @author Ee En Goh - 17202691
  */
 
@@ -43,7 +43,21 @@ public class Disks {
 	 * @return Color of the disk
 	 */
 	public Paint getColor() {
+		System.out.println("the color is " + this.circle.getFill());
+		
 		return this.circle.getFill();
+		
+		
+	}
+	
+	public String getTeam() {
+		if(this.circle.getFill() == Color.WHITE) {
+			// white
+			return "white";
+		}
+		else {// black
+			return "black";
+		}
 	}
 	
 	/**

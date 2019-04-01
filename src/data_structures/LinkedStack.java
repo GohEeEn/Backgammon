@@ -8,7 +8,7 @@ import javafx.scene.layout.StackPane;
 
 /**
  * LinkedStack for insertion and removal of disks to each pip and jail
- * @author YeohB - 17357376
+ * @author Ferdia Fagan - 16372803
  * @author Ee En Goh - 1720691
  */
 

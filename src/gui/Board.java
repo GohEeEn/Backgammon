@@ -5,7 +5,6 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
@@ -13,8 +12,8 @@ import javafx.scene.paint.Color;
  * Class that define the GUI of the game board
  * 
  * @author Ee En Goh - 17202691
+ * @author Ferdia Fagan - 16372803
  */
-
 public class Board {
 	
 	// ----- CONSTANTS -----
@@ -47,6 +46,9 @@ public class Board {
 	private Jail jail ;
 	private Pip[] pipArray ;
 	
+	private PipHome whiteHome;
+	private PipHome blackHome;
+
 	/*
 	private HBox topRightQuad;
 	private HBox topLeftQuad;
@@ -128,7 +130,7 @@ public class Board {
 
 		Disks.setDiskSize(diskRadius);
 		initPips();
-		initSideBox();
+		initSideBoxHome();
 
 		middle.getChildren().addAll(leftBoard, jail, rightBoard);
 		board.getChildren().addAll(topBorder, middle, bottomBorder);
@@ -144,7 +146,7 @@ public class Board {
 	/**
 	 * Set up the container to store the doubling cube and disks for future sprints
 	 */
-	private void initSideBox() {
+	private void initSideBoxHome() {		// Setting up the home
 
 		BorderPane diskArea = new BorderPane();
 		diskArea.setPrefHeight(600);
@@ -154,20 +156,16 @@ public class Board {
 		sideBox.getChildren().add(diskArea);
 
 		VBox doublingCube = new VBox();
-		StackPane blackHome = new StackPane();
-		StackPane whiteHome = new StackPane();
+		blackHome = new PipHome(100,250);
+		whiteHome = new PipHome(100,250);
 
 		doublingCube.setPrefSize(50, 50);
-		blackHome.setPrefSize(50, 250);
-		whiteHome.setPrefSize(50, 250);
 
 		diskArea.setTop(blackHome);
 		diskArea.setCenter(doublingCube);
 		diskArea.setBottom(whiteHome);
 
 		doublingCube.setStyle("-fx-border-color: white; -fx-border-width: 5px;");
-		blackHome.setStyle("-fx-border-color: white; -fx-border-width: 5px;");
-		whiteHome.setStyle("-fx-border-color: white; -fx-border-width: 5px;");
 
 		sideBox.setStyle("-fx-background-color: #C19A6B;");
 		diskArea.setStyle("-fx-border-color: black; -fx-border-width: 8px; -fx-background-color: #5b3208;");
@@ -348,10 +346,13 @@ public class Board {
 	 * Add the disk that got hit to Jail
 	 * @param moveFrom	The index of pip where the disk hit happen
 	 */
-	public void addToJail(int moveFrom) {
+
+	/*
+	private void addToJail(int moveFrom) {
 		jail.push(getPipArray(moveFrom).updatePoppedDisks());
 		jail.updateJail();
 	}
+	*/
 	
 	public void removeFromJail(int moveTo) {
 		
@@ -449,4 +450,36 @@ public class Board {
 		
 		return false;
 	}
+	
+	
+	// BEAR OFF FUNCTION
+	
+	public void bearOff(int pipPosition) {
+		
+		Disks theDiskToBearOff = pipArray[pipPosition].updatePoppedDisks();
+		
+		//theDiskToBearOff.getColor().to
+		if(theDiskToBearOff.getTeam() == "white") {				// White
+			pushPipToWhiteHome(theDiskToBearOff);
+		}
+		else {													// Black
+			pushPipToBlackHome(theDiskToBearOff);
+		}
+		
+	}
+	
+	private void pushPipToWhiteHome(Disks pip) {
+		// Add to white home
+		whiteHome.push(pip);
+		whiteHome.updateHome();
+	}
+	
+	private void pushPipToBlackHome(Disks pip) {
+		// Add to black home
+		whiteHome.push(pip);
+		whiteHome.updateHome();
+	}
+	
+	
+	// END OF BEAR OFF FUNCTION
 }

@@ -1,7 +1,7 @@
 package data_structures;
 
 /**
- * @author Braddy Yeoh - 17357376
+ * @author Ferdia Fagan - 16372803
  */
 
 import java.util.Iterator;

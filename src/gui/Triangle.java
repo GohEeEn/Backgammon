@@ -5,7 +5,7 @@ import javafx.scene.shape.Polygon;
 
 /**
  * Definition of Triangle class for pip UI
- * @author YeohB - 17357376
+ * @author Ferdia Fagan - 16372803
  * @author Ee En Goh - 1720691
  */
 

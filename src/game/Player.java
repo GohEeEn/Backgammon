@@ -6,6 +6,7 @@ import javafx.scene.paint.Color;
  * The class that has the information about a player, including the name, the current play score and the disk color used 
  *
  * @author Ee En Goh - 17202691
+ * @author Ferdia Fagan - 16372803
  */
 
 public class Player {

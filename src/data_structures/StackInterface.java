@@ -1,7 +1,7 @@
 package data_structures;
 
 /**
- * 
+ * @author Ferdia Fagan - 16372803
  * @author Braddy Yeoh - 17357376
  * @param <E>
  */

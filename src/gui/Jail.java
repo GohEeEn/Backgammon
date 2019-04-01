@@ -9,6 +9,7 @@ import javafx.scene.shape.Rectangle;
  * The instance of Jail class is the gap area between the left and right boards, which is also the position to place the hit checker
  * 
  * @author Ee En Goh - 17202691
+ * @author Ferdia Fagan - 16372803
  */
 public class Jail extends LinkedStack<Disks> {
 
@@ -30,7 +31,7 @@ public class Jail extends LinkedStack<Disks> {
 
 	/**
 	 * Update UI to separate the black disks to white disks in the jail
-	 */
+	 */ 
 	public void updateJail() {
 		getChildren().clear();
 		

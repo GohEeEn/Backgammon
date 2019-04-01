@@ -153,6 +153,10 @@ public class UI {
     	displayString("Players want to end game");
     }
     
+    public void display_endingGame() {
+    	displayString("ending game");
+    }
+    
     public void display_CurrentPlayersScores(int player1_winCount, int player2_winCount) {
     	displayString("Player 1 has a score of: " + player1_winCount + ", and player 2 has a score of: " + player2_winCount);
     }
@@ -166,9 +170,9 @@ public class UI {
 
     }
     
-    public void print_rejectedDoubleTheScore(String nameOfPlayer, int newScore, int pointsLost) {
-    	displayString(nameOfPlayer + " you have rejected the double and lost " + pointsLost + 
-    			". You now have a score of " + newScore);
+    public void print_rejectedDoubleTheScore(String nameOfPlayerWhoWon,String nameOfPlayerWhoRejectedDouble, int newScore, int pointsLost) {
+    	displayString(nameOfPlayerWhoWon + " has won the game, and " + nameOfPlayerWhoRejectedDouble + " lost the game. " + nameOfPlayerWhoWon + 
+    			"has gained " + newScore + " points.");
 
     }
     

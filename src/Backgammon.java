@@ -21,6 +21,8 @@ public class Backgammon {
     private static boolean hasDoubleingCubeBeenGiven = false;
     private static int currentPlayerWhoHasDoubleCube;
     
+    private static boolean exitingDueToDouble = false;
+    
     private void getPlayerNames() {
         for (Player player : players) {
             ui.promptPlayerName();
@@ -122,8 +124,7 @@ public class Backgammon {
     		}
     	}
     	
-    	return playersWantToPlayNextGame
-    			;
+    	return playersWantToPlayNextGame;
     }
     
     
@@ -168,6 +169,10 @@ public class Backgammon {
             			promptDoubleCubeOption(currentPlayer_id);
             		}
             	}
+            	
+            	if(exitingDueToDouble) {
+            		return;
+            	}
                 currentPlayer.getDice().rollDice();
                 ui.displayRoll(currentPlayer);
                 currentDice = currentPlayer.getDice();
@@ -203,7 +208,7 @@ public class Backgammon {
             TimeUnit.SECONDS.sleep(2);
             players.advanceCurrentPlayer();
             ui.display();
-        } while (!command.isQuit() && !board.isGameOver(currentPlayer_id));
+        } while (!command.isQuit() && !board.isGameOver(currentPlayer_id) && !exitingDueToDouble);
     }
 
     private void startGame() throws InterruptedException {
@@ -244,14 +249,26 @@ public class Backgammon {
     	// Play game
     	rollToStart();
         takeTurns();
-        if (board.isGameOver(players.getCurrent().getId())) {
-            ui.displayGameWinner(board.getWinner());
-            
-            endGame(players.getCurrent().getId());
+        /*
+        if(exitingDueToDouble) {
+        	TimeUnit.SECONDS.sleep(2);
+        	
+        	
+        }
+        */
+        if (board.isGameOver(players.getCurrent().getId()) || exitingDueToDouble) {
+        	if(!exitingDueToDouble) {
+                ui.displayGameWinner(board.getWinner());
+                
+                endGame(players.getCurrent().getId());	
+        	}else;
             
             TimeUnit.SECONDS.sleep(2);
             
-            if(player1_score >= scoreForGame || player2_score >= scoreForGame) {
+            System.out.println(" player 1s score is " + player1_score);
+            System.out.println(" player 2s score is " + player2_score);
+            
+            if(player1_score >= scorePlayingUpTo || player2_score >= scorePlayingUpTo) {
             	// Then a player has won
             	if(player1_score >= scoreForGame) {
             		// player 1 has won
@@ -261,7 +278,7 @@ public class Backgammon {
             		// player 2 has won
             		ui.print_endFullGameMessage(2, players.getCurrent().toString());
             	}
-            }
+            } 
             else {
             	// Game should continue as nobody has one yet
                 boolean playerWantsToPlayNextGame = this.getIfPlayersWantToPlayNextGame();
@@ -301,10 +318,14 @@ public class Backgammon {
     	
     	ui.display_CurrentPlayersScores(player1_score, player2_score);
     	
+    	hasDoubleingCubeBeenGiven = false;
+    	exitingDueToDouble = false;
     	this.play();
     }
     
     private void restartGame() throws InterruptedException  {
+    	hasDoubleingCubeBeenGiven = false;
+    	
     	this.board.resetTheBoard();	// Reset the board
     	
     	this.scoreForGame = 1; 		// Reset the score
@@ -322,19 +343,23 @@ public class Backgammon {
     			ui.print_doubleTheScore();
     		}
     		else {
-    			int newScore;
-    			int pointsLost = scoreForGame;
+    			
+    			ui.display_endingGame();
+
     			if(currentPlayer_id == 0) {
-    				// the other play is 2
-    				player2_score = player2_score - scoreForGame;
-    				newScore = player2_score;     				
+    				// the other play is 1
+    				player1_score = player1_score + scoreForGame;
+    				ui.print_rejectedDoubleTheScore(players.get(0).toString(),players.get(1).toString(), player1_score, scoreForGame);
     			}
     			else {
-    				// the other player is 1
-    				player1_score = player1_score - scoreForGame;
-    				newScore = player1_score; 
+    				// the other player is 2
+    				player2_score = player2_score + scoreForGame;
+    				ui.print_rejectedDoubleTheScore(players.get(1).toString(),players.get(0).toString(), player2_score, scoreForGame);
     			}
-    			ui.print_rejectedDoubleTheScore(players.getEnemy().toString(), newScore, pointsLost);
+    			
+    			exitingDueToDouble = true;
+    			
+    			
     		}
     	}
     }

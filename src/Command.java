@@ -62,6 +62,10 @@ public class Command {
     public boolean isMove() {
         return move;
     }
+    
+    public void quit() {
+    	quit = true;
+    }
 
     public boolean isQuit() {
         return quit;

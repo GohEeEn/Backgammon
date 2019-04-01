@@ -46,6 +46,26 @@ public class UI {
     public void promptPlayerName() {
         displayString("Enter a player name:");
     }
+    
+    public void promptPlayersForNumberOfPointsWantToPlayTo() {
+    	displayString("Enter the number of points are playing up to:");
+    }
+    
+    public void promptPlayersIfWantToPlayAgain() {
+    	displayString("Do you wish to play again? (enter yes/no)");
+    }
+    
+    public void promptPlayersIfWantToPlayNextGame() {
+    	displayString("Do you wish to play next game? (enter yes/no)");
+    }
+    
+    public void promptPlayerIfWantToDouble() {
+    	displayString("Do you want to double?");
+    }
+    
+    public void promptPlayerifWantToAcceptDouble() {
+    	displayString("Do you want to accept the double? (enter yes/no)");
+    }
 
     public void displayPlayerColor(Player player) {
         displayString(player + " uses " + player.getColorName() + " checkers.");
@@ -70,7 +90,7 @@ public class UI {
     public void promptCommand(Player player) {
         displayString(player + " (" + player.getColorName() + ") enter your move or quit:");
     }
-
+    
     public Command getCommand(Plays possiblePlays) {
         Command command;
         do {
@@ -106,5 +126,62 @@ public class UI {
     public void displayForcedMove(Player player) throws InterruptedException {
         displayString(player + " has a forced move.");
         TimeUnit.SECONDS.sleep(1);
+    }
+    
+    // Errors
+    
+    public void displayError_WrongInputForNumberOfPointsPlayingTo() throws InterruptedException {
+    	displayString("Wrong input for number of moves, please try again");
+    	TimeUnit.SECONDS.sleep(1);
+    }
+    
+    public void displayError_incorrectEntry() throws InterruptedException {
+    	displayString("woops, cans you please enter that again");
+    	TimeUnit.SECONDS.sleep(1);
+    }
+    
+    public void displayError_WrongInputGivenForRepeatingOrEndingGame() throws InterruptedException {
+    	displayString("Wrong input, please enter 'yes' or 'no', please try again");
+    	TimeUnit.SECONDS.sleep(1);
+    }
+    
+    public void display_PlayersWantNextGame() {
+    	displayString("Next match will start");
+    }
+    
+    public void display_PlayersWantToEndGame() {
+    	displayString("Players want to end game");
+    }
+    
+    public void display_endingGame() {
+    	displayString("ending game");
+    }
+    
+    public void display_CurrentPlayersScores(int player1_winCount, int player2_winCount) {
+    	displayString("Player 1 has a score of: " + player1_winCount + ", and player 2 has a score of: " + player2_winCount);
+    }
+    
+    public void displayError_WrongScoreToWinEntered() {
+    	displayString("Sorry, that number of points is not possible. Please enter a number greater 0, but less or equal than the number of players pips");
+    }
+    
+    public void print_doubleTheScore() {
+    	displayString("the score has been doubled");
+
+    }
+    
+    public void print_rejectedDoubleTheScore(String nameOfPlayerWhoWon,String nameOfPlayerWhoRejectedDouble, int newScore, int pointsLost) {
+    	displayString(nameOfPlayerWhoWon + " has won the game, and " + nameOfPlayerWhoRejectedDouble + " lost the game. " + nameOfPlayerWhoWon + 
+    			"has gained " + newScore + " points.");
+
+    }
+    
+    public void print_endFullGameMessage(int player_id, String playerName) {
+    	displayString("player " +  player_id + " has won. Well done " + playerName);
+
+    }
+    
+    public void print_CurrentPlayer(String playerName) {
+    	displayString("player " +  playerName + ", it is now your turn.");
     }
 }

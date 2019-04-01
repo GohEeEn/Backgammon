@@ -15,6 +15,7 @@ public class Board {
     public static final int NUM_PIPS = 24;      // excluding BAR and BEAR OFF
     public static final int NUM_SLOTS = 26;     // including BAR and BEAR OFF
     private static final int NUM_CHECKERS = 15;
+    
 
     private int[][] checkers;
     private Players players;
@@ -43,6 +44,14 @@ public class Board {
             }
         }
     }
+    
+    public void resetTheBoard() {
+        for (int player=0; player<Backgammon.NUM_PLAYERS; player++)  {
+            for (int pip=0; pip<NUM_SLOTS; pip++)   {
+                checkers[player][pip] = RESET[pip];
+            }
+        }
+    }
 
     private int getOpposingId(Player player) {
         if (player.getId()==0) {
@@ -59,6 +68,10 @@ public class Board {
     public void move(Player player, Move move) {
         checkers[player.getId()][move.getFromPip()]--;
         checkers[player.getId()][move.getToPip()]++;
+        
+        // bear off case-> add point for current player
+        
+        // Deal with hits
         if (move.getToPip()<BAR && move.getToPip()>BEAR_OFF &&
                 checkers[getOpposingId(player)][calculateOpposingPip(move.getToPip())] == 1) {
             checkers[getOpposingId(player)][calculateOpposingPip(move.getToPip())]--;
@@ -170,9 +183,9 @@ public class Board {
         return possiblePlays;
     }
 
-    public boolean isGameOver() {
+    public boolean isGameOver(int currentPlayer) {
         boolean gameOver = false;
-        if ( (checkers[0][BEAR_OFF] == NUM_CHECKERS) || (checkers[1][BEAR_OFF] == NUM_CHECKERS) ) {
+        if (checkIfCurrentPlayerHasWon(currentPlayer)) {
             gameOver = true;
         }
         return gameOver;
@@ -195,5 +208,12 @@ public class Board {
             }
         }
     }
-
+    
+    public boolean checkIfCurrentPlayerHasWon(int currentPlayer) {
+    	// Check if the current player has reached the point limit
+    	if(checkers[currentPlayer][BEAR_OFF] == NUM_CHECKERS) {
+    		return true;
+    	}
+    	return false;
+    }
 }

@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.awt.image.BufferedImage;
 import java.awt.*;
 
-class   BoardPanel extends JPanel {
+class BoardPanel extends JPanel {
 
     private static final long serialVersionUID = 1L;
     private static final int FRAME_WIDTH = 752, FRAME_HEIGHT = 552;  // must be multiples of 4

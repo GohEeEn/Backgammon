@@ -1,7 +1,7 @@
 # Orange-Iguanas
 <b>Author</b>  : Ee En Goh    - 17202691<br/>
 <b>Author</b>  : Ferdia Fagan - 16372803<br/>
-<b>Version</b> : 1.1 
+<b>Version</b> : 2.0 
 
 
 ## How to open the JAR file :
@@ -28,11 +28,9 @@
 
 Commands  | Argument(s) | Description
 ----------|-------------|----------------------------------------------------------------------------------------------
-.name     | String      | Initialize or rename the player name of the current player
-.move     | int         | Make a valid disk move according to the move index from the generated move list
-cheat     | int, int    | Make disk moves without following the regular rules (requirement in sprint 3)<br>Arguments : cheat [moveFrom][moveTo] 
+double    | null        | Command to activate doubling dice play
+cheat     | null        | Move all the checkers to defined pips (All the checkers to their corresponding home except 2 checkers on their ace points for each player)
 quit      | null        | Quit the game
-help      | null        | Display help information (commands support)
 
 ### Sprint 3 Requirements Done :
 - [x] List the legal plays available to the current player as a menu (hits, bear offs and doubles)<br>

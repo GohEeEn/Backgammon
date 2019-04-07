@@ -15,7 +15,7 @@ public class Board {
 
     private static final int[][] END = {
             {15,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},  // checkers of Player 1 on board 
-            {13,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},  // checkers of Player 2 on board	
+            {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,1,0,2,4,3,2,0},  // checkers of Player 2 on board	
     };
     
     // ----- CONSTANTS -----
@@ -112,9 +112,8 @@ public class Board {
      * @return true if yes, else false
      */
     public boolean isCheckersInBar(int playerID) {
-    	
     	if(checkers[playerID][BAR] > 0)
-    		return true;
+    		 return true;
     	return false;
     }
     
@@ -123,8 +122,7 @@ public class Board {
      * @param playerID
      * @return true if yes, else false
      */
-    public boolean isCheckersBorneOff(int playerID) {
-    	
+    public boolean isCheckersBorneOff(int playerID) {    	
     	if(checkers[playerID][BEAR_OFF] > 0)
     		return true;
     	return false;
@@ -142,6 +140,7 @@ public class Board {
     		if(checkers[playerID][i] > 0)
     			return true;
     	}
+    	
     	return false;
     }
 
@@ -328,7 +327,6 @@ public class Board {
     
     /**
      * Method to execute end command : Move all the checkers to defined position [ Testing Case ]
-     * TODO
      */
     public void end() {
 

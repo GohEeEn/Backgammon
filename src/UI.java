@@ -73,12 +73,6 @@ public class UI {
     	displayString("Enable redouble play with command 'double', else press 'Enter' key");
     }
     
-    /*
-    public void promptOpponentIfAcceptDouble() {
-    	displayString("Do you want to accept the double? (yes/no)");
-    }
-    */
-    
     public void displayPlayerColor(Player player) {
         displayString(player + " uses " + player.getColorName() + " checkers.");
     }
@@ -92,17 +86,15 @@ public class UI {
     }
 
     public void displayDiceWinner(Player player) {
-        displayString(player + " wins the roll and goes first.");
+        displayString(player + " wins the roll and goes first.\n");
     }
     
-    public void display_CurrentPlayersScores(int player1_winCount, int player2_winCount) {
-    	displayString("Player 1 has a score of: " + player1_winCount + ", and player 2 has a score of: " + player2_winCount);
+    public void display_CurrentPlayersScores(Players players) {
+    	displayString("Player 1 [" + players.get(0).toString() + "] currently has score " + players.get(0).getScore());
+    	displayString("Player 2 [" + players.get(1).toString() + "] currently has score " + players.get(1).getScore());
+    	displayString("");
     }
-
-    public void displayGameWinner(Player player) {
-        displayString(player + " WINS THE GAME!!!");
-    }
-
+    
     public void promptCommand(Player player) {
         displayString(player + " [" + player.getColorName() + "] Enter your move or quit:");
     }
@@ -112,7 +104,7 @@ public class UI {
     }
        
     public void print_CurrentPlayer(String playerName) {
-    	displayString("Player " +  playerName + ", it is now your turn.");
+    	displayString("Player " +  playerName + ", it is your turn.");
     }
     // ----- END OF PROMPTS DISPLAY METHODS -----
     
@@ -180,23 +172,22 @@ public class UI {
     // ----- END OF MOVE RESPOND MESSAGES -----
     
     // ----- ERROR RESPOND MESSAGES -----
-    
     public void displayError_WrongScoreToWinEntered() {
-    	displayString("Sorry, that number of points is not possible. Please enter a number greater 0, but less or equal than the number of players pips");
+    	displayString("Invalid Gamepoint : Please enter a number greater 0 and equal or less than the number of players pips\n");
     }
     
     public void displayError_WrongInputForNumberOfPointsPlayingTo() throws InterruptedException {
-    	displayString("Wrong input for number of moves, please try again");
+    	displayString("Wrong input for number of moves, please try again\n");
     	TimeUnit.SECONDS.sleep(1);
     }
     
     public void displayError_incorrectEntry() throws InterruptedException {
-    	displayString("Invalid Command : Please try again");
+    	displayString("Invalid Command : Please try again\n");
     	TimeUnit.SECONDS.sleep(1);
     }
     
     public void displayError_WrongInputGivenForRepeatingOrEndingGame() throws InterruptedException {
-    	displayString("Wrong input, please enter 'yes' or 'no', please try again");
+    	displayString("Wrong input, please enter 'yes' or 'no', please try again\n");
     	TimeUnit.SECONDS.sleep(1);
     }
     
@@ -204,7 +195,7 @@ public class UI {
     
     // ----- END GAME MESSAGES -----
     public void display_roundWinner(Player winner) {
-    	displayString(winner.toString() + " win this match! Keep it up!");
+    	displayString(winner.toString() + " WIN THIS MATCH ! KEEP IT UP ! ");
     }
     
     public void display_PlayersWantNextMatch() throws InterruptedException {
@@ -218,12 +209,12 @@ public class UI {
     }
     
     public void display_endGame() throws InterruptedException {
-    	displayString("=============== END GAME ===============");
+    	displayString("=============== END GAME ===============\n");
     	TimeUnit.SECONDS.sleep(3);
     }
     
     public void display_endMatch() throws InterruptedException {
-    	displayString("=============== END MATCH ===============");
+    	displayString("=============== END MATCH ===============\n");
     	TimeUnit.SECONDS.sleep(1);
     }
     
@@ -243,8 +234,8 @@ public class UI {
      * @param earnScore The match score the winner earns in the recent match	
      */
     public void print_rejectedDoubleTheScore(String winnerName , String loserName , int earnScore) {
-    	displayString(winnerName + " has won, and " + loserName + " has lost the match. " + winnerName + 
-    			" has gained " + earnScore + " points in current game turn.");
+    	displayString("Player " + loserName + " rejects the doubling challenge, so " + winnerName + 
+    			"win and gain " + earnScore + " points in current game turn.");
     }
     // ----- END OF END GAME MESSAGES -----
     

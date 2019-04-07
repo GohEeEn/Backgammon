@@ -9,22 +9,27 @@ import java.util.concurrent.TimeUnit;
  */
 public class UI { 
 
-    private static final int FRAME_WIDTH = 1100;
+    private static final int FRAME_WIDTH = 1200;
     private static final int FRAME_HEIGHT = 600;
-
+    
+    
+    //private final BoardPanel 
     private final BoardPanel boardPanel;
     private final InfoPanel infoPanel;
     private final CommandPanel commandPanel;
+    private final GameInformationPanel gameInfoPanel;
 
     UI (Board board, Players players) {
         infoPanel = new InfoPanel();
         commandPanel = new CommandPanel();
         JFrame frame = new JFrame();
         boardPanel = new BoardPanel(board,players);
+        gameInfoPanel = new GameInformationPanel();
         frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
         frame.setTitle("Backgammon");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.add(boardPanel, BorderLayout.LINE_START);
+        frame.add(gameInfoPanel, BorderLayout.LINE_START);
+        frame.add(boardPanel, BorderLayout.CENTER);
         frame.add(infoPanel, BorderLayout.LINE_END);
         frame.add(commandPanel, BorderLayout.PAGE_END);
         frame.setResizable(false);
@@ -248,4 +253,34 @@ public class UI {
     }
     // ----- END OF END GAME MESSAGES -----
     
+    // Information panel (left panel)
+    public void updatePointsArePlayingTo(int pointsArePlayingTo) {
+    	gameInfoPanel.setScoreArePlayingUpTo(pointsArePlayingTo);
+    }
+    
+    public void updatePointsOfPlayer1(int points) {
+    	gameInfoPanel.setScoreOfPlayer1(points);
+    }
+    
+    public void updatePointsOfPlayer2(int points) {
+    	gameInfoPanel.setScoreOfPlayer2(points);
+    }
+    
+    public void updatePointsOfPlayer(int playerNumber, int points) {
+    	if(playerNumber == 0) {
+    		// is player 1
+    		updatePointsOfPlayer1(points);
+    	}else {
+    		// is player 2
+    		updatePointsOfPlayer2(points);
+    	}
+    }
+    
+    public void doubleTheDoubleCube() {
+    	gameInfoPanel.doubleTheGameScore();
+    }
+    
+    public void updateInfoPanel() {
+    	gameInfoPanel.updateInfoPanel();
+    }
 }

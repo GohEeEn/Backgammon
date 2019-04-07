@@ -33,6 +33,8 @@ class BoardPanel extends JPanel {
         } catch (IOException ex) {
             System.out.println("Could not find the image file " + ex.toString());
         }
+        
+        // Set up the Dice
     }
 
     private void displayChecker (int player, int x, int y) {

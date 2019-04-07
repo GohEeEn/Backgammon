@@ -45,7 +45,8 @@ public class UI {
     }
   
     public void displayStartOfGame() {
-        displayString("> Welcome to Backgammon! <");
+    	displayString("=============== NEW GAME ===============");
+        displayString("\t>> Welcome to Backgammon! <<");
     }
 
     public void promptPlayerName() {
@@ -56,8 +57,8 @@ public class UI {
     	displayString("Enter the number of points are playing up to:");
     }
     
-    public void promptPlayersIfWantToPlayAgain() {
-    	displayString("Do you wish to play again? (yes/no)");
+    public void promptPlayersNextMatch() {
+    	displayString("Do you wish to play next match? (yes/no)");
     }
     
     public void promptRestartNewGame() {
@@ -68,10 +69,16 @@ public class UI {
     	displayString("Enable double play with command 'double', else press 'Enter' key");
     }
     
+    public void promptPlayerToRedouble() {
+    	displayString("Enable redouble play with command 'double', else press 'Enter' key");
+    }
+    
+    /*
     public void promptOpponentIfAcceptDouble() {
     	displayString("Do you want to accept the double? (yes/no)");
     }
-
+    */
+    
     public void displayPlayerColor(Player player) {
         displayString(player + " uses " + player.getColorName() + " checkers.");
     }
@@ -201,7 +208,8 @@ public class UI {
     }
     
     public void display_PlayersWantNextMatch() throws InterruptedException {
-    	displayString("Next match will start in 1 second");
+    	displayString("Next match will start in 1 second\n");
+    	displayString("=============== NEW MATCH ===============");
     	TimeUnit.SECONDS.sleep(1);
     }
     
@@ -209,8 +217,14 @@ public class UI {
     	displayString("Players want to end game");
     }
     
-    public void display_endingGame() {
-    	displayString("Ending game");
+    public void display_endGame() throws InterruptedException {
+    	displayString("=============== END GAME ===============");
+    	TimeUnit.SECONDS.sleep(3);
+    }
+    
+    public void display_endMatch() throws InterruptedException {
+    	displayString("=============== END MATCH ===============");
+    	TimeUnit.SECONDS.sleep(1);
     }
     
     /**
@@ -226,11 +240,11 @@ public class UI {
      * Method to display the message when the game end by rejecting the double play
      * @param winnerName	
      * @param loserName
-     * @param newScore	
+     * @param earnScore The match score the winner earns in the recent match	
      */
     public void print_rejectedDoubleTheScore(String winnerName , String loserName , int earnScore) {
-    	displayString(winnerName + " has won the game, and " + loserName + " lost the game. " + winnerName + 
-    			"has gained " + earnScore + " points in current game turn.");
+    	displayString(winnerName + " has won, and " + loserName + " has lost the match. " + winnerName + 
+    			" has gained " + earnScore + " points in current game turn.");
     }
     // ----- END OF END GAME MESSAGES -----
     

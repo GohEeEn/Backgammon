@@ -1,13 +1,18 @@
 import java.awt.*;
 
-public class Player {
-    // Player holds the details for one player
+/**
+ * Player class that holds the details for one player
+ * @author Ee En Goh 17202691
+ *
+ */
+public class Player { 
 
     private int id;
     private String colorName;
     private Color color;
     private String name;
     private Dice dice;
+    private int match_score;
 
     Player(int id, String colorName, Color color) {
         this.id = id;
@@ -15,6 +20,7 @@ public class Player {
         this.colorName = colorName;
         this.color = color;
         dice = new Dice();
+        this.match_score = 0;
     }
 
     Player(Player player) {
@@ -23,27 +29,26 @@ public class Player {
         color = player.color;
         name = player.name;
         dice = new Dice(player.dice);
+        this.match_score = 0;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    // ----- GETTER and SETTER METHODS -----
+    public int getId() { return id; }
 
-    public int getId() {
-        return id;
-    }
+    public String getColorName() { return this.colorName; }
 
-    public String getColorName() {
-        return this.colorName;
-    }
-
-    public Color getColor() {
-        return this.color;
-    }
+    public Color getColor() { return this.color; }
 
     public Dice getDice() { return dice; }
-
-    public String toString() {
-        return name;
-    }
+    
+    public int getScore() { return this.match_score; }
+    
+    public void setName(String name) { this.name = name; }
+    
+    public void setScore(int score) { this.match_score = score; }
+    
+    // ----- END OF GETTER and SETTER METHODS -----
+    
+    public String toString() { return this.name; }
+    
 }

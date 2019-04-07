@@ -9,14 +9,15 @@ public class Command {
     
     /**
      * Boolean value that shows the characteristics of the given command :<br>
-     * - valid - If the command given is valid<br>
-     * - move  - If the command given is to make a move<br>
-     * - cheat - If the command given is to activate the cheat move<br>
-     * - quit  - If the command given is to quit the program<br>
+     * - valid 		- If the command given is valid<br>
+     * - move  		- If the command given is to make a move<br>
+     * - cheat 		- If the command given is to activate the cheat move<br>
+     * - quit  		- If the command given is to quit the program<br>
+     * - end 		- Test case for the ending of a game match
      */
     private boolean valid, move, quit, cheat;
+    private boolean test_end;
     
-    /** */
     private Play play;
 
     Command() {
@@ -25,6 +26,7 @@ public class Command {
         move = false;
         cheat = false;
         quit = false;
+        test_end = false;
     }
     
     /**
@@ -56,11 +58,23 @@ public class Command {
             cheat = false;
             quit = true;
             
-        } // Case if move command given
+        } // Case if cheat command given
+        else if (text.equals("cheat")) {
+            valid = true;
+            move = false;
+            cheat = true;
+            
+        } // Case if cheat command given
+        else if (text.equals("end")) {
+        	valid = true;
+        	move = false;
+        	test_end = true;
+        
+        }// Case if move command given
         else if (text.matches(regex)) {
         	
             int option = 0;
-            if (text.length()==1) {
+            if (text.length() == 1) {
                 option = (int) text.charAt(0) - (int) 'a';
             } else if (text.length()==2) {
                 option = ((int) text.charAt(0) - (int) 'a' + 1) * 26 + (int) text.charAt(1) - (int) 'a';
@@ -69,30 +83,35 @@ public class Command {
             valid = true;
             move = true;
             cheat = false;
-            
-        }else if (text.equals("cheat")) {
-            valid = true;
-            move = false;
-            cheat = true;
-        } else {
+        }
+        // Else an invalid command is given 
+        else {
             valid = false;
         }
     }
-
+    
+    /**
+     * @return All the valid moves that can be made by the current player
+     */
     public Play getPlay() {
         return play;
     }
-
+    
+    public void quit() {
+    	quit = true;
+    }
+    
+    public String toString() {
+        return input;
+    }
+    
+    // ----- BOOLEAN METHODS -----
     public boolean isValid() {
         return valid;
     }
 
     public boolean isMove() {
         return move;
-    }
-    
-    public void quit() {
-    	quit = true;
     }
 
     public boolean isQuit() {
@@ -102,8 +121,11 @@ public class Command {
     public boolean isCheat() {
         return cheat;
     }
-
-    public String toString() {
-        return input;
+    
+    public boolean isEnd() {
+        return test_end;
     }
+    
+    // ----- END OF BOOLEAN METHODS -----
+
 }

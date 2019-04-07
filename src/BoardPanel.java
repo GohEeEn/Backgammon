@@ -53,10 +53,25 @@ class BoardPanel extends JPanel {
         g2.fill(rectangleColour);
     }
 
+    private void displayDoubleCube() {
+    	
+    }
+    
+    private void displayMatchScore() {
+    	
+    }
+    
+    private void displayMatchLength() {
+    	
+    }
+    
     public void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        g2 =(Graphics2D) g;
+        
+    	super.paintComponent(g);
+        
+    	g2 =(Graphics2D) g;
         g2.drawImage(boardImage, 0, 0, FRAME_WIDTH, FRAME_HEIGHT, this);
+        
         for (int player=0; player<Backgammon.NUM_PLAYERS; player++) {
             int x,y;
             // Display Pip Numbers

@@ -2,8 +2,12 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+/**
+ * Players class that created to groups two Players as a unit
+ * @author Ee En Goh 17202691
+ *
+ */
 public class Players implements Iterable<Player>, Iterator<Player> {
-    // Players creates and groups two Players
 
     public static int NUM_PLAYERS = 2;
 
@@ -34,10 +38,17 @@ public class Players implements Iterable<Player>, Iterator<Player> {
         }
     }
 
+    /**
+     * Method to return the current player object 
+     * @return Current player
+     */
     public Player getCurrent() {
         return players.get(currentPlayer);
     }
     
+    /**
+     * @return the opponent's player ID
+     */
     public Player getEnemy() {
     	if(currentPlayer == 0) {
     		// enemy is player 2
@@ -50,12 +61,21 @@ public class Players implements Iterable<Player>, Iterator<Player> {
     }
 
     public void advanceCurrentPlayer() {
-        currentPlayer++;
+        /*
+    	currentPlayer++;
         if (currentPlayer == NUM_PLAYERS) {
             currentPlayer = 0;
         }
+        */
+    	currentPlayer++ ;
+        currentPlayer %= NUM_PLAYERS ;
     }
-
+    
+    /**
+     * Method to get specific player object 
+     * @param id Given player ID
+     * @return 0 for player 1, 1 for player 2
+     */
     public Player get(int id) {
         return players.get(id);
     }

@@ -32,7 +32,10 @@ public class CommandPanel extends JPanel  {
     }
 
     public String getString() {
-        String command;
+        
+    	String command;
+        
+    	// Multi-threads
         synchronized(commandBuffer) {
             while (commandBuffer.isEmpty()) {
                 try {

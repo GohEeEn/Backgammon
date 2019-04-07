@@ -1,10 +1,13 @@
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
+//import java.util.Collection;
+//import java.util.Collections;
 import java.util.Iterator;
 
+/**
+ * Plays class is a list of legal plays that a player can make in the current turn
+ * @author Ee En Goh 17202691
+ */
 public class Plays implements Iterable<Play>, Iterator<Play> {
-    // Plays is a list of legal plays that a player can make in the current turn
 
     ArrayList<Play> plays;
     private Iterator<Play> iterator;
@@ -30,10 +33,18 @@ public class Plays implements Iterable<Play>, Iterator<Play> {
         }
     }
 
+    /**
+     * @return The total number of valid play in the current game turn
+     */
     public int number() {
         return plays.size();
     }
 
+    /**
+     * Method to get a specific checker move on the current move list
+     * @param index The move index of target move on the current move list
+     * @return The checker move selected by the given move index
+     */
     public Play get(int index) {
         return plays.get(index);
     }
@@ -53,10 +64,14 @@ public class Plays implements Iterable<Play>, Iterator<Play> {
         return false;
     }
 
+    /**
+     * Remove plays that give the equivalent checker move which have exist in list in an inverse way
+     */
     public void removeDuplicatePlays() {
-        // Remove plays that give the same board position
+    	
         Plays duplicatePlays = new Plays(this);
-        plays.clear();
+        plays.clear(); // Clear the whole list
+        
         for (Play play : duplicatePlays) {
             if (!this.contains(play)) {
                 this.add(play);
@@ -64,23 +79,29 @@ public class Plays implements Iterable<Play>, Iterator<Play> {
         }
     }
 
+    /**
+     * Remove plays with too few moves, which is not equal to the total number of dice roll value
+     */
     public void removeIncompletePlays() {
-        // Remove plays with too few moves
+    	
         int maxNumberOfMoves = 0;
+        
         for (Play play : plays) {
             if (play.numberOfMoves() > maxNumberOfMoves) {
                 maxNumberOfMoves = play.numberOfMoves();
             }
         }
+        
         Plays duplicatePlays = new Plays(this);
         plays.clear();
+        
         for (Play play : duplicatePlays) {
             if (play.numberOfMoves() == maxNumberOfMoves) {
                 plays.add(play);
             }
         }
         // Remove single die plays that don't play the largest die
-        if (maxNumberOfMoves==1) {
+        if (maxNumberOfMoves == 1) {
             int maxMove = 0;
             for (Play play : plays) {
                 if (play.getMove(0).getPipDifference() > maxMove) {
@@ -96,8 +117,7 @@ public class Plays implements Iterable<Play>, Iterator<Play> {
             }
         }
     }
-
-
+    
     public boolean hasNext() {
         return iterator.hasNext();
     }

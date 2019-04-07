@@ -1,16 +1,23 @@
+/**
+ * Board class that hold the details for the current board positions, performs moves and returns the list of legal moves
+ * @author Ee En Goh 17202691
+ */
 public class Board {
     
-	// Board hold the details for the current board positions, performs moves and returns the list of legal moves
-
-	// Checkers Reset Positions
+	/** Checkers positions to restore to initial position */
     private static final int[] RESET = {0,0,0,0,0,0,5,0,3,0,0,0,0,5,0,0,0,0,0,0,0,0,0,0,2,0};
     
-    // Temporary Cheat Code Respond : Rearrange the checkers to given position
+    /** Checkers position when cheat code activated : Rearrange the checkers to given position */
     private static final int[][] CHEAT = {
         {13,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},  // checkers of Player 1 on board 
         {13,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},  // checkers of Player 2 on board	
     };
 
+    private static final int[][] END = {
+            {15,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},  // checkers of Player 1 on board 
+            {13,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},  // checkers of Player 2 on board	
+    };
+    
     // ----- CONSTANTS -----
     public static final int BAR = 25;           	// Index of the BAR
     public static final int BEAR_OFF = 0;      		// Index of the BEAR OFF
@@ -27,13 +34,14 @@ public class Board {
      * 		=> pip 0 is bear off<br>
      * 		=> pip 1 - 24 are on the main board <br> 
      * 			- pip 1 -> Ace point of the current player<br>
+     * 			- pip 1 - 6 -> Opponent's home board<br>
      *			- pip 7 -> Bar point of the current player<br> 
      *			- pip 13-> Mid point of the current player<br>
+     *			- pip 19-24 -> Player's home board<br> 
      * 		=> pip 25 is the bar/jail<br>
      * - the value in checkers is the number of checkers that the player has on the point<br>
      */
     private int[][] checkers;
-    
     private Players players; 
 
     // ----- CONSTRUCTORS -----
@@ -98,6 +106,45 @@ public class Board {
         return pip;
     }
     
+    /**
+     * Method to check if the player with given ID has checker(s) in bar
+     * @param playerID
+     * @return true if yes, else false
+     */
+    public boolean isCheckersInBar(int playerID) {
+    	
+    	if(checkers[playerID][BAR] > 0)
+    		return true;
+    	return false;
+    }
+    
+    /**
+     * Method to check if the player with given ID has checker(s) been borne off
+     * @param playerID
+     * @return true if yes, else false
+     */
+    public boolean isCheckersBorneOff(int playerID) {
+    	
+    	if(checkers[playerID][BEAR_OFF] > 0)
+    		return true;
+    	return false;
+    }
+    
+    /**
+     * Method to check if the player with given ID has checker(s) in opponent's home board
+     * @param playerID
+     * @return true if yes, else false
+     */
+    public boolean isCheckersInOpponentHome(int playerID) {
+    	
+    	// Loop through the opponent's home board
+    	for(int i = 19 ; i < 24 ; i++) {
+    		if(checkers[playerID][i] > 0)
+    			return true;
+    	}
+    	return false;
+    }
+
     // ----- END OF SUPPORTIVE METHODS -----
     
     // ----- GETTERS ------
@@ -134,11 +181,9 @@ public class Board {
     	Player winner = players.get(0);
     	
         if (checkers[0][BEAR_OFF] == NUM_CHECKERS) {
-            
         	winner = players.get(0);
             
         } else if (checkers[1][BEAR_OFF] == NUM_CHECKERS) {
-            
         	winner = players.get(1);
             
         }
@@ -207,8 +252,15 @@ public class Board {
 	   return possiblePlays;
 	}    
 	
+	/**
+	 * Method to search for the plays that are possible with a given sequence of movements recursively
+	 * @param board
+	 * @param player
+	 * @param movements
+	 * @return
+	 */
 	private Plays findAllPlays(Board board, Player player, Movements movements) {
-        // Search recursively for the plays that are possible with a given sequence of movements
+        
         Plays plays = new Plays();
         int fromPipLimit;
         // must take checkers from the bar first
@@ -263,14 +315,26 @@ public class Board {
     }
 
     /**
-     * Method to execute cheat command 
-     * TODO
+     * Method to execute cheat command : Move all the checkers to defined position
      */
     public void cheat() {
-    	
+
         for (int player = 0; player < Backgammon.NUM_PLAYERS; player++) {
-            for (int pip = 0; pip < NUM_SLOTS; pip++)   {
-                checkers[player][pip] = CHEAT[player][pip];
+        	for (int pip = 0; pip < NUM_SLOTS; pip++)   {
+        			checkers[player][pip] = CHEAT[player][pip];
+            }
+        }
+    }
+    
+    /**
+     * Method to execute end command : Move all the checkers to defined position [ Testing Case ]
+     * TODO
+     */
+    public void end() {
+
+        for (int player = 0; player < Backgammon.NUM_PLAYERS; player++) {
+        	for (int pip = 0; pip < NUM_SLOTS; pip++)   {
+        			checkers[player][pip] = END[player][pip];
             }
         }
     }
@@ -303,7 +367,7 @@ public class Board {
      * @param currentPlayer 
      * @return Yes if the current player meet the winning condition, else no
      */
-    public boolean checkIfCurrentPlayerHasWon(int currentPlayer) {
+    private boolean checkifCurrentPlayerWinMatch(int currentPlayer) {
     	
     	// Check if the current player has reached the point limit
     	if(checkers[currentPlayer][BEAR_OFF] == NUM_CHECKERS) {
@@ -313,14 +377,19 @@ public class Board {
     	return false;
     }
     
-    public boolean isGameOver(int currentPlayer) {
+    /**
+     * Method to check if there is a winner for the current match
+     * @param currentPlayer 
+     * @return
+     */
+    public boolean isMatchOver(int currentPlayer) {
     	
-        boolean gameOver = false;
+        boolean matchOver = false;
         
-        if (checkIfCurrentPlayerHasWon(currentPlayer)) {
-            gameOver = true;
+        if (checkifCurrentPlayerWinMatch(currentPlayer)) {
+        	matchOver = true;
         }
-        return gameOver;
+        return matchOver;
     }
     
     // ----- END OF BOOLEAN METHODS -----

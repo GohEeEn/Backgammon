@@ -2,8 +2,12 @@ import java.awt.BorderLayout;
 import javax.swing.*;
 import java.util.concurrent.TimeUnit;
 
-public class UI {
-    // UI is the top level interface to the user interface
+/**
+ * UI class is the top level interface to the user interface
+ * @author Ee En Goh 17202691
+ *
+ */
+public class UI { 
 
     private static final int FRAME_WIDTH = 1100;
     private static final int FRAME_HEIGHT = 600;
@@ -31,7 +35,6 @@ public class UI {
         return commandPanel.getString();
     }
 
-    
     // ----- PROMPTS DISPLAY METHODS -----
     public void display() {
         boardPanel.refresh();
@@ -42,31 +45,31 @@ public class UI {
     }
   
     public void displayStartOfGame() {
-        displayString("Welcome to Backgammon!");
+        displayString("> Welcome to Backgammon! <");
     }
 
     public void promptPlayerName() {
         displayString("Enter a player name:");
     }
     
-    public void promptPlayersForNumberOfPointsWantToPlayTo() {
+    public void promptPlayersForGamePoint() {
     	displayString("Enter the number of points are playing up to:");
     }
     
     public void promptPlayersIfWantToPlayAgain() {
-    	displayString("Do you wish to play again? (enter yes/no)");
+    	displayString("Do you wish to play again? (yes/no)");
     }
     
-    public void promptPlayersIfWantToPlayNextGame() {
-    	displayString("Do you wish to play next game? (enter yes/no)");
+    public void promptRestartNewGame() {
+    	displayString("Do you wish to play next game? (yes/no)");
     }
     
-    public void promptPlayerIfWantToDouble() {
-    	displayString("Do you want to double?");
+    public void promptPlayerToDouble() {
+    	displayString("Enable double play with command 'double', else press 'Enter' key");
     }
     
-    public void promptPlayerifWantToAcceptDouble() {
-    	displayString("Do you want to accept the double? (enter yes/no)");
+    public void promptOpponentIfAcceptDouble() {
+    	displayString("Do you want to accept the double? (yes/no)");
     }
 
     public void displayPlayerColor(Player player) {
@@ -113,10 +116,10 @@ public class UI {
         
         do {
             String commandString = commandPanel.getString();
-            command = new Command(commandString,possiblePlays);
+            command = new Command(commandString, possiblePlays);
             
             if (!command.isValid()) {
-                displayString("Error: Command not valid.");
+                displayString("Error: Command not valid. Try again");
             }
             
         } while (!command.isValid());
@@ -193,11 +196,16 @@ public class UI {
     // ----- END OF ERROR RESPOND MESSAGES -----
     
     // ----- END GAME MESSAGES -----
-    public void display_PlayersWantNextGame() {
-    	displayString("Next match will start");
+    public void display_roundWinner(Player winner) {
+    	displayString(winner.toString() + " win this match! Keep it up!");
     }
     
-    public void display_PlayersWantToEndGame() {
+    public void display_PlayersWantNextMatch() throws InterruptedException {
+    	displayString("Next match will start in 1 second");
+    	TimeUnit.SECONDS.sleep(1);
+    }
+    
+    public void display_PlayersWantEndGame() {
     	displayString("Players want to end game");
     }
     
@@ -205,13 +213,24 @@ public class UI {
     	displayString("Ending game");
     }
     
-    public void print_endFullGameMessage(int player_id, String playerName) {
-    	displayString("Player " +  player_id + " HAS WON! . WELL DONE " + playerName + " !!");
+    /**
+     * Method to display the winner of the whole game
+     * @param player_id		Winner's player ID
+     * @param playerName	Winner's name
+     */
+    public void display_gameWinner(String playerName) {
+    	displayString("Player " +  playerName + " HAS WON! CONGRAT !!");
     }
     
-    public void print_rejectedDoubleTheScore(String nameOfPlayerWhoWon , String nameOfPlayerWhoRejectedDouble , int newScore , int pointsLost) {
-    	displayString(nameOfPlayerWhoWon + " has won the game, and " + nameOfPlayerWhoRejectedDouble + " lost the game. " + nameOfPlayerWhoWon + 
-    			"has gained " + newScore + " points.");
+    /**
+     * Method to display the message when the game end by rejecting the double play
+     * @param winnerName	
+     * @param loserName
+     * @param newScore	
+     */
+    public void print_rejectedDoubleTheScore(String winnerName , String loserName , int earnScore) {
+    	displayString(winnerName + " has won the game, and " + loserName + " lost the game. " + winnerName + 
+    			"has gained " + earnScore + " points in current game turn.");
     }
     // ----- END OF END GAME MESSAGES -----
     

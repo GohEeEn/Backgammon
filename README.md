@@ -8,7 +8,7 @@
 * We can't open our program by directly clicking on our created JAR file, which could due to one of the known bugs for running JavaFX runnable JAR files through clicking on it (as there are a lot of users complain on online too)<br>
 * It could be caused by the different version of Java, JRE or SE<br>
 * However we are able to execute it by using command prompt with the following command :<br>
-* Command : <b>java -jar file_location/BackGammonSprint3.jar</b> <br>
+* Command : <b>java -jar file_location/BackGammonSprint4.jar</b> <br>
 * file_location : The full path name of where this JAR file stored-in<br>
 * <b>PS : Our program is executable and playable in Eclipse<br/>
 
@@ -20,24 +20,26 @@
 5. Click Browse
 6. Browse to the folder that contains all the content of the repository
 7. Select that folder
-8. Tick all the files (packages - game, gui, data_structures)
+8. Tick all the files 
 9. Click finish
-10. Open and run main.java
+10. Open and run Backgammon.java
 
 ## Commands to play in this backgammon program :
 
 Commands  | Argument(s) | Description
 ----------|-------------|----------------------------------------------------------------------------------------------
-double    | null        | Command to activate doubling dice play
+double    | null        | Command to activate doubling and re-doubling dice play
 cheat     | null        | Move all the checkers to defined pips (All the checkers to their corresponding home except 2 checkers on their ace points for each player)
 quit      | null        | Quit the game
 
-### Sprint 3 Requirements Done :
-- [x] List the legal plays available to the current player as a menu (hits, bear offs and doubles)<br>
-- [x] Legal move selection by typing in a letter corresponding to the play (Typing a referencing <b>integer</b> instead) <br>
-- [ ] Display all plays on board (display Bear Off play case didn't been done on time)<br>
-- [x] Command 'cheat' to make the checkers to move to the following position<br>
-- [x] Notification to inform the user if no play is possible<br>
-- [x] When the user enters "quit", the program should terminate<br>
+### Sprint 4 Requirements Done :
+- [x] Ask the players how many points they want to play to (set game point) <br>
+- [ ] Display the doubling cube, the match score and the match length on the board panel<br>
+- [x] Allow players to enter 'double' as a command before they enter a play, if doubling is illegal at that time , display an error message<br>
+- [x] Allow the player receiving the cube to accept or reject the double. If the double is accepted, update the doubling cube showing which player owns the cube. If the double is rejected, end the game and allocate the points to the winner<br>
+- [x] When the game is over, update the match score on the board and report the new match score on the information panel. Ask the players to press any key for starting the next game in the match<br>
+- [x] When the match is over, announce the winner and ask if the players want to play again (yes/no). If the user response is invalid, an error message should be displayed and the question should be asked again. If they choose to play again, the program should ask for the player names and match length again<br>
+- [x] Modify the 'cheat' command so that the board goes to a position where all of the checkers have been bore off except that both players should have two checkers on their own ace points
+- [x] The players should be able to enter 'quit' as a command at any time to quit the program
 - [x] When the game is over, announce the winning player<br>
 

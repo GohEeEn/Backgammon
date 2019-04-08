@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class UI { 
 
-    private static final int FRAME_WIDTH = 1200;
+    private static final int FRAME_WIDTH = 1500;
     private static final int FRAME_HEIGHT = 600;
     
     

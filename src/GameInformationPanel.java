@@ -12,7 +12,8 @@ public class GameInformationPanel extends JPanel {
 	
 	// variables
 	// Display
-	private JTextField doubleingCubeHeading;
+	private JTextArea playerWhoOwnsDoublingDice;
+	
 	private DoubleingDice doubleingCube;
 	
 	private JTextArea scorePlayingUpTo;
@@ -22,6 +23,8 @@ public class GameInformationPanel extends JPanel {
 	private int scoreArePlayingUpTo;
 	private int player1Score;
 	private int player2Score;
+	
+	private int currentPlayerWhoHasDoublingDice;
 	
 	
 	
@@ -47,6 +50,16 @@ public class GameInformationPanel extends JPanel {
         String display_scoreArePlayingTO = "Score playing up to: \n " + scoreArePlayingUpTo;
         scorePlayingUpTo.setText(display_scoreArePlayingTO);
         this.add(scorePlayingUpTo);
+        
+        // set up display of who owns the double dice
+        playerWhoOwnsDoublingDice = new JTextArea();
+        playerWhoOwnsDoublingDice.setEnabled(false);
+        playerWhoOwnsDoublingDice.setSize(100, 100);
+        playerWhoOwnsDoublingDice.setBackground(Color.blue);
+        String display_whoOwnsDoubleDice = "player who has double dice: \n" + currentPlayerWhoHasDoublingDice;
+        playerWhoOwnsDoublingDice.setText(display_whoOwnsDoubleDice);
+        this.add(playerWhoOwnsDoublingDice);
+        
         
         
         // set up display of doubling cube
@@ -91,6 +104,10 @@ public class GameInformationPanel extends JPanel {
 		this.player1Score = scoreOfPlayer1;
 		this.player2Score = scoreOfPlayer2;
 	}
+	
+	public void setThelayerWhoOwnsDoubleDice(int playerNumber) {
+		currentPlayerWhoHasDoublingDice = playerNumber;
+	}
 	// end of getters and setters
 	
 	public void doubleTheGameScore() {
@@ -101,6 +118,9 @@ public class GameInformationPanel extends JPanel {
 		// Update all information componenets
 		// Update score are playing up to
 		scorePlayingUpTo.setText("Score playing up to: \n " + scoreArePlayingUpTo);
+		
+		// update who owns the doubleing dice
+		playerWhoOwnsDoublingDice.setText("player who has double dice: \n" + currentPlayerWhoHasDoublingDice);
 		
 		// update the current score
         String display_scoreOfEachPlayer = "Score is: \n player 1: " + player1Score + "\n player 2: " + player2Score;

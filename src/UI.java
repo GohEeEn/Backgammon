@@ -280,6 +280,10 @@ public class UI {
     	gameInfoPanel.doubleTheGameScore();
     }
     
+    public void giveDoubleCubeTo(int playerNumber) {
+    	gameInfoPanel.setThelayerWhoOwnsDoubleDice(playerNumber);
+    }
+    
     public void updateInfoPanel() {
     	gameInfoPanel.updateInfoPanel();
     }

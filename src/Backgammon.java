@@ -553,6 +553,14 @@ public class Backgammon {
     		
     		if(otherPlayerAcceptsDoubleOffer) {		// Case if the opponent accepts the offer
     			hasDoublingCubeBeenGiven = true;
+    			if(currentPlayer_id == 0) {
+    				// Give to player 2
+    				ui.giveDoubleCubeTo(2);
+    			}else {
+    				// give to player 1
+    				ui.giveDoubleCubeTo(1);
+    			}
+    			ui.updateInfoPanel();
     			ui.print_doubleTheScore();
     		}
     		else {									// Case if the opponent declines the offer - End current game match

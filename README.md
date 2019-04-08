@@ -5,13 +5,7 @@
 
 
 ## How to open the JAR file :
-* We can't open our program by directly clicking on our created JAR file, which could due to one of the known bugs for running JavaFX runnable JAR files through clicking on it (as there are a lot of users complain on online too)<br>
-* It could be caused by the different version of Java, JRE or SE<br>
-* However we are able to execute it by using command prompt with the following command :<br>
-* Command : <b>java -jar file_location/BackGammonSprint4.jar</b> <br>
-* file_location : The full path name of where this JAR file stored-in<br>
-* <b>PS : Our program is executable and playable in Eclipse<br/>
-
+* A runnable JAR file is given in submission file : <b>Orange-Iguanas_Sprint_4.jar</b><br>
 
 ### How to run the program in Eclipse : (It works all the time when we test it)
 1. Open eclipse and create a new project
@@ -19,7 +13,7 @@
 3. Click import
 4. Click General -> File System -> Next
 5. Click Browse
-6. Browse to the folder that contains all the content of the repository
+6. Browse to the folder that contains all the content of the repository (<b>src</b> file in submission file)
 7. Select that folder
 8. Tick all the files 
 9. Click finish

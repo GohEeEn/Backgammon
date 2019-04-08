@@ -1,5 +1,6 @@
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.Ellipse2D;
@@ -27,17 +28,24 @@ public class DoubleingDice extends JComponent {
 	
 	// Set up
 	public DoubleingDice() {
+		
 		this.setPreferredSize(new Dimension(100,100));
+		// this.setBounds(20, 20, 100, 100);
 		
 		JTextField doubleDiceHeading = new JTextField();
 		doubleDiceHeading.setOpaque(false);
-		doubleDiceHeading.setBounds(0, 0, 100, 15);
+		doubleDiceHeading.setBounds(8,10, 100, 15);
 		doubleDiceHeading.setEnabled(false);
-		doubleDiceHeading.setText("doubling cube");
+		doubleDiceHeading.setText("Double Cube");
+		doubleDiceHeading.setFont(new Font("Arial", Font.BOLD, 15));
+		doubleDiceHeading.setDisabledTextColor(Color.BLACK);
 
 		theNumberOnDice = new JTextField();
 		theNumberOnDice.setBounds(25, 25, 50, 50);
 		theNumberOnDice.setEnabled(false);
+		theNumberOnDice.setFont(new Font("Arial", Font.BOLD, 15));
+		theNumberOnDice.setDisabledTextColor(Color.BLACK);
+		theNumberOnDice.setAlignmentY(CENTER_ALIGNMENT);
 		//theNumberOnDice.setBackground(Color.black);
 		
 		this.add(doubleDiceHeading);

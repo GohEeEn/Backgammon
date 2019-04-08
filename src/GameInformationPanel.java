@@ -19,7 +19,6 @@ public class GameInformationPanel extends JPanel {
 	
 	// variables
 	// Display
-	private JTextField doubleingCubeHeading;
 	private JTextArea scorePlayingUpTo;
 	private JTextArea scoreOfGame; 
 	private DoubleingDice doubleingCube;
@@ -47,8 +46,10 @@ public class GameInformationPanel extends JPanel {
         scorePlayingUpTo.setEnabled(false);
         scorePlayingUpTo.setSize(100, 100);
         scorePlayingUpTo.setBackground(Color.blue);
-        String display_scoreArePlayingTO = "Score playing up to: \n " + scoreArePlayingUpTo;
-        scorePlayingUpTo.setText(display_scoreArePlayingTO);
+        String gamePoint = "Game Point : " + scoreArePlayingUpTo;
+        scorePlayingUpTo.setText(gamePoint);
+        scorePlayingUpTo.setFont(new Font("Arial", Font.BOLD, FONT_SIZE));
+        scorePlayingUpTo.setDisabledTextColor(Color.WHITE);
         this.add(scorePlayingUpTo);
         
         
@@ -63,9 +64,10 @@ public class GameInformationPanel extends JPanel {
         scoreOfGame.setSize(100, 10);
         scoreOfGame.setBounds(0, 0, 10, 10);
         scoreOfGame.setBackground(Color.yellow);
-        String display_scoreOfEachPlayer = "Score is: \n player 1: " + player1Score + "\n player 2: " + player2Score;
-        scoreOfGame.setText(display_scoreOfEachPlayer);
-        scoreOfGame.setFont(new Font("monospaced", Font.PLAIN, FONT_SIZE));
+        String playerScore = "Game Score : \n player 1 - " + player1Score + "\n player 2 - " + player2Score;
+        scoreOfGame.setText(playerScore);
+        scoreOfGame.setFont(new Font("Arial", Font.BOLD, FONT_SIZE));
+        scoreOfGame.setDisabledTextColor(Color.BLACK);
         
         this.add(scoreOfGame);
 	}
@@ -104,13 +106,15 @@ public class GameInformationPanel extends JPanel {
 	public void updateInfoPanel() {
 		// Update all information componenets
 		// Update score are playing up to
-		scorePlayingUpTo.setText("Score playing up to: \n " + scoreArePlayingUpTo);
-		scorePlayingUpTo.setFont(new Font("monospaced", Font.BOLD, FONT_SIZE));
+		scorePlayingUpTo.setText("Game Point : " + scoreArePlayingUpTo);
+		scorePlayingUpTo.setFont(new Font("Arial", Font.BOLD, FONT_SIZE));
+        scorePlayingUpTo.setDisabledTextColor(Color.WHITE);
 		
 		// update the current score
-        String display_scoreOfEachPlayer = "Score is: \n player 1: " + player1Score + "\n player 2: " + player2Score;
-		scoreOfGame.setText(display_scoreOfEachPlayer);
-		scorePlayingUpTo.setFont(new Font("monospaced", Font.BOLD, FONT_SIZE));
+        String playerScore = "Game Score : \n player 1 - " + player1Score + "\n player 2 - " + player2Score;
+        scoreOfGame.setText(playerScore);
+        scoreOfGame.setFont(new Font("Arial", Font.BOLD, FONT_SIZE));
+        scoreOfGame.setDisabledTextColor(Color.BLACK);
 		
 		// update the doubling cube
 		doubleingCube.updateDiceDisplay();

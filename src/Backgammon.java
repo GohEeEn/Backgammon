@@ -77,7 +77,9 @@ public class Backgammon {
         ui.displayStartOfGame();
         ui.displayString("");
         
-        getEndGamePoint();
+        int numberOfPointsArePlayingTo = getEndGamePoint();
+        ui.updatePointsArePlayingTo(numberOfPointsArePlayingTo);
+        ui.updateInfoPanel();
         ui.displayString("");
         
         getPlayerNames();
@@ -614,6 +616,8 @@ public class Backgammon {
         		if(reply.compareTo("yes") == 0) {
 
         			scoreForMatch *=  2;        						// Double the score
+        			ui.doubleTheDoubleCube();
+        			ui.updateInfoPanel();
         			
         			if(currentPlayer_id == 0) {        					// The double dice is now owned by the opponent
         				playerIDWithDoubleCube = 1;      				// Opponent has ID number 2
@@ -682,22 +686,48 @@ public class Backgammon {
     		// Case if the loser has at least 1 checker in borne off : Winner gets single game score [1 unit point]
     		if(board.isCheckersBorneOff(opponent_ID)) {
     			players.getCurrent().setScore(winner_curr_score + scoreForMatch);
-    			ui.display_roundWinner(players.getCurrent());
+                ui.display_roundWinner(players.getCurrent());
+                ui.updatePointsOfPlayer(players.getCurrent().getId(),winner_curr_score + scoreForMatch);
+    		    ui.updateInfoPanel();
     			
     		}	// Else no checker borne off
     		else{ 
     		
     			// Case if Backgammoned : Winner gets backgammoned score [3 unit points]
     			if(board.isCheckersInBar(opponent_ID) || board.isCheckersInOpponentHome(opponent_ID)) {
-    				players.getCurrent().setScore(winner_curr_score + scoreForMatch * 3);
+                    players.getCurrent().setScore(winner_curr_score + scoreForMatch * 3);
+                    ui.updatePointsOfPlayer(players.getCurrent().getId(), winner_curr_score + scoreForMatch * 3);
+    		        ui.updateInfoPanel();
     			
     			} // Case if Gammoned : Winner gets gammoned score [2 unit points]
     			else{
-    				players.getCurrent().setScore(winner_curr_score + scoreForMatch * 2);
+                    players.getCurrent().setScore(winner_curr_score + scoreForMatch * 2);
+                    ui.updatePointsOfPlayer(players.getCurrent().getId(),winner_curr_score + scoreForMatch * 2);
+    		        ui.updateInfoPanel();
     			}
     			
     			ui.display_roundWinner(players.getCurrent());
-    		}
+            }/*	// Case if the loser has at least 1 checker in borne off : Winner gets single game score [1 unit point] 
+    	else if(board.isCheckersBorneOff(opponent_ID)) {
+    		players.getCurrent().setScore(winner_curr_score + scoreForMatch);
+    		ui.display_roundWinner(players.getCurrent());
+    		
+    		ui.updatePointsOfPlayer(players.getCurrent().getId(),winner_curr_score + scoreForMatch);
+    		ui.updateInfoPanel();
+    	}	// Else no checker borne off
+    	else{ 
+    		
+    		// Case if Gammoned : Winner gets gammoned score [2 unit points]
+    		if(board.isCheckersInBar(opponent_ID) && board.isCheckersInOpponentHome(opponent_ID)) {
+    			players.getCurrent().setScore(winner_curr_score + scoreForMatch * 2);
+        		ui.updatePointsOfPlayer(players.getCurrent().getId(),winner_curr_score + scoreForMatch);
+        		ui.updateInfoPanel();
+    		} // Case if Backgammoned : Winner gets backgammoned score [3 unit points]
+    		else{
+    			players.getCurrent().setScore(winner_curr_score + scoreForMatch * 3);
+        		ui.updatePointsOfPlayer(players.getCurrent().getId(),winner_curr_score + scoreForMatch);
+        		ui.updateInfoPanel();
+    		}*/
     		
     		// ----- END OF CALCULATE SCORE -----
     	}

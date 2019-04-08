@@ -6,6 +6,11 @@ import java.io.IOException;
 import java.awt.image.BufferedImage;
 import java.awt.*;
 
+/**
+ * Class that include the definition of structure of the main board 
+ * @author Ee En Goh 		17202691
+ * @author Ferdia Fagan 	16372803
+ */
 class BoardPanel extends JPanel {
 
     private static final long serialVersionUID = 1L;
@@ -53,18 +58,6 @@ class BoardPanel extends JPanel {
         Rectangle2D.Double rectangleColour = new Rectangle2D.Double(x+LINE_WIDTH,y+LINE_WIDTH,2*(CHECKER_RADIUS-LINE_WIDTH),CHECKER_DEPTH-2*LINE_WIDTH);
         g2.setColor(checkerColors[player]);
         g2.fill(rectangleColour);
-    }
-
-    private void displayDoubleCube() {
-    	
-    }
-    
-    private void displayMatchScore() {
-    	
-    }
-    
-    private void displayMatchLength() {
-    	
     }
     
     public void paintComponent(Graphics g) {

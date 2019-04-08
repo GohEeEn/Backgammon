@@ -4,12 +4,12 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * UI class is the top level interface to the user interface
- * @author Ee En Goh 17202691
- *
+ * @author Ee En Goh 		17202691
+ * @author Ferdia Fagan 	16372803
  */
 public class UI { 
 
-    private static final int FRAME_WIDTH = 1200;
+    private static final int FRAME_WIDTH = 1250;
     private static final int FRAME_HEIGHT = 600;
     
     

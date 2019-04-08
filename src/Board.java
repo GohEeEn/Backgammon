@@ -1,6 +1,7 @@
 /**
  * Board class that hold the details for the current board positions, performs moves and returns the list of legal moves
- * @author Ee En Goh 17202691
+ * @author Ee En Goh 		17202691
+ * @author Ferdia Fagan 	16372803
  */
 public class Board {
     

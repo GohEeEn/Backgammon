@@ -4,8 +4,8 @@ import java.util.Iterator;
 
 /**
  * Players class that created to groups two Players as a unit
- * @author Ee En Goh 17202691
- *
+ * @author Ee En Goh 		17202691
+ * @author Ferdia Fagan 	16372803
  */
 public class Players implements Iterable<Player>, Iterator<Player> {
 

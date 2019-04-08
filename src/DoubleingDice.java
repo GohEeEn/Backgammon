@@ -6,8 +6,15 @@ import java.awt.geom.Ellipse2D;
 
 import javax.swing.*;
 
+/**
+ * Doubling Dice class that define the GUI ofit
+ * @author Ee En Goh 		17202691
+ * @author Ferdia Fagan 	16372803
+ */
 public class DoubleingDice extends JComponent {
 	
+	private static final long serialVersionUID = 1L;
+
 	// Constants
 	private static final int[] diceSides = {1,2,4,8,16,32,64};
 	
@@ -17,8 +24,6 @@ public class DoubleingDice extends JComponent {
 	private JTextField theNumberOnDice; 
 	// End of display
 	private static int diceSide_Pointer;
-	
-	
 	
 	// Set up
 	public DoubleingDice() {

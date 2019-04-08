@@ -4,9 +4,10 @@ import java.util.Iterator;
 
 /**
  * Movements class that stores the list of checker movements that a player can perform as a result of a dice roll.<br>
- * E.g. a [4,4] dice roll would allow the movements 4,4,4,4 	[Double Dice]
- * E.g. a [2,1] dice roll would allow the movements 2,1 or 1,2	[Normal Dice]
- * @author Ee En Goh 17202691
+ * E.g. a [4,4] dice roll would allow the movements 4,4,4,4 	[Double Dice]<br>
+ * 		a [2,1] dice roll would allow the movements 2,1 or 1,2	[Normal Dice]<br>
+ * @author Ee En Goh 		17202691
+ * @author Ferdia Fagan 	16372803
  */
 public class Movements implements Iterable<Integer>, Iterator<Integer> {
 

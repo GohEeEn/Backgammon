@@ -1,6 +1,7 @@
 /**
  * Command class that holds a user entered command and processes its syntax
- * @author Ee En Goh 17202691
+ * @author Ee En Goh 		17202691
+ * @author Ferdia Fagan 	16372803
  */
 public class Command {
 

@@ -1,32 +1,35 @@
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+/**
+ * Game Information Panel : The definition of panel that display the information of match length, match scores and doubling dice cube value
+ * @author Ee En Goh 		17202691
+ * @author Ferdia Fagan 	16372803
+ */
 public class GameInformationPanel extends JPanel {
 	
 	// constants
+	private static final int FONT_SIZE = 15;
 	
 	// variables
 	// Display
 	private JTextField doubleingCubeHeading;
-	private DoubleingDice doubleingCube;
-	
 	private JTextArea scorePlayingUpTo;
-	
 	private JTextArea scoreOfGame; 
+	private DoubleingDice doubleingCube;
 	
 	private int scoreArePlayingUpTo;
 	private int player1Score;
 	private int player2Score;
 	
 	
-	
-	
-	// Constructurs
+	// Constructors
 	public GameInformationPanel() {
 		// Set up doubling cube in center (vert)
 		// set scorePlayingUpTo above the doubling cube
@@ -61,15 +64,16 @@ public class GameInformationPanel extends JPanel {
         scoreOfGame.setBounds(0, 0, 10, 10);
         scoreOfGame.setBackground(Color.yellow);
         String display_scoreOfEachPlayer = "Score is: \n player 1: " + player1Score + "\n player 2: " + player2Score;
-        scoreOfGame.setText(display_scoreOfEachPlayer);		
+        scoreOfGame.setText(display_scoreOfEachPlayer);
+        scoreOfGame.setFont(new Font("monospaced", Font.PLAIN, FONT_SIZE));
+        
         this.add(scoreOfGame);
-
 	}
 	
 	public void resetInformation() {
 		scoreArePlayingUpTo = 0;
-		player1Score = 0;
-		player2Score = 0;
+		player1Score 		= 0;
+		player2Score 		= 0;
 	}
 	
 	//methods
@@ -101,10 +105,12 @@ public class GameInformationPanel extends JPanel {
 		// Update all information componenets
 		// Update score are playing up to
 		scorePlayingUpTo.setText("Score playing up to: \n " + scoreArePlayingUpTo);
+		scorePlayingUpTo.setFont(new Font("monospaced", Font.BOLD, FONT_SIZE));
 		
 		// update the current score
         String display_scoreOfEachPlayer = "Score is: \n player 1: " + player1Score + "\n player 2: " + player2Score;
 		scoreOfGame.setText(display_scoreOfEachPlayer);
+		scorePlayingUpTo.setFont(new Font("monospaced", Font.BOLD, FONT_SIZE));
 		
 		// update the doubling cube
 		doubleingCube.updateDiceDisplay();

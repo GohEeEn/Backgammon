@@ -1,6 +1,7 @@
 /**
  * Move class that holds the details of single checker movement from one pip to another.
- * @author Ee En Goh 17202691
+ * @author Ee En Goh 		17202691
+ * @author Ferdia Fagan 	16372803
  */
 public class Move {
 	

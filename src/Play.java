@@ -3,8 +3,8 @@ import java.util.Iterator;
 
 /**
  * Play class that consists of a series of Moves in each 
- * @author Ee En Goh 17202691
- *
+ * @author Ee En Goh 		17202691
+ * @author Ferdia Fagan 	16372803
  */
 public class Play implements Iterable<Move>, Iterator<Move>  {
 

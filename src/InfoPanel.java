@@ -2,6 +2,11 @@ import javax.swing.*;
 import javax.swing.text.*;
 import java.awt.*;
 
+/**
+ * Class that define the information panel of the right-hand side of the panel which display the response message of the program
+ * @author Ee En Goh 		17202691
+ * @author Ferdia Fagan 	16372803
+ */
 public class InfoPanel extends JPanel {
 
     private static final long serialVersionUID = 1L;

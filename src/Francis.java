@@ -30,6 +30,8 @@ public class Francis implements BotAPI {
 	
 	private final boolean TRAINING = true;
     private static final String WEIGHT_FILE = "Francis_WeightsForScoring.txt";
+    
+    private int referenceScoreForBot;
 
     private PlayerAPI me, opponent;
     private BoardAPI board;
@@ -94,6 +96,8 @@ public class Francis implements BotAPI {
         this.info = info;
         
         this.retrieveWeights();
+        
+        referenceScoreForBot = this.getScoreForBoard(board.get());
     }
 
     /**

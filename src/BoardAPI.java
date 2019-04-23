@@ -2,19 +2,30 @@ public interface BoardAPI {
 
     int[][] get();
 
+    /**
+     * Method to get the number of the given player's checkers at the given pip
+     * @param player	The given player
+     * @param pip		The given pip index
+     * @return			The number of current player's checkers at taht given pip
+     */
     int getNumCheckers(int player, int pip);
     
+    /**
+     * Method to get the total number of checkers at the given pip index
+     * @param pipPosition	The given pip index
+     * @return				Total number of checkers at the given pip index
+     */
     int getNumbCheckersAtPosition(int pipPosition);
 
-    Plays getPossiblePlays(Player player, Dice dice);
+    Plays getPossiblePlays(int playerID, Dice dice);
 
-    boolean lastCheckerInInnerBoard(Player player);
+    boolean lastCheckerInInnerBoard(int playerID);
 
-    boolean lastCheckerInOpponentsInnerBoard(Player player);
+    boolean lastCheckerInOpponentsInnerBoard(int playerID);
 
-    boolean allCheckersOff(Player player);
+    boolean allCheckersOff(int playerID);
 
-    boolean hasCheckerOff(Player player);
+    boolean hasCheckerOff(int  playerID);
     
     int[][] getBoardAfterPlay(int[][] shadowBoard, Play playersMove, int playersNumber);
 }

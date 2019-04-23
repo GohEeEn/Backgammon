@@ -1,3 +1,4 @@
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -145,11 +146,33 @@ public class Francis implements BotAPI {
      * TODO
      */
     public String getDoubleDecision() {
-        // Add your code here
-        return "n";
+
+    	// Match Stage : 3 kind of stages -> Normal, Both Players 2 points from winning, Post Crawford
+    	String play = "double";
+//    	int playDouble = ThreadLocalRandom.current().nextInt(0, 1);
+    	
+    	// Used only under normal indecisive case (0/1)
+//    	if(playDouble == 0)
+//    		play = "no";
+//    	else
+//    		play = "double";
+    	
+    	// Stage 1 : Both Players 2 points from winning 
+    	if(me.getScore() - 2 == match.getMatchPoint() && me.getScore() - 2 == match.getMatchPoint()) {
+    		
+    		
+    	} // Post Crawford Stage
+    	else if(!match.canDouble(me.getId())) {
+    		
+    	} // Normal Stage : 
+    	else {
+    		
+    		if(board.lastCheckerInInnerBoard(me.getId()))
+    			play = "double";
+    	}
+    	
+    	return play; 
     }
-    
-    
     
     // evaluating the stats
     private int getScoreForBoard(int[][] theBoard) {

@@ -1,6 +1,6 @@
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Bot1 implements BotAPI {
+public class Steven implements BotAPI {
 
     // The public API of Bot must not change
     // This is ONLY class that you can edit in the program
@@ -50,7 +50,7 @@ public class Bot1 implements BotAPI {
 
     // END OF Weights
     
-    Bot1(PlayerAPI me, PlayerAPI opponent, BoardAPI board, CubeAPI cube, MatchAPI match, InfoPanelAPI info) {
+    Steven(PlayerAPI me, PlayerAPI opponent, BoardAPI board, CubeAPI cube, MatchAPI match, InfoPanelAPI info) {
         this.me = me;
         this.opponent = opponent;
         this.board = board;
@@ -64,7 +64,7 @@ public class Bot1 implements BotAPI {
      * return the bot name (must match the class name)
      */
     public String getName() {
-        return "Bot1"; 
+        return "Steven"; 
     }
     
     public static String getTheName() {
@@ -75,7 +75,8 @@ public class Bot1 implements BotAPI {
      * TODO
      */
     public String getCommand(Plays possiblePlays) {
-        // Add your code here
+        
+    	// Add your code here
     	
 
     	// Get score for current board(without any moves)
@@ -122,21 +123,18 @@ public class Bot1 implements BotAPI {
         return "1";
     }
     
-    // Helpers for getCommand
+    // ----- Helper functions for getCommand -----
     
     private boolean getIfPointIsInPlayersHome(int point) {
-    	if(point > 0 && point <= 6) {
+    	if(point > 0 && point <= 6)
     		return true;
-    	}
-    	
     	return false;
     }
     
     private boolean getIfPointIsInPlayersEnemysHome(int point) {
     	
-    	if(point > 18  && point <= 24) {
+    	if(point > 18  && point <= 24)
     		return true;
-    	}
     	return false;
     }
     

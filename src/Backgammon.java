@@ -55,7 +55,7 @@ public class Backgammon {
         System.exit(0);
     }
     
-    
+ 
     
     /**
      * Method to setup a match <br>
@@ -226,23 +226,26 @@ public class Backgammon {
         }
     }
     
-    // For bot test
+    /**
+     * Auto-naming method for bot test
+     */
     private void getPlayerName_botTest() {
-    	// Set up francis with player 1
+    	
+    	// Set up Francis with player 1
         players.get(0).setName(Francis.getTheName());
     	ui.displayString("> Francis bot controlls player 1");
     	ui.displayPlayerColor(players.get(0));
     	
-    	// set up bot1 with player 2
-        players.get(1).setName(Bot1.getTheName());
+    	// Set up Steven with player 2
+        players.get(1).setName(Steven.getTheName());
     	ui.displayString("> Bot1 bot controlls player 2");
     	ui.displayPlayerColor(players.get(1));
     	
-    	// Set up the francis bot
+    	// Set up the Francis bot
     	bots[0] = new Francis(players.get(0),players.get(1),board,cube,match,ui.getInfoPanel());    	
     	
-    	// set up the bot1
-    	bots[1] = new Bot1(players.get(1),players.get(0),board,cube,match,ui.getInfoPanel());
+    	// set up the Steven bot
+    	bots[1] = new Steven(players.get(1),players.get(0),board,cube,match,ui.getInfoPanel());
 
         
     }
@@ -520,7 +523,7 @@ public class Backgammon {
                 
                 // Get the bot to choose best move
                 //(bots[currentPlayer.getId()]).getCommand(possiblePlays
-                command = new Command(bots[currentPlayer.getId()].getCommand(possiblePlays),possiblePlays);
+                command = new Command(bots[currentPlayer.getId()].getCommand(possiblePlays), possiblePlays);
                 
                 ui.displayString("> " + command);		// Receive and display the given command 
                 
@@ -657,41 +660,41 @@ public class Backgammon {
      */
     private void displayEndStage() throws InterruptedException {
     	
-    	System.out.print("Enter End Stage\t:");
+//    	System.out.print("Enter End Stage\t:");
     	// END MATCH 
     	// Case if the current player uses the 'quit' command 
     	if(realGame.getResignedByCommand()) {
-    		System.out.print(" 1 ");
+//    		System.out.print(" 1 ");
     		if(startGame) {
-    			System.out.print(" a ");
+//    			System.out.print(" a ");
     			ui.displayString(players.getCurrent().toString() + " declare forfeit, thus " + players.getEnemy().toString() + " WIN THE GAME !!");
     		}
     		else {
-    			System.out.print(" b ");
+//    			System.out.print(" b ");
     			ui.displayString("Program closed");
     		}
     	} // Case if the players decide not to continue the game matches : Compare their score and winner is the one with higher score
     	else if(!nextGame) { 
-    		System.out.print(" 2 ");
+//    		System.out.print(" 2 ");
 			if(match.getWinner() == null) { 
-				System.out.print(" a ");
+//				System.out.print(" a ");
 				ui.displayString("IT IS A DEUCE !!"); // Only happen when quit game suddenly or stop to continue the next match
 			}
 			else {
-				System.out.print(" b ");
+//				System.out.print(" b ");
 				ui.display_matchWinner(match.getWinner().toString());
 			}
 		}
     	// END A GAME 
     	// Case if a game end by rejecting double play (Opponent is the player who reject the doubling dice)
     	else if(realGame.getResignedByDouble()) {
-    		System.out.print(" 3 ");
+//    		System.out.print(" 3 ");
     		ui.print_rejectedDoubleTheScore(realGame.getWinner().toString(), players.getEnemy().toString(), realGame.getPoints()); 
     		
     	} // Case if a match end normally 	 
     	else if(realGame.isOver()) {    	
     			
-    		System.out.print(" 4 ");
+//    		System.out.print(" 4 ");
     		ui.display_roundWinner(players.getCurrent());
         }
     		
@@ -699,7 +702,6 @@ public class Backgammon {
     	// DEBUG : Current Player not a winner
     	ui.display_CurrentMatchScores(players);
         
-    	
     }
     	
 

@@ -22,6 +22,7 @@ public class Board implements BoardAPI {
     // ----- CONSTANTS -----
     public static final int BAR = 25;           	// Index of the BAR
     public static final int BEAR_OFF = 0;      		// Index of the BEAR OFF
+    public static final int ACE_POINT = 1;      		// Index of the ACE POINT
     private static final int INNER_END = 6;     	// Index for the end of the inner board
     private static final int OUTER_END = 18;
     public static final int NUM_PIPS = 24;      	// Total number of pips on this board, EXECLUDING BAR and BEAR OFF
@@ -186,23 +187,23 @@ public class Board implements BoardAPI {
     
     /**
      * Method that search for the plays that are possible with all of the movements that can be made based on the dice
-     * @param player 	Current player
+     * @param playerID 	Player ID of the current player
      * @param dice		Dice roll made by current player
      * @return	All the possible plays in the current game turn
      */
-	public Plays getPossiblePlays(Player player, Dice dice) {
+	public Plays getPossiblePlays(int playerID, Dice dice) {
 	   
 	   Plays possiblePlays;
 	   Movements movements = new Movements(dice);
 	   
-	   if (player.getDice().isDouble()) {
-		   possiblePlays = findAllPlays(this,player,movements);
+	   if (players.get(playerID).getDice().isDouble()) {
+		   possiblePlays = findAllPlays(this, players.get(playerID), movements);
 		   
 	   } else {
 		   
-	       possiblePlays = findAllPlays(this,player,movements);
+	       possiblePlays = findAllPlays(this, players.get(playerID), movements);
 	       movements.reverse();
-	       possiblePlays.add(findAllPlays(this,player,movements));
+	       possiblePlays.add(findAllPlays(this, players.get(playerID), movements));
 	   }
 	   
 	   possiblePlays.removeIncompletePlays();
@@ -321,19 +322,19 @@ public class Board implements BoardAPI {
     }
     
     @Override
-	public boolean lastCheckerInInnerBoard(Player player) {
-		return findLastChecker(player) <= INNER_END;
+	public boolean lastCheckerInInnerBoard(int playerID) {
+		return findLastChecker(players.get(playerID)) <= INNER_END;
 	}
 
 	@Override
-	public boolean lastCheckerInOpponentsInnerBoard(Player player) {
-        return findLastChecker(player) > OUTER_END;
+	public boolean lastCheckerInOpponentsInnerBoard(int playerID) {
+        return findLastChecker(players.get(playerID)) > OUTER_END;
 	}
 	
 	private int findLastChecker(Player player) {
         int pip;
-        for (pip=BAR; pip>=BEAR_OFF; pip--) {
-            if (checkers[player.getId()][pip]>0) {
+        for (pip = BAR ; pip >= BEAR_OFF ; pip--) {
+            if (checkers[player.getId()][pip] > 0) {
                 break;
             }
         }
@@ -341,13 +342,13 @@ public class Board implements BoardAPI {
     }
 	
 	@Override
-	public boolean allCheckersOff(Player player) {
-		return checkers[player.getId()][BEAR_OFF] == NUM_CHECKERS;
+	public boolean allCheckersOff(int playerID) {
+		return checkers[playerID][BEAR_OFF] == NUM_CHECKERS;
 	}
 
 	@Override
-	public boolean hasCheckerOff(Player player) {
-		return checkers[player.getId()][BEAR_OFF] > 0;
+	public boolean hasCheckerOff(int playerID) {
+		return checkers[playerID][BEAR_OFF] > 0;
 	}
 
     // ----- END OF BOOLEAN METHODS -----

@@ -11,7 +11,7 @@ public class InfoPanel extends JPanel implements InfoPanelAPI{
 
     private static final long serialVersionUID = 1L;
     private static final int TEXT_AREA_HEIGHT = 40;
-    private static final int CHARACTER_WIDTH = 47;
+    private static final int CHARACTER_WIDTH = 50;
     private static final int FONT_SIZE = 12;
 
     private final JTextArea textArea;
@@ -34,6 +34,13 @@ public class InfoPanel extends JPanel implements InfoPanelAPI{
         textArea.setText(textArea.getText() + "\n" + text);
     }
 
+    /**
+     * Method to clear the previous message output on the info panel
+     */
+    public void clearText() {
+    	textArea.setText(null);
+    }
+    
 	@Override
 	public String getAllInfo() {
 		// TODO Auto-generated method stub

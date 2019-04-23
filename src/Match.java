@@ -6,7 +6,6 @@ public class Match implements MatchAPI{
     private Players players;
     private int matchPoint;
     private int matchLength;
-    private int gamePlayed;
     
     /** A game without doubling cube, when the leading player comes within 1 point in order to win the game */
     private boolean crawford, crawfordDone;
@@ -16,7 +15,6 @@ public class Match implements MatchAPI{
         this.cube = cube;
         this.players = players;
         matchLength = 1;
-        gamePlayed = 0;
         matchPoint = 0;
         crawford = false;
         crawfordDone = false;

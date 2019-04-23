@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class UI { 
 
-    private static final int FRAME_WIDTH = 1250;
+    private static final int FRAME_WIDTH = 1120;
     private static final int FRAME_HEIGHT = 600;
     
     
@@ -17,18 +17,15 @@ public class UI {
     private final BoardPanel boardPanel;
     private final InfoPanel infoPanel;
     private final CommandPanel commandPanel;
-    private final GameInformationPanel gameInfoPanel;
 
-    UI (Board board, Players players) {
+    UI (Board board, Players players, Cube cube, Match match, BotAPI[] bots) {
         infoPanel = new InfoPanel();
         commandPanel = new CommandPanel();
         JFrame frame = new JFrame();
-        boardPanel = new BoardPanel(board,players);
-        gameInfoPanel = new GameInformationPanel();
+        boardPanel = new BoardPanel(board,players,cube,match);
         frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
         frame.setTitle("Backgammon");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.add(gameInfoPanel, BorderLayout.LINE_START);
         frame.add(boardPanel, BorderLayout.CENTER);
         frame.add(infoPanel, BorderLayout.LINE_END);
         frame.add(commandPanel, BorderLayout.PAGE_END);
@@ -45,6 +42,10 @@ public class UI {
         boardPanel.refresh();
     }
 
+    public void clearInfo() {
+    	infoPanel.clearText();
+    }
+    
     /**
      * Method to display any given string on the info panel
      * @param string
@@ -54,7 +55,6 @@ public class UI {
     }
   
     public void displayStartOfGame() {
-    	displayString("=============== NEW GAME ===============");
         displayString("\t>> Welcome to Backgammon! <<");
     }
 
@@ -106,7 +106,7 @@ public class UI {
         displayString(player + " wins the roll and goes first.\n");
     }
     
-    public void display_CurrentPlayersScores(Players players) {
+    public void display_CurrentMatchScores(Players players) {
     	displayString("Player 1 [" + players.get(0).toString() + "] currently has score " + players.get(0).getScore());
     	displayString("Player 2 [" + players.get(1).toString() + "] currently has score " + players.get(1).getScore());
     	displayString("");
@@ -232,13 +232,29 @@ public class UI {
      */
     public void print_rejectedDoubleTheScore(String winnerName , String loserName , int earnScore) {
     	displayString("\nPlayer " + loserName + " rejects the doubling challenge, so " + winnerName + 
-    			"win and gain " + earnScore + " points in current game turn.");
+    			" win and gain " + earnScore + " points in current game turn.");
     }
     
-    public void display_PlayersWantNextGame() throws InterruptedException {
+    public void display_PlayersWantNextGame() throws InterruptedException{
     	displayString("Next game will start in 1 second\n");
-    	displayString("=============== NEW GAME ===============");
     	TimeUnit.SECONDS.sleep(1);
+    }
+    
+    public void display_PlayersWantQuit() {
+    	displayString("Players want to QUIT PROGRAM");
+    }
+    
+    public void display_PlayersWantQuitMatch() {
+    	displayString("\n Players want to QUIT current match");
+    }
+    
+    public void display_PlayersWantNextMatch() throws InterruptedException{
+    	displayString("New Match will start in 3 second\n");
+    	TimeUnit.SECONDS.sleep(3);
+    }
+    
+    public void display_newGame(){
+    	displayString("=============== NEW GAME ===============");
     }
     
     public void display_endGame() throws InterruptedException {
@@ -246,14 +262,8 @@ public class UI {
     	TimeUnit.SECONDS.sleep(1);
     }
     
-    public void display_PlayersWantQuitMatch() {
-    	displayString("Players want to QUIT current match");
-    }
-    
-    public void display_PlayersWantNextMatch() throws InterruptedException {
-    	displayString("New Match will start in 3 second\n");
+    public void display_newMatch(){
     	displayString("=============== NEW MATCH ===============");
-    	TimeUnit.SECONDS.sleep(3);
     }
     
     public void display_endMatch() throws InterruptedException {
@@ -261,37 +271,10 @@ public class UI {
     	TimeUnit.SECONDS.sleep(3);
     }
     
-    public void display_PlayersWantQuit() {
-    	displayString("Players want to QUIT PROGRAM");
-    }
-    
     public void display_endProgram() throws InterruptedException {
-    	displayString("===============> END BACKGAMMON <===============\n");
+    	displayString("=============> END BACKGAMMON <=============\n");
     	TimeUnit.SECONDS.sleep(3);
     }
     
     // ----- END OF END GAME MESSAGES -----
-    
-    // Information panel (left panel)
-    public void updatePointsArePlayingTo(int pointsArePlayingTo) {
-    	gameInfoPanel.setScoreArePlayingUpTo(pointsArePlayingTo);
-    }
-    
-    public void updatePointsOfPlayer(int playerNumber, int points) {
-    	if(playerNumber == 0) {
-    		// is player 1
-    		gameInfoPanel.setScoreOfPlayer1(points);
-    	}else {
-    		// is player 2
-    		gameInfoPanel.setScoreOfPlayer2(points);
-    	}
-    }
-    
-    public void doubleTheDoubleCube() {
-    	gameInfoPanel.doubleTheGameScore();
-    }
-    
-    public void updateInfoPanel() {
-    	gameInfoPanel.updateInfoPanel();
-    }
 }

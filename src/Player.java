@@ -42,11 +42,17 @@ public class Player implements PlayerAPI{
 
     public Dice getDice() { return dice; }
     
+    public void setName(String name) { this.name = name; }
+
     public int getScore() { return this.match_score; }
     
-    public void setName(String name) { this.name = name; }
-    
     public void addScore(int score) { this.match_score += score; }
+    
+    @Override
+	public Dice getDuplicateDice() {
+		Dice duplicateDice = new Dice(dice);
+        return duplicateDice;
+	}
     
     // ----- END OF GETTER and SETTER METHODS -----
     
@@ -59,5 +65,7 @@ public class Player implements PlayerAPI{
     	name = "";
     	match_score = 0;
     }
+
+	
     
 }

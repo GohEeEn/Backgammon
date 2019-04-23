@@ -4,6 +4,11 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Class that include the definition of structure of the command panel
+ * @author Ee En Goh 		17202691
+ * @author Ferdia Fagan 	16372803
+ */
 public class CommandPanel extends JPanel  {
 
     private static final long serialVersionUID = 1L;

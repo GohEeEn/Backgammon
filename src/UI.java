@@ -4,12 +4,12 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * UI class is the top level interface to the user interface
- * @author Ee En Goh 17202691
- *
+ * @author Ee En Goh 		17202691
+ * @author Ferdia Fagan 	16372803
  */
 public class UI { 
 
-    private static final int FRAME_WIDTH = 1250;
+    private static final int FRAME_WIDTH = 1120;
     private static final int FRAME_HEIGHT = 600;
     
     
@@ -17,23 +17,24 @@ public class UI {
     private final BoardPanel boardPanel;
     private final InfoPanel infoPanel;
     private final CommandPanel commandPanel;
-    private final GameInformationPanel gameInfoPanel;
 
-    UI (Board board, Players players) {
+    UI (Board board, Players players, Cube cube, Match match, BotAPI[] bots) {
         infoPanel = new InfoPanel();
         commandPanel = new CommandPanel();
         JFrame frame = new JFrame();
-        boardPanel = new BoardPanel(board,players);
-        gameInfoPanel = new GameInformationPanel();
+        boardPanel = new BoardPanel(board,players,cube,match);
         frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
         frame.setTitle("Backgammon");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.add(gameInfoPanel, BorderLayout.LINE_START);
         frame.add(boardPanel, BorderLayout.CENTER);
         frame.add(infoPanel, BorderLayout.LINE_END);
         frame.add(commandPanel, BorderLayout.PAGE_END);
         frame.setResizable(false);
         frame.setVisible(true);
+    }
+    
+    public InfoPanel getInfoPanel() {
+    	return infoPanel;
     }
 
     public String getString() {
@@ -45,12 +46,19 @@ public class UI {
         boardPanel.refresh();
     }
 
+    public void clearInfo() {
+    	infoPanel.clearText();
+    }
+    
+    /**
+     * Method to display any given string on the info panel
+     * @param string
+     */
     public void displayString(String string) {
         infoPanel.addText(" " + string);
     }
   
     public void displayStartOfGame() {
-    	displayString("=============== NEW GAME ===============");
         displayString("\t>> Welcome to Backgammon! <<");
     }
 
@@ -62,12 +70,12 @@ public class UI {
     	displayString("Enter the number of points are playing up to:");
     }
     
-    public void promptPlayersNextMatch() {
-    	displayString("Do you wish to play next match? (yes/no)");
+    public void promptPlayersNextGame() {
+    	displayString("Do you wish to play next game? (yes/no)");
     }
     
-    public void promptRestartNewGame() {
-    	displayString("Do you wish to play next game? (yes/no)");
+    public void promptRestartNewMatch() {
+    	displayString("Do you wish to play next match? (yes/no)");
     }
     
     public void promptPlayerToDouble() {
@@ -78,11 +86,13 @@ public class UI {
     	displayString("Enable redouble play with command 'double', else press 'Enter' key");
     }
     
-    /*
-    public void promptOpponentIfAcceptDouble() {
-    	displayString("Do you want to accept the double? (yes/no)");
+    public void promptOpponentToAcceptDouble(String opponent) {
+    	displayString("Player " + opponent + " , do you want to accept the double? (yes/no)");
     }
-    */
+    
+    public void print_doubleTheScore() {
+    	displayString("The score has been doubled\n");
+    }
     
     public void displayPlayerColor(Player player) {
         displayString(player + " uses " + player.getColorName() + " checkers.");
@@ -97,27 +107,25 @@ public class UI {
     }
 
     public void displayDiceWinner(Player player) {
-        displayString(player + " wins the roll and goes first.");
+        displayString(player + " wins the roll and goes first.\n");
     }
     
-    public void display_CurrentPlayersScores(int player1_winCount, int player2_winCount) {
-    	displayString("Player 1 has a score of: " + player1_winCount + ", and player 2 has a score of: " + player2_winCount);
+    public void display_CurrentMatchScores(Players players) {
+    	displayString("Player 1 [" + players.get(0).toString() + "] currently has score " + players.get(0).getScore());
+    	displayString("Player 2 [" + players.get(1).toString() + "] currently has score " + players.get(1).getScore());
+    	displayString("");
     }
-
-    public void displayGameWinner(Player player) {
-        displayString(player + " WINS THE GAME!!!");
-    }
-
+    
     public void promptCommand(Player player) {
         displayString(player + " [" + player.getColorName() + "] Enter your move or quit:");
     }
     
-    public void print_doubleTheScore() {
-    	displayString("The score has been doubled");
-    }
-       
+    /**
+     * Method to notify the current player it is his/her game turn
+     * @param playerName	Current player
+     */
     public void print_CurrentPlayer(String playerName) {
-    	displayString("Player " +  playerName + ", it is now your turn.");
+    	displayString("Player " +  playerName + ", it is your turn.");
     }
     // ----- END OF PROMPTS DISPLAY METHODS -----
     
@@ -185,23 +193,22 @@ public class UI {
     // ----- END OF MOVE RESPOND MESSAGES -----
     
     // ----- ERROR RESPOND MESSAGES -----
-    
     public void displayError_WrongScoreToWinEntered() {
-    	displayString("Sorry, that number of points is not possible. Please enter a number greater 0, but less or equal than the number of players pips");
+    	displayString("Invalid Gamepoint : Please enter a number greater 0 and equal or less than the number of players pips\n");
     }
     
     public void displayError_WrongInputForNumberOfPointsPlayingTo() throws InterruptedException {
-    	displayString("Wrong input for number of moves, please try again");
+    	displayString("Wrong input for number of moves, please try again\n");
     	TimeUnit.SECONDS.sleep(1);
     }
     
     public void displayError_incorrectEntry() throws InterruptedException {
-    	displayString("Invalid Command : Please try again");
+    	displayString("Invalid Command : Please try again\n");
     	TimeUnit.SECONDS.sleep(1);
     }
     
     public void displayError_WrongInputGivenForRepeatingOrEndingGame() throws InterruptedException {
-    	displayString("Wrong input, please enter 'yes' or 'no', please try again");
+    	displayString("Wrong input, please enter 'yes' or 'no', please try again\n");
     	TimeUnit.SECONDS.sleep(1);
     }
     
@@ -209,27 +216,7 @@ public class UI {
     
     // ----- END GAME MESSAGES -----
     public void display_roundWinner(Player winner) {
-    	displayString(winner.toString() + " win this match! Keep it up!");
-    }
-    
-    public void display_PlayersWantNextMatch() throws InterruptedException {
-    	displayString("Next match will start in 1 second\n");
-    	displayString("=============== NEW MATCH ===============");
-    	TimeUnit.SECONDS.sleep(1);
-    }
-    
-    public void display_PlayersWantEndGame() {
-    	displayString("Players want to end game");
-    }
-    
-    public void display_endGame() throws InterruptedException {
-    	displayString("=============== END GAME ===============");
-    	TimeUnit.SECONDS.sleep(3);
-    }
-    
-    public void display_endMatch() throws InterruptedException {
-    	displayString("=============== END MATCH ===============");
-    	TimeUnit.SECONDS.sleep(1);
+    	displayString(winner.toString() + " WIN THIS GAME ! KEEP IT UP ! ");
     }
     
     /**
@@ -237,8 +224,8 @@ public class UI {
      * @param player_id		Winner's player ID
      * @param playerName	Winner's name
      */
-    public void display_gameWinner(String playerName) {
-    	displayString("Player " +  playerName + " HAS WON! CONGRAT !!");
+    public void display_matchWinner(String playerName) {
+    	displayString("Player " +  playerName + " HAS WON THE MATCH! CONGRAT !!");
     }
     
     /**
@@ -248,43 +235,50 @@ public class UI {
      * @param earnScore The match score the winner earns in the recent match	
      */
     public void print_rejectedDoubleTheScore(String winnerName , String loserName , int earnScore) {
-    	displayString(winnerName + " has won, and " + loserName + " has lost the match. " + winnerName + 
-    			" has gained " + earnScore + " points in current game turn.");
+    	displayString("\nPlayer " + loserName + " rejects the doubling challenge, so " + winnerName + 
+    			" win and gain " + earnScore + " points in current game turn.");
     }
+    
+    public void display_PlayersWantNextGame() throws InterruptedException{
+    	displayString("Next game will start in 1 second\n");
+    	TimeUnit.SECONDS.sleep(1);
+    }
+    
+    public void display_PlayersWantQuit() {
+    	displayString("Players want to QUIT PROGRAM");
+    }
+    
+    public void display_PlayersWantQuitMatch() {
+    	displayString("\n Players want to QUIT current match");
+    }
+    
+    public void display_PlayersWantNextMatch() throws InterruptedException{
+    	displayString("New Match will start in 3 second\n");
+    	TimeUnit.SECONDS.sleep(3);
+    }
+    
+    public void display_newGame(){
+    	displayString("=============== NEW GAME ===============");
+    }
+    
+    public void display_endGame() throws InterruptedException {
+    	displayString("=============== END GAME ===============\n");
+    	TimeUnit.SECONDS.sleep(1);
+    }
+    
+    public void display_newMatch(){
+    	displayString("=============== NEW MATCH ===============");
+    }
+    
+    public void display_endMatch() throws InterruptedException {
+    	displayString("=============== END MATCH ===============\n");
+    	TimeUnit.SECONDS.sleep(3);
+    }
+    
+    public void display_endProgram() throws InterruptedException {
+    	displayString("=============> END BACKGAMMON <=============\n");
+    	TimeUnit.SECONDS.sleep(3);
+    }
+    
     // ----- END OF END GAME MESSAGES -----
-    
-    // Information panel (left panel)
-    public void updatePointsArePlayingTo(int pointsArePlayingTo) {
-    	gameInfoPanel.setScoreArePlayingUpTo(pointsArePlayingTo);
-    }
-    
-    public void updatePointsOfPlayer1(int points) {
-    	gameInfoPanel.setScoreOfPlayer1(points);
-    }
-    
-    public void updatePointsOfPlayer2(int points) {
-    	gameInfoPanel.setScoreOfPlayer2(points);
-    }
-    
-    public void updatePointsOfPlayer(int playerNumber, int points) {
-    	if(playerNumber == 0) {
-    		// is player 1
-    		updatePointsOfPlayer1(points);
-    	}else {
-    		// is player 2
-    		updatePointsOfPlayer2(points);
-    	}
-    }
-    
-    public void doubleTheDoubleCube() {
-    	gameInfoPanel.doubleTheGameScore();
-    }
-    
-    public void giveDoubleCubeTo(int playerNumber) {
-    	gameInfoPanel.setThelayerWhoOwnsDoubleDice(playerNumber);
-    }
-    
-    public void updateInfoPanel() {
-    	gameInfoPanel.updateInfoPanel();
-    }
 }

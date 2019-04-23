@@ -5,7 +5,8 @@ import java.util.Iterator;
 
 /**
  * Plays class is a list of legal plays that a player can make in the current turn
- * @author Ee En Goh 17202691
+ * @author Ee En Goh 		17202691
+ * @author Ferdia Fagan 	16372803
  */
 public class Plays implements Iterable<Play>, Iterator<Play> {
 

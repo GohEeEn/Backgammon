@@ -2,11 +2,16 @@ import javax.swing.*;
 import javax.swing.text.*;
 import java.awt.*;
 
-public class InfoPanel extends JPanel {
+/**
+ * Class that define the information panel of the right-hand side of the panel which display the response message of the program
+ * @author Ee En Goh 		17202691
+ * @author Ferdia Fagan 	16372803
+ */
+public class InfoPanel extends JPanel implements InfoPanelAPI{
 
     private static final long serialVersionUID = 1L;
     private static final int TEXT_AREA_HEIGHT = 40;
-    private static final int CHARACTER_WIDTH = 47;
+    private static final int CHARACTER_WIDTH = 50;
     private static final int FONT_SIZE = 12;
 
     private final JTextArea textArea;
@@ -28,5 +33,24 @@ public class InfoPanel extends JPanel {
     public void addText(String text) {
         textArea.setText(textArea.getText() + "\n" + text);
     }
+
+    /**
+     * Method to clear the previous message output on the info panel
+     */
+    public void clearText() {
+    	textArea.setText(null);
+    }
+    
+	@Override
+	public String getAllInfo() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getLatestInfo() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

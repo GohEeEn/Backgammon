@@ -4,8 +4,8 @@ import java.util.Iterator;
 
 /**
  * Players class that created to groups two Players as a unit
- * @author Ee En Goh 17202691
- *
+ * @author Ee En Goh 		17202691
+ * @author Ferdia Fagan 	16372803
  */
 public class Players implements Iterable<Player>, Iterator<Player> {
 
@@ -60,13 +60,15 @@ public class Players implements Iterable<Player>, Iterator<Player> {
     	}
     }
 
+    public Player getEnemy(Player current) {
+    	
+    	if(current.getId() == 0)
+    		return players.get(1);
+    	else
+    		return players.get(0);
+    }
+    
     public void advanceCurrentPlayer() {
-        /*
-    	currentPlayer++;
-        if (currentPlayer == NUM_PLAYERS) {
-            currentPlayer = 0;
-        }
-        */
     	currentPlayer++ ;
         currentPlayer %= NUM_PLAYERS ;
     }
@@ -84,6 +86,15 @@ public class Players implements Iterable<Player>, Iterator<Player> {
         return players.get(0).getDice().getDie() == players.get(1).getDice().getDie();
     }
 
+    /**
+     * Reset the Players object to restart a new match 
+     */
+    public void reset() {
+    	for(int i = 0 ; i < Backgammon.NUM_PLAYERS ; i++)
+    		players.get(i).reset();
+    }
+
+    
     public boolean hasNext() {
         return iterator.hasNext();
     }
@@ -91,7 +102,7 @@ public class Players implements Iterable<Player>, Iterator<Player> {
     public Player next() {
         return iterator.next();
     }
-
+    
     public Iterator<Player> iterator() {
         iterator = players.iterator();
         return iterator;

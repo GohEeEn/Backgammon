@@ -1,7 +1,7 @@
 /**
- * Dice holds the details for a one die or two numbers roll
- * @author Ee En Goh 17202691
- *
+ * Dice class that holds the details for a one die or two numbers roll
+ * @author Ee En Goh 		17202691
+ * @author Ferdia Fagan 	16372803
  */
 class Dice {
 

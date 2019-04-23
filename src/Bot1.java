@@ -7,6 +7,12 @@ public class Bot1 implements BotAPI {
     // Rename Bot to the name of your team. Use camel case.
     // Bot may not alter the state of the game objects
     // It may only inspect the state of the board and the player objects
+	
+	private final boolean TRAINING = true;
+    public static final int BAR = 25;           	// Index of the BAR
+    public static final int BEAR_OFF = 0;      		// Index of the BEAR OFF
+    public static final int NUM_PIPS = 24;      	// Total number of pips on this board, EXECLUDING BAR and BEAR OFF
+
 
     private PlayerAPI me, opponent;
     private BoardAPI board;
@@ -47,6 +53,10 @@ public class Bot1 implements BotAPI {
     
     private int botPipCountInHome_weight = 0;
     private int opponentsPipCountInHome_weight = 0;
+    
+    
+    
+    
 
     // END OF Weights
     
@@ -79,20 +89,18 @@ public class Bot1 implements BotAPI {
     	
 
     	// Get score for current board(without any moves)
-    	int rootScore = getScoreForBoard(board.get());
     	int currentHighestScore = 0;
     	Play playWithHighestScore;
     	
     	int[][] originalBoard = board.get();
     	
     	boolean firstScoreGotten = false;
-    	
-    	
+    	int currentPlayPointer = -1;
     	// Now calculate score for each play
     	for (Play currentPlay : possiblePlays) {
 			
     		// Get the board after the move
-    		int[][] shadowBoard_AfterMove = board.getBoardAfterPlay(originalBoard.clone(), currentPlay, me.getId());
+    		int[][] shadowBoard_AfterMove = getBoardAfterPlay(originalBoard.clone(), currentPlay, me.getId());
     		
     		// Get the new boards score
     		int scoreOfBoardAfterMove = getScoreForBoard(shadowBoard_AfterMove);
@@ -109,17 +117,11 @@ public class Bot1 implements BotAPI {
     			}
     		}
     		
+    		currentPlayPointer++;
 		}
     	
     	// in the end, the highest scored move, and the move that will achieve the highest score
-    	
-    	
-    	
-    	
-    	
-    	
-    	
-        return "1";
+        return ("" + currentPlayPointer);
     }
     
     // Helpers for getCommand
@@ -148,6 +150,16 @@ public class Bot1 implements BotAPI {
      */
     public String getDoubleDecision() {
         // Add your code here
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    	
+    	
         return "n";
     }
     
@@ -374,6 +386,7 @@ public class Bot1 implements BotAPI {
 		opponentsPipCountBearedOff_weight = botWeights[11];
     }
     
+    // ONLY FOR TRAINING
     public int[] getWeights() {
     	int[] weights = {pipCountDifference_weight,blockBlotDif_weight,botBlocksHome_weight,botBlockOpponentHome_weight,botPipCountInJail_weight
     			,botPipCountInHome_weight,botPipCountBearedOff_weight, opponentsBlocksHome_weight, opponentBlockBotHome_weight,opponentsPipCountInJail_weight
@@ -392,7 +405,42 @@ public class Bot1 implements BotAPI {
     public void setEnemyBot(BotAPI opponentBot) {
     	this.opponentBot = opponentBot;
     }
+    // END ONLY FOR TRAINING
+    
+    // SEEING THE BOARD
+    
+    private int[][] getBoardAfterPlay(int[][] shadowBoard, Play playersMove, int playersNumber) {
+		for (Move move : playersMove) {
+			shadowBoard = getBoardAfterMove(shadowBoard,move,playersNumber);
+		}
+		return shadowBoard;
+	}
+	
+	private int[][] getBoardAfterMove(int[][] shadowBoard, Move playersMove, int playersNumber){
+		
+		shadowBoard[playersNumber][playersMove.getFromPip()]--;
+		shadowBoard[playersNumber][playersMove.getToPip()]++;
+        
+        // bear off case-> add point for current player
+        // TODO
+        
+        // Deal with hits
+        if (playersMove.getToPip() < BAR && playersMove.getToPip() > BEAR_OFF &&
+        		shadowBoard[opponent.getId()][calculateOpposingPip(playersMove.getToPip())] == 1) {
+        	shadowBoard[opponent.getId()][calculateOpposingPip(playersMove.getToPip())]--;
+        	shadowBoard[opponent.getId()][BAR]++;
+        }
+		
+		return shadowBoard;
+	}
+    
+    private int calculateOpposingPip(int pip) {
+        return NUM_PIPS - pip + 1;
+    }
     
     
-
+    
+    
+    // SEEING THE BOARD
+    
 }

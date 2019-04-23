@@ -366,30 +366,36 @@ public class Board implements BoardAPI {
 	}
 
 	@Override
-	public int[][] getBoardAfterPlay(int[][] shadowBoard, Play playersMove, int playersNumber) {
-		for (Move move : playersMove) {
-			shadowBoard = getBoardAfterMove(shadowBoard,move,playersNumber);
-		}
-		return shadowBoard;
+	public Plays getPossiblePlays(int playerId, Dice dice) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean lastCheckerInInnerBoard(int playerId) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean lastCheckerInOpponentsInnerBoard(int playerId) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean allCheckersOff(int playerId) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean hasCheckerOff(int playerId) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 	
-	private int[][] getBoardAfterMove(int[][] shadowBoard, Move playersMove, int playersNumber){
-		
-		shadowBoard[playersNumber][playersMove.getFromPip()]--;
-		shadowBoard[playersNumber][playersMove.getToPip()]++;
-        
-        // bear off case-> add point for current player
-        // TODO
-        
-        // Deal with hits
-        if (playersMove.getToPip() < BAR && playersMove.getToPip() > BEAR_OFF &&
-        		shadowBoard[getOpposingId(playersNumber)][calculateOpposingPip(playersMove.getToPip())] == 1) {
-        	shadowBoard[getOpposingId(playersNumber)][calculateOpposingPip(playersMove.getToPip())]--;
-        	shadowBoard[getOpposingId(playersNumber)][BAR]++;
-        }
-		
-		return shadowBoard;
-	}
+	
 
 
 	

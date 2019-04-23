@@ -226,7 +226,7 @@ public class Backgammon {
         }
     }
     
-    // For bot test
+    // For bot testing and training
     private void getPlayerName_botTest() {
     	// Set up francis with player 1
         players.get(0).setName(Francis.getTheName());
@@ -244,7 +244,8 @@ public class Backgammon {
     	// set up the bot1
     	bots[1] = new Bot1(players.get(1),players.get(0),board,cube,match,ui.getInfoPanel());
 
-        
+    	((Francis)(bots[0])).setEnemyBot(bots[1]);
+    	((Bot1)(bots[1])).setEnemyBot(bots[0]);
     }
     
     /**
@@ -393,11 +394,15 @@ public class Backgammon {
             
             // ----- CHECKER MOVE PART -----
             checkerMoveInTurns(currentPlayer, currentDice); 
-            ui.display(); // Display information about the player's attempt in current game turn
+            // For training
+            if(bots[currentPlayer.getId()] == null) {
+                ui.display(); // Display information about the player's attempt in current game turn
+                debug();
+            }
             
             // ----- END OF CHECKER MOVE PART -----
             
-            debug();
+            
             
             // ----- END TURN : switch current player -----
             if(!realGame.isOver()) {
@@ -447,7 +452,9 @@ public class Backgammon {
         	// Check if the current player wants to offer double or redouble challenges
         	// Requirements : current game is able to use DC, DC hasn't been owned or Current player is owning DC
         	if(match.canDouble(currentPlayer) && (!cube.isOwned() || cube.getOwnerId() == currentPlayer.getId())) {
-        		promptDoubleCubeOption();   
+        		if(bots[currentPlayer.getId()] != null) {
+        			promptDoubleCubeOption();   
+        		}
         	}
         	
         	// Current player has no intent to quit current game

@@ -120,6 +120,13 @@ public class Board implements BoardAPI {
             return 0;
         }
     }
+    private int getOpposingId(int playerId) {
+        if (playerId == 0) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
 
     /**
      * Method to get the player's checker from given pip
@@ -129,6 +136,17 @@ public class Board implements BoardAPI {
      */
     public int getNumCheckers(int player, int pip) {
         return checkers[player][pip];
+    }
+    
+    public int getNumbCheckersAtPosition(int pipPosition) {
+    	if(checkers[0][pipPosition] > 0) {
+    		return checkers[0][pipPosition];
+    	}else if(checkers[1][pipPosition] > 0) {
+    		return checkers[1][pipPosition];
+    	}
+    	else {
+    		return 0;
+    	}
     }
     
     // ----- END OF GETTERS ------
@@ -346,6 +364,33 @@ public class Board implements BoardAPI {
         }
         return duplicateCheckers;
 	}
+
+	@Override
+	public int[][] getBoardAfterPlay(int[][] shadowBoard, Play playersMove, int playersNumber) {
+		for (Move move : playersMove) {
+			shadowBoard = getBoardAfterMove(shadowBoard,move,playersNumber);
+		}
+		return shadowBoard;
+	}
+	
+	private int[][] getBoardAfterMove(int[][] shadowBoard, Move playersMove, int playersNumber){
+		
+		shadowBoard[playersNumber][playersMove.getFromPip()]--;
+		shadowBoard[playersNumber][playersMove.getToPip()]++;
+        
+        // bear off case-> add point for current player
+        // TODO
+        
+        // Deal with hits
+        if (playersMove.getToPip() < BAR && playersMove.getToPip() > BEAR_OFF &&
+        		shadowBoard[getOpposingId(playersNumber)][calculateOpposingPip(playersMove.getToPip())] == 1) {
+        	shadowBoard[getOpposingId(playersNumber)][calculateOpposingPip(playersMove.getToPip())]--;
+        	shadowBoard[getOpposingId(playersNumber)][BAR]++;
+        }
+		
+		return shadowBoard;
+	}
+
 
 	
 }

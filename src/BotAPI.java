@@ -5,4 +5,6 @@ public interface BotAPI {
     String getCommand(Plays possiblePlays);
 
     String getDoubleDecision();
+    
+    int[] getWeights();
 }

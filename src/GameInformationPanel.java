@@ -106,12 +106,12 @@ public class GameInformationPanel extends JPanel {
 	public void updateInfoPanel() {
 		// Update all information componenets
 		// Update score are playing up to
-		scorePlayingUpTo.setText("Game Point : " + scoreArePlayingUpTo);
+		scorePlayingUpTo.setText("Match Point : " + scoreArePlayingUpTo);
 		scorePlayingUpTo.setFont(new Font("Arial", Font.BOLD, FONT_SIZE));
         scorePlayingUpTo.setDisabledTextColor(Color.WHITE);
 		
 		// update the current score
-        String playerScore = "Game Score : \n player 1 - " + player1Score + "\n player 2 - " + player2Score;
+        String playerScore = "Match Score : \n player 1 - " + player1Score + "\n player 2 - " + player2Score;
         scoreOfGame.setText(playerScore);
         scoreOfGame.setFont(new Font("Arial", Font.BOLD, FONT_SIZE));
         scoreOfGame.setDisabledTextColor(Color.BLACK);

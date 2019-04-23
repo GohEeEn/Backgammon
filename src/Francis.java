@@ -1,5 +1,9 @@
-
-public class Bot0 implements BotAPI {
+/**
+ * Game Bot Class
+ * @author Ee En Goh
+ *
+ */
+public class Francis implements BotAPI {
 
     // The public API of Bot must not change
     // This is ONLY class that you can edit in the program
@@ -13,7 +17,7 @@ public class Bot0 implements BotAPI {
     private MatchAPI match;
     private InfoPanelAPI info;
 
-    Bot0(PlayerAPI me, PlayerAPI opponent, BoardAPI board, CubeAPI cube, MatchAPI match, InfoPanelAPI info) {
+    Francis(PlayerAPI me, PlayerAPI opponent, BoardAPI board, CubeAPI cube, MatchAPI match, InfoPanelAPI info) {
         this.me = me;
         this.opponent = opponent;
         this.board = board;
@@ -22,15 +26,24 @@ public class Bot0 implements BotAPI {
         this.info = info;
     }
 
+    /**
+     * return the bot name (must match the class name)
+     */
     public String getName() {
-        return "Bot0"; // must match the class name
+        return "Francis"; 
     }
 
+    /**
+     * TODO
+     */
     public String getCommand(Plays possiblePlays) {
         // Add your code here
         return "1";
     }
 
+    /**
+     * TODO
+     */
     public String getDoubleDecision() {
         // Add your code here
         return "n";

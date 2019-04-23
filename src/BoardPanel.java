@@ -137,6 +137,9 @@ class BoardPanel extends JPanel {
         }
     }
 
+    /**
+     * TODO
+     */
     public void refresh() {
         revalidate();
         repaint();

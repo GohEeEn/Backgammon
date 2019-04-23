@@ -3,7 +3,7 @@
  * @author Ee En Goh 		17202691
  * @author Ferdia Fagan 	16372803
  */
-public class Board {
+public class Board implements BoardAPI {
     
 	/** Checkers positions to restore to initial position */
     private static final int[] RESET = {0,0,0,0,0,0,5,0,3,0,0,0,0,5,0,0,0,0,0,0,0,0,0,0,2,0};
@@ -23,6 +23,7 @@ public class Board {
     public static final int BAR = 25;           	// Index of the BAR
     public static final int BEAR_OFF = 0;      		// Index of the BEAR OFF
     private static final int INNER_END = 6;     	// Index for the end of the inner board
+    private static final int OUTER_END = 18;
     public static final int NUM_PIPS = 24;      	// Total number of pips on this board, EXECLUDING BAR and BEAR OFF
     public static final int NUM_SLOTS = 26;     	// Total number of slots on this board, INCLUDING BAR and BEAR OFF
     private static final int NUM_CHECKERS = 15;		// Total number of checkers per player
@@ -76,18 +77,15 @@ public class Board {
     // ----- END OF CONSTRUCTORS -----
     
     // ----- SUPPORTIVE METHODS -----
-    
     /**
-     * Method to reset the Board to the initial state 
-     */
-    public void resetTheBoard() {
-        for (int player=0; player<Backgammon.NUM_PLAYERS; player++)  {
-            for (int pip=0; pip<NUM_SLOTS; pip++)   {
-                checkers[player][pip] = RESET[pip];
-            }
-        }
+	 * Method to reset the board back to the initial state before the game starts
+	 */
+    public void reset() {
+    	for(int player = 0 ; player < Backgammon.NUM_PLAYERS ; player++)
+    		for(int pip = 0 ; pip < NUM_SLOTS ; pip++)
+    			checkers[player][pip] = RESET[pip];
     }
-    
+
     // TODO unknown use
     private int calculateOpposingPip(int pip) {
         return NUM_PIPS - pip + 1;
@@ -95,9 +93,8 @@ public class Board {
     
     // TODO unknown use
     private int lastCheckerPip(Player player) {
-        
+    	
     	int pip;
-        
     	for (pip = BAR ; pip >= BEAR_OFF ; pip--) {
             if (checkers[player.getId()][pip] > 0) {
                 break;
@@ -105,44 +102,6 @@ public class Board {
         }
     	
         return pip;
-    }
-    
-    /**
-     * Method to check if the player with given ID has checker(s) in bar
-     * @param playerID
-     * @return true if yes, else false
-     */
-    public boolean isCheckersInBar(int playerID) {
-    	if(checkers[playerID][BAR] > 0)
-    		 return true;
-    	return false;
-    }
-    
-    /**
-     * Method to check if the player with given ID has checker(s) been borne off
-     * @param playerID
-     * @return true if yes, else false
-     */
-    public boolean isCheckersBorneOff(int playerID) {    	
-    	if(checkers[playerID][BEAR_OFF] > 0)
-    		return true;
-    	return false;
-    }
-    
-    /**
-     * Method to check if the player with given ID has checker(s) in opponent's home board
-     * @param playerID
-     * @return true if yes, else false
-     */
-    public boolean isCheckersInOpponentHome(int playerID) {
-    	
-    	// Loop through the opponent's home board
-    	for(int i = 19 ; i < 24 ; i++) {
-    		if(checkers[playerID][i] > 0)
-    			return true;
-    	}
-    	
-    	return false;
     }
 
     // ----- END OF SUPPORTIVE METHODS -----
@@ -170,24 +129,6 @@ public class Board {
      */
     public int getNumCheckers(int player, int pip) {
         return checkers[player][pip];
-    }
-    
-    /**
-     * Method that define the condition to be a winner : All the checkers of the winner should be bear off
-     * @return The instance of Player of the winner
-     */
-    public Player getWinner() {
-        
-    	Player winner = players.get(0);
-    	
-        if (checkers[0][BEAR_OFF] == NUM_CHECKERS) {
-        	winner = players.get(0);
-            
-        } else if (checkers[1][BEAR_OFF] == NUM_CHECKERS) {
-        	winner = players.get(1);
-            
-        }
-        return winner;
     }
     
     // ----- END OF GETTERS ------
@@ -361,35 +302,50 @@ public class Board {
         }
     }
     
-    /**
-     * Method that check if the current player win the current game round
-     * @param currentPlayer 
-     * @return Yes if the current player meet the winning condition, else no
-     */
-    private boolean checkifCurrentPlayerWinMatch(int currentPlayer) {
-    	
-    	// Check if the current player has reached the point limit
-    	if(checkers[currentPlayer][BEAR_OFF] == NUM_CHECKERS) {
-    		return true;
-    	}
-    	
-    	return false;
-    }
-    
-    /**
-     * Method to check if there is a winner for the current match
-     * @param currentPlayer 
-     * @return
-     */
-    public boolean isMatchOver(int currentPlayer) {
-    	
-        boolean matchOver = false;
-        
-        if (checkifCurrentPlayerWinMatch(currentPlayer)) {
-        	matchOver = true;
+    @Override
+	public boolean lastCheckerInInnerBoard(Player player) {
+		return findLastChecker(player) <= INNER_END;
+	}
+
+	@Override
+	public boolean lastCheckerInOpponentsInnerBoard(Player player) {
+        return findLastChecker(player) > OUTER_END;
+	}
+	
+	private int findLastChecker(Player player) {
+        int pip;
+        for (pip=BAR; pip>=BEAR_OFF; pip--) {
+            if (checkers[player.getId()][pip]>0) {
+                break;
+            }
         }
-        return matchOver;
+        return pip;
     }
-    
+	
+	@Override
+	public boolean allCheckersOff(Player player) {
+		return checkers[player.getId()][BEAR_OFF] == NUM_CHECKERS;
+	}
+
+	@Override
+	public boolean hasCheckerOff(Player player) {
+		return checkers[player.getId()][BEAR_OFF] > 0;
+	}
+
     // ----- END OF BOOLEAN METHODS -----
+    
+	@Override
+	public int[][] get() {
+		
+		// duplicate prevents the Bot moving the checkers
+        int[][] duplicateCheckers = new int[Backgammon.NUM_PLAYERS][NUM_SLOTS];
+        for (int i=0; i<checkers.length; i++) {
+            for (int j=0; j<checkers[i].length; j++) {
+                duplicateCheckers[i][j] = checkers[i][j];
+            }
+        }
+        return duplicateCheckers;
+	}
+
+	
 }

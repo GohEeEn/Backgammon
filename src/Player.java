@@ -5,7 +5,7 @@ import java.awt.*;
  * @author Ee En Goh 		17202691
  * @author Ferdia Fagan 	16372803
  */
-public class Player { 
+public class Player implements PlayerAPI{ 
 
     private int id;
     private String colorName;
@@ -33,6 +33,7 @@ public class Player {
     }
 
     // ----- GETTER and SETTER METHODS -----
+    
     public int getId() { return id; }
 
     public String getColorName() { return this.colorName; }
@@ -45,10 +46,18 @@ public class Player {
     
     public void setName(String name) { this.name = name; }
     
-    public void setScore(int score) { this.match_score = score; }
+    public void addScore(int score) { this.match_score += score; }
     
     // ----- END OF GETTER and SETTER METHODS -----
     
     public String toString() { return this.name; }
+    
+    /**
+     * Clear the player information in order to restart a new match for new player
+     */
+    public void reset() {
+    	name = "";
+    	match_score = 0;
+    }
     
 }

@@ -45,6 +45,10 @@ public class UI {
         boardPanel.refresh();
     }
 
+    /**
+     * Method to display any given string on the info panel
+     * @param string
+     */
     public void displayString(String string) {
         infoPanel.addText(" " + string);
     }
@@ -62,12 +66,12 @@ public class UI {
     	displayString("Enter the number of points are playing up to:");
     }
     
-    public void promptPlayersNextMatch() {
-    	displayString("Do you wish to play next match? (yes/no)");
+    public void promptPlayersNextGame() {
+    	displayString("Do you wish to play next game? (yes/no)");
     }
     
-    public void promptRestartNewGame() {
-    	displayString("Do you wish to play next game? (yes/no)");
+    public void promptRestartNewMatch() {
+    	displayString("Do you wish to play next match? (yes/no)");
     }
     
     public void promptPlayerToDouble() {
@@ -76,6 +80,14 @@ public class UI {
     
     public void promptPlayerToRedouble() {
     	displayString("Enable redouble play with command 'double', else press 'Enter' key");
+    }
+    
+    public void promptOpponentToAcceptDouble(String opponent) {
+    	displayString("Player " + opponent + " , do you want to accept the double? (yes/no)");
+    }
+    
+    public void print_doubleTheScore() {
+    	displayString("The score has been doubled\n");
     }
     
     public void displayPlayerColor(Player player) {
@@ -104,10 +116,10 @@ public class UI {
         displayString(player + " [" + player.getColorName() + "] Enter your move or quit:");
     }
     
-    public void print_doubleTheScore() {
-    	displayString("The score has been doubled");
-    }
-       
+    /**
+     * Method to notify the current player it is his/her game turn
+     * @param playerName	Current player
+     */
     public void print_CurrentPlayer(String playerName) {
     	displayString("Player " +  playerName + ", it is your turn.");
     }
@@ -200,27 +212,7 @@ public class UI {
     
     // ----- END GAME MESSAGES -----
     public void display_roundWinner(Player winner) {
-    	displayString(winner.toString() + " WIN THIS MATCH ! KEEP IT UP ! ");
-    }
-    
-    public void display_PlayersWantNextMatch() throws InterruptedException {
-    	displayString("Next match will start in 1 second\n");
-    	displayString("=============== NEW MATCH ===============");
-    	TimeUnit.SECONDS.sleep(1);
-    }
-    
-    public void display_PlayersWantEndGame() {
-    	displayString("Players want to end game");
-    }
-    
-    public void display_endGame() throws InterruptedException {
-    	displayString("=============== END GAME ===============\n");
-    	TimeUnit.SECONDS.sleep(3);
-    }
-    
-    public void display_endMatch() throws InterruptedException {
-    	displayString("=============== END MATCH ===============\n");
-    	TimeUnit.SECONDS.sleep(1);
+    	displayString(winner.toString() + " WIN THIS GAME ! KEEP IT UP ! ");
     }
     
     /**
@@ -228,8 +220,8 @@ public class UI {
      * @param player_id		Winner's player ID
      * @param playerName	Winner's name
      */
-    public void display_gameWinner(String playerName) {
-    	displayString("Player " +  playerName + " HAS WON! CONGRAT !!");
+    public void display_matchWinner(String playerName) {
+    	displayString("Player " +  playerName + " HAS WON THE MATCH! CONGRAT !!");
     }
     
     /**
@@ -239,9 +231,45 @@ public class UI {
      * @param earnScore The match score the winner earns in the recent match	
      */
     public void print_rejectedDoubleTheScore(String winnerName , String loserName , int earnScore) {
-    	displayString("Player " + loserName + " rejects the doubling challenge, so " + winnerName + 
+    	displayString("\nPlayer " + loserName + " rejects the doubling challenge, so " + winnerName + 
     			"win and gain " + earnScore + " points in current game turn.");
     }
+    
+    public void display_PlayersWantNextGame() throws InterruptedException {
+    	displayString("Next game will start in 1 second\n");
+    	displayString("=============== NEW GAME ===============");
+    	TimeUnit.SECONDS.sleep(1);
+    }
+    
+    public void display_endGame() throws InterruptedException {
+    	displayString("=============== END GAME ===============\n");
+    	TimeUnit.SECONDS.sleep(1);
+    }
+    
+    public void display_PlayersWantQuitMatch() {
+    	displayString("Players want to QUIT current match");
+    }
+    
+    public void display_PlayersWantNextMatch() throws InterruptedException {
+    	displayString("New Match will start in 3 second\n");
+    	displayString("=============== NEW MATCH ===============");
+    	TimeUnit.SECONDS.sleep(3);
+    }
+    
+    public void display_endMatch() throws InterruptedException {
+    	displayString("=============== END MATCH ===============\n");
+    	TimeUnit.SECONDS.sleep(3);
+    }
+    
+    public void display_PlayersWantQuit() {
+    	displayString("Players want to QUIT PROGRAM");
+    }
+    
+    public void display_endProgram() throws InterruptedException {
+    	displayString("===============> END BACKGAMMON <===============\n");
+    	TimeUnit.SECONDS.sleep(3);
+    }
+    
     // ----- END OF END GAME MESSAGES -----
     
     // Information panel (left panel)
@@ -249,21 +277,13 @@ public class UI {
     	gameInfoPanel.setScoreArePlayingUpTo(pointsArePlayingTo);
     }
     
-    public void updatePointsOfPlayer1(int points) {
-    	gameInfoPanel.setScoreOfPlayer1(points);
-    }
-    
-    public void updatePointsOfPlayer2(int points) {
-    	gameInfoPanel.setScoreOfPlayer2(points);
-    }
-    
     public void updatePointsOfPlayer(int playerNumber, int points) {
     	if(playerNumber == 0) {
     		// is player 1
-    		updatePointsOfPlayer1(points);
+    		gameInfoPanel.setScoreOfPlayer1(points);
     	}else {
     		// is player 2
-    		updatePointsOfPlayer2(points);
+    		gameInfoPanel.setScoreOfPlayer2(points);
     	}
     }
     

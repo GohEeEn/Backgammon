@@ -7,7 +7,7 @@ import java.awt.*;
  * @author Ee En Goh 		17202691
  * @author Ferdia Fagan 	16372803
  */
-public class InfoPanel extends JPanel {
+public class InfoPanel extends JPanel implements InfoPanelAPI{
 
     private static final long serialVersionUID = 1L;
     private static final int TEXT_AREA_HEIGHT = 40;
@@ -33,5 +33,17 @@ public class InfoPanel extends JPanel {
     public void addText(String text) {
         textArea.setText(textArea.getText() + "\n" + text);
     }
+
+	@Override
+	public String getAllInfo() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getLatestInfo() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

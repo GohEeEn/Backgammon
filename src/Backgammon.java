@@ -70,7 +70,8 @@ public class Backgammon {
         match.setMatchPoint(getMatchPoint());
         ui.displayString("");
         
-        getPlayerNames();        // Instantiate players name
+        //getPlayerNames();        // Instantiate players name
+        getPlayerName_botTest();
         
         do { 
         	playGame();			// Play a game
@@ -223,6 +224,27 @@ public class Backgammon {
             ui.displayPlayerColor(player);
             ui.displayString("");
         }
+    }
+    
+    // For bot test
+    private void getPlayerName_botTest() {
+    	// Set up francis with player 1
+        players.get(0).setName(Francis.getTheName());
+    	ui.displayString("> Francis bot controlls player 1");
+    	ui.displayPlayerColor(players.get(0));
+    	
+    	// set up bot1 with player 2
+        players.get(1).setName(Bot1.getTheName());
+    	ui.displayString("> Bot1 bot controlls player 2");
+    	ui.displayPlayerColor(players.get(1));
+    	
+    	// Set up the francis bot
+    	bots[0] = new Francis(players.get(0),players.get(1),board,cube,match,ui.getInfoPanel());    	
+    	
+    	// set up the bot1
+    	bots[1] = new Bot1(players.get(1),players.get(0),board,cube,match,ui.getInfoPanel());
+
+        
     }
     
     /**
@@ -465,29 +487,61 @@ public class Backgammon {
         } // Case 3 : More than 1 move can be made -> Take the move the player chose
         else {  
 
-            ui.displayPlays(currentPlayer, possiblePlays);
-            ui.promptCommand(currentPlayer);
-            
-            command = ui.getCommand(possiblePlays);
-            ui.displayString("> " + command);		// Receive and display the given command 
-            
-            // Case 1 : Current player decides to quit the game 
-            if (command.isQuit()) {
-            	realGame.setResignedByCommand(currentPlayer);
-            	quitGameByCommand();
-            	
-            }// Case 2 : Current player is making normal move
-            else if (command.isMove()) {
-                board.move(currentPlayer, command.getPlay());
+        	if(bots[currentPlayer.getId()] != null) {
+        		// Player is not a bot
+                ui.displayPlays(currentPlayer, possiblePlays);
+                ui.promptCommand(currentPlayer);
                 
-            } // Case 3 : Current player is making cheat move 
-            else if (command.isCheat()) {
-                board.cheat();
+                command = ui.getCommand(possiblePlays);
+                ui.displayString("> " + command);		// Receive and display the given command 
                 
-            } // Temporary case to test the ending of game match
-            else if (command.isEnd()) { 
-            	board.end();
-            }  
+                // Case 1 : Current player decides to quit the game 
+                if (command.isQuit()) {
+                	realGame.setResignedByCommand(currentPlayer);
+                	quitGameByCommand();
+                	
+                }// Case 2 : Current player is making normal move
+                else if (command.isMove()) {
+                    board.move(currentPlayer, command.getPlay());
+                    
+                } // Case 3 : Current player is making cheat move 
+                else if (command.isCheat()) {
+                    board.cheat();
+                    
+                } // Temporary case to test the ending of game match
+                else if (command.isEnd()) { 
+                	board.end();
+                }  
+        	}
+        	else {
+        		// player is a bot
+                ui.displayPlays(currentPlayer, possiblePlays);
+                ui.displayString("> " + bots[currentPlayer.getId()] +" is about to choose move");
+                
+                // Get the bot to choose best move
+                //(bots[currentPlayer.getId()]).getCommand(possiblePlays
+                command = new Command(bots[currentPlayer.getId()].getCommand(possiblePlays),possiblePlays);
+                
+                ui.displayString("> " + command);		// Receive and display the given command 
+                
+                // Case 1 : Current player decides to quit the game 
+                if (command.isQuit()) {
+                	realGame.setResignedByCommand(currentPlayer);
+                	quitGameByCommand();
+                	
+                }// Case 2 : Current player is making normal move
+                else if (command.isMove()) {
+                    board.move(currentPlayer, command.getPlay());
+                    
+                } // Case 3 : Current player is making cheat move 
+                else if (command.isCheat()) {
+                    board.cheat();
+                    
+                } // Temporary case to test the ending of game match
+                else if (command.isEnd()) { 
+                	board.end();
+                }  
+        	}
             
         }
         

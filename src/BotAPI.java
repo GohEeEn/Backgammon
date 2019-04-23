@@ -7,4 +7,6 @@ public interface BotAPI {
     String getDoubleDecision();
     
     int[] getWeights();
+    
+    void swapWeightsWithOtherPlayer(int[] botWeights);
 }

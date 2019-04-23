@@ -19,6 +19,8 @@ public class Francis implements BotAPI {
     private MatchAPI match;
     private InfoPanelAPI info;
     
+    private BotAPI opponentBot;
+    
     // variables to keep track of so can adjust the weight
     private int botLosesInARow = 0;
     private boolean inTrainingMode = true;
@@ -53,8 +55,6 @@ public class Francis implements BotAPI {
 
     // END OF Weights
     
-    private Board copyOfBoard;
-
     Francis(PlayerAPI me, PlayerAPI opponent, BoardAPI board, CubeAPI cube, MatchAPI match, InfoPanelAPI info) {
         this.me = me;
         this.opponent = opponent;
@@ -70,6 +70,10 @@ public class Francis implements BotAPI {
      */
     public String getName() {
         return "Francis"; 
+    }
+    
+    public static String getTheName() {
+    	return "Francis"; 
     }
 
     /**
@@ -87,8 +91,7 @@ public class Francis implements BotAPI {
     	int[][] originalBoard = board.get();
     	
     	boolean firstScoreGotten = false;
-    	
-    	
+    	int currentPlayPointer = -1;
     	// Now calculate score for each play
     	for (Play currentPlay : possiblePlays) {
 			
@@ -110,17 +113,11 @@ public class Francis implements BotAPI {
     			}
     		}
     		
+    		currentPlayPointer++;
 		}
     	
     	// in the end, the highest scored move, and the move that will achieve the highest score
-    	
-    	
-    	
-    	
-    	
-    	
-    	
-        return "1";
+        return ("" + currentPlayPointer);
     }
     
     // Helpers for getCommand
@@ -299,6 +296,7 @@ public class Francis implements BotAPI {
         	if(botLosesInARow == 3) {
         		// Exchange the weights between the bots
         		
+        		swapBotsWeightsWithOpponentBot(opponentBot);
         		
         		// End of changing the weights between bots
         		botLosesInARow = 0;	// Reset
@@ -354,8 +352,24 @@ public class Francis implements BotAPI {
     	}
     }
     
-    public void swapWeightsWithOtherPlayer(BotAPI otherBot) {
-    	
+    public void swapWeightsWithOtherPlayer(int[] botWeights) {
+		// positive weights
+		pipCountDifference_weight = botWeights[0];
+		blockBlotDif_weight = botWeights[1];
+		botBlocksHome_weight = botWeights[2];
+		botBlockOpponentHome_weight = botWeights[3];
+		botPipCountInJail_weight = botWeights[4];
+		botPipCountInHome_weight = botWeights[5];
+		botPipCountBearedOff_weight = botWeights[6];
+		
+		
+		
+		// Negative weights
+		opponentsBlocksHome_weight = botWeights[7];
+		opponentBlockBotHome_weight = botWeights[8];
+		opponentsPipCountInJail_weight = botWeights[9];
+		opponentsPipCountInHome_weight = botWeights[10];
+		opponentsPipCountBearedOff_weight = botWeights[11];
     }
     
     public int[] getWeights() {
@@ -365,10 +379,17 @@ public class Francis implements BotAPI {
     	return weights;
     }
     
-    public static void swapBotsWeights(BotAPI bot0, BotAPI bot1) {
+    private void swapBotsWeightsWithOpponentBot(BotAPI opponentBot) {
+    	int[] bot0_weights = this.getWeights();
+    	int[] bot1_weights = opponentBot.getWeights();
     	
+    	this.swapWeightsWithOtherPlayer(bot1_weights);
+    	opponentBot.swapWeightsWithOtherPlayer(bot0_weights);
     }
     
+    public void setEnemyBot(BotAPI opponentBot) {
+    	this.opponentBot = opponentBot;
+    }
     
     
     

@@ -32,6 +32,10 @@ public class UI {
         frame.setResizable(false);
         frame.setVisible(true);
     }
+    
+    public InfoPanel getInfoPanel() {
+    	return infoPanel;
+    }
 
     public String getString() {
         return commandPanel.getString();

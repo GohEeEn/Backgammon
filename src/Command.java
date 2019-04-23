@@ -85,9 +85,24 @@ public class Command {
             move = true;
             cheat = false;
         }
+
+
         // Else an invalid command is given 
         else {
-            valid = false;
+            try {
+            	// Then bot is trying to pass number to play the move
+            	int playSelected = Integer.parseInt(text);
+            	if(playSelected >= 0 && playSelected < possiblePlays.number()) {
+            		valid = false;
+            		return;
+            	}
+                play = possiblePlays.get(playSelected);
+                valid = true;
+                move = true;
+                cheat = false;
+            }catch(Exception e) {
+            	valid = false;
+            }
         }
     }
     

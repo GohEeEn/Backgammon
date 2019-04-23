@@ -19,13 +19,16 @@ public interface BoardAPI {
 
     Plays getPossiblePlays(int playerID, Dice dice);
 
-    boolean lastCheckerInInnerBoard(int playerID);
+    boolean hasCheckerOff(Player player);
 
-    boolean lastCheckerInOpponentsInnerBoard(int playerID);
+    Plays getPossiblePlays(int playerId, Dice dice);
 
-    boolean allCheckersOff(int playerID);
+    boolean lastCheckerInInnerBoard(int playerId);
 
-    boolean hasCheckerOff(int  playerID);
-    
-    int[][] getBoardAfterPlay(int[][] shadowBoard, Play playersMove, int playersNumber);
+    boolean lastCheckerInOpponentsInnerBoard(int playerId);
+
+    boolean allCheckersOff(int playerId);
+
+    boolean hasCheckerOff(int playerId);
 }
+

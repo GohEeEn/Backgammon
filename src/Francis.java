@@ -365,7 +365,9 @@ public class Francis implements BotAPI {
     	return weights;
     }
     
-    public static void 
+    public static void swapBotsWeights(BotAPI bot0, BotAPI bot1) {
+    	
+    }
     
     
     

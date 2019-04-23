@@ -487,7 +487,7 @@ public class Backgammon {
         } // Case 3 : More than 1 move can be made -> Take the move the player chose
         else {  
 
-        	if(bots[currentPlayer.getId()] != null) {
+        	if(bots[currentPlayer.getId()] == null) {
         		// Player is not a bot
                 ui.displayPlays(currentPlayer, possiblePlays);
                 ui.promptCommand(currentPlayer);
@@ -516,7 +516,7 @@ public class Backgammon {
         	else {
         		// player is a bot
                 ui.displayPlays(currentPlayer, possiblePlays);
-                ui.displayString("> " + bots[currentPlayer.getId()] +" is about to choose move");
+                ui.displayString("> " + bots[currentPlayer.getId()].getName() +" is about to choose move");
                 
                 // Get the bot to choose best move
                 //(bots[currentPlayer.getId()]).getCommand(possiblePlays

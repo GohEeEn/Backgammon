@@ -92,7 +92,7 @@ public class Command {
             try {
             	// Then bot is trying to pass number to play the move
             	int playSelected = Integer.parseInt(text);
-            	if(playSelected >= 0 && playSelected < possiblePlays.number()) {
+            	if(playSelected < 0 || playSelected >= possiblePlays.number()) {
             		valid = false;
             		return;
             	}

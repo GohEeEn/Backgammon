@@ -13,6 +13,7 @@ public class Player implements PlayerAPI{
     private String name;
     private Dice dice;
     private int match_score;
+    
 
     Player(int id, String colorName, Color color) {
         this.id = id;

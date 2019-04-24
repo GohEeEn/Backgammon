@@ -75,16 +75,26 @@ public class Backgammon {
         
         do { 
         	playGame();			// Play a game
-        	debug();
+        	//debug();			REMOVED FOR TRAINING
         	
         	/* 
         	 * Ask for the next match only if it is not a quit command given
         	 * or match is not over yet  
         	 */
         	if(!realGame.getResignedByCommand() && !match.isOver()) {
-        		nextGame = nextGame();
+        		//nextGame = nextGame();		REMOVED FOR TRAINING
+        		nextGame = true;			//	added FOR TRAINING
+        		resetGame();				// 	added FOR TRAINING
         		match.setLength();
         		ui.display();
+        		
+        		// Adjust the weights (THIS IS FOR TRAINING)
+        		
+        		bots[players.getCurrent().getId()].botWins();
+        		bots[players.getEnemy().getId()].botLoses();
+        		
+        		
+        		// END OF ADJUST THE WEIGHTS (FOR TRAINING)
         		
         	} // Else the match over (By command or full match is end)
         	else { 
@@ -102,7 +112,18 @@ public class Backgammon {
         
         displayEndStage();
         ui.display_endMatch();
-        newMatch = nextMatch();
+        //newMatch = nextMatch();		// Removed for training
+        
+        // Training code to save the weights of the bot
+        
+        // Save the weights
+		bots[players.getCurrent().getId()].saveWeights();
+		bots[players.getEnemy().getId()].saveWeights();
+        
+        
+        
+        // Training code to save the weights of the bot
+        
     }
     
     /**
@@ -429,9 +450,9 @@ public class Backgammon {
     	
     	startGame = false;
     	match.updateScores();
-    	displayEndStage();
+    	displayEndStage();		
 		ui.display_endGame();        					
-        TimeUnit.SECONDS.sleep(2); 
+        //TimeUnit.SECONDS.sleep(2); 	REMOVED FOR TRAINING
     }
     
     /**
@@ -454,8 +475,11 @@ public class Backgammon {
         	// Check if the current player wants to offer double or redouble challenges
         	// Requirements : current game is able to use DC, DC hasn't been owned or Current player is owning DC
         	if(match.canDouble(currentPlayer) && (!cube.isOwned() || cube.getOwnerId() == currentPlayer.getId())) {
-        		if(bots[currentPlayer.getId()] != null) {
+        		if(bots[currentPlayer.getId()] == null) {
         			promptDoubleCubeOption();   
+        		}
+        		else {
+        			// current player is a bot
         		}
         	}
         	
@@ -554,8 +578,8 @@ public class Backgammon {
             
         }
         
-        TimeUnit.SECONDS.sleep(2);
-        ui.displayString("");
+        //TimeUnit.SECONDS.sleep(2);		REMOVED FOR TRAINING
+        //ui.displayString("");				REMOVED FOR TRAINING
         
         return command;
     }

@@ -1,3 +1,8 @@
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Bot1 implements BotAPI {
@@ -9,10 +14,9 @@ public class Bot1 implements BotAPI {
     // It may only inspect the state of the board and the player objects
 	
 	private final boolean TRAINING = true;
-    public static final int BAR = 25;           	// Index of the BAR
-    public static final int BEAR_OFF = 0;      		// Index of the BEAR OFF
-    public static final int NUM_PIPS = 24;      	// Total number of pips on this board, EXECLUDING BAR and BEAR OFF
-
+    private static final String WEIGHT_FILE = "Steven_WeightsForScoring.txt";
+    
+    private Double referenceScoreForBot;
 
     private PlayerAPI me, opponent;
     private BoardAPI board;
@@ -30,29 +34,37 @@ public class Bot1 implements BotAPI {
     private double weightAdjustment_Min = -0.0005;
     private double weightAdjustment_Max = 0.005;
     // Weights
-    private int pipCountDifference_weight = 0;
+    private static final int AMOUNTOFWEIGHTS = 14;
+    private Double checkersInJail_weight = 0.0;
     
-    private int blockBlotDif_weight = 0;
+    private Double pipCountDifference_weight = 0.0;
     
-    private int botBlocksHome_weight = 0;
-    private int opponentsBlocksHome_weight = 0;
+    private Double blockBlotDif_weight = 0.0;
     
-    private int botBlockOpponentHome_weight = 0;
-    private int opponentBlockBotHome_weight = 0;
+    private Double botBlocksHome_weight = 0.0;
+    private Double opponentsBlocksHome_weight = 0.0;
+    
+    private Double botBlockOpponentHome_weight = 0.0;
+    private Double opponentBlockBotHome_weight = 0.0;
+    
+    private Double allPiecesInHome_weight = 0.0;
     
     // for later: private int differenceBetweenBlockedCheckers_weight = 0;	// difference between pips that are trapped behind enemy pips
     // for later: private int differenceBetweenEscapedCheckers_weight = 0;	// same as above, but for checkers that have escaped
     
     //private int differenceBetweenPipCountInJail_weight = 0;
-    private int botPipCountInJail_weight = 0;
-    private int opponentsPipCountInJail_weight = 0;
+    private Double botPipCountInJail_weight = 0.0;
+    private Double opponentsPipCountInJail_weight = 0.0;
     
     //private int differenceBetweenPipCountsBearedOff_weight = 0;
-    private int botPipCountBearedOff_weight = 0;
-    private int opponentsPipCountBearedOff_weight = 0;
+    private Double botPipCountBearedOff_weight = 0.0;
+    private Double opponentsPipCountBearedOff_weight = 0.0;
     
-    private int botPipCountInHome_weight = 0;
-    private int opponentsPipCountInHome_weight = 0;
+    private Double botPipCountInHome_weight = 0.0;
+    private Double opponentsPipCountInHome_weight = 0.0;
+    
+    private Double botScore = 0.0;
+    private Double opponentScore = 0.0;
     
     
     
@@ -68,6 +80,9 @@ public class Bot1 implements BotAPI {
         this.match = match;
         this.info = info;
         
+        this.retrieveWeights();
+        
+        referenceScoreForBot = this.getScoreForBoard(board.get());
     }
 
     /**
@@ -89,7 +104,7 @@ public class Bot1 implements BotAPI {
     	
 
     	// Get score for current board(without any moves)
-    	int currentHighestScore = 0;
+    	Double currentHighestScore = 0.0;
     	Play playWithHighestScore;
     	
     	int[][] originalBoard = board.get();
@@ -103,7 +118,7 @@ public class Bot1 implements BotAPI {
     		int[][] shadowBoard_AfterMove = getBoardAfterPlay(originalBoard.clone(), currentPlay, me.getId());
     		
     		// Get the new boards score
-    		int scoreOfBoardAfterMove = getScoreForBoard(shadowBoard_AfterMove);
+    		Double scoreOfBoardAfterMove = getScoreForBoard(shadowBoard_AfterMove);
     		
     		if(!firstScoreGotten) {
     			firstScoreGotten = true;
@@ -166,7 +181,7 @@ public class Bot1 implements BotAPI {
     
     
     // evaluating the stats
-    private int getScoreForBoard(int[][] theBoard) {
+    private Double getScoreForBoard(int[][] theBoard) {
     	
     	int blockBlotDif = 0;
     	int blocks = 0;
@@ -183,8 +198,6 @@ public class Bot1 implements BotAPI {
     	
     	int botBlockCountOpponentsHome = 0;
     	int opponentsBlockCountBotsHome = 0;
-    	
-    	
     	
     	// Search through the points of the board
     	
@@ -282,19 +295,44 @@ public class Bot1 implements BotAPI {
     	// Difference between bot and opponent pip count
     	int pipCountDifference = botTotalPipCount - opponentTotalPipCount;
     	
-    	
     	// FINNISHED ASSIGNEING THE VARIABLES
     	// Now must get the score
     	
-    	int totalScore = 0;
+    	// SPECIAL CASE: CHECK IF BOT HAS PIECES IN JAIL
+    	Double botBonus = 0.0;
+    	Double opponentBonus = 0.0;
+    	if(board.getNumCheckers(me.getId(), 25) > 0) {
+    		// bot is in jail, so some blocks inopponents home will effect more
+    		botBonus += (opponentsHomeBlockCount * checkersInJail_weight * board.getNumCheckers(me.getId(), 25));
+    	}
+    	
+    	// SPECIAL CASE: CHECK IF BOT HAS PIECES IN ALL PIECES IN HOME
+    	else if(board.lastCheckerInInnerBoard(me.getId())) {
+    		// Bot has all pieces in home section of board
+    		// loop through home of bot and "weigh"
+    		int totalWeight = 0;
+    		for(int i = 1;i <= 6;i++) {
+    			int weightForPipPosition = (7-i)*theBoard[me.getId()][i];
+    			totalWeight += weightForPipPosition;
+    		}
+    		
+    		botBonus += (totalWeight * allPiecesInHome_weight);
+    		
+    	}
+    	    	
+    	Double totalScore = 0.0;
+    	
+    	botScore = (botHomeBlockCount * botBlocksHome_weight) + (botBlockCountOpponentsHome * botBlockOpponentHome_weight)
+    			+ (botPieceCountInHome * botPipCountInHome_weight) + (botsPointsScored * botPipCountBearedOff_weight) 
+    			+ (botPiecesInJail * botPipCountInJail_weight) + botBonus;
+    	
+    	opponentScore = (opponentsHomeBlockCount * opponentsBlocksHome_weight) + (opponentsBlockCountBotsHome * opponentBlockBotHome_weight)
+    			+ (opponentsPieceCountInHome * opponentsPipCountInHome_weight) + (opponentsPointsScored * opponentsPipCountBearedOff_weight)
+    			+ (opponentsPiecesInJail * opponentsPipCountInJail_weight) + opponentBonus;
     	
     	totalScore += 
     	((blockBlotDif * blockBlotDif_weight) + (pipCountDifference * pipCountDifference_weight)
-    	+ (botHomeBlockCount * botBlocksHome_weight) + (opponentsHomeBlockCount * opponentsBlocksHome_weight) 
-    	+ (botBlockCountOpponentsHome * botBlockOpponentHome_weight) + (opponentsBlockCountBotsHome * opponentBlockBotHome_weight)
-    	+ (botPieceCountInHome * botPipCountInHome_weight) + (opponentsPieceCountInHome * opponentsPipCountInHome_weight)
-    	+ (botsPointsScored * botPipCountBearedOff_weight) + (opponentsPointsScored * opponentsPipCountBearedOff_weight)
-    	+ (botPiecesInJail * botPipCountInJail_weight) + (opponentsPiecesInJail * opponentsPipCountInJail_weight));
+    	+ botScore + opponentScore);
     	
     	
     	return totalScore;
@@ -353,6 +391,7 @@ public class Bot1 implements BotAPI {
     		botPipCountInJail_weight += weightAdjustment;
     		botPipCountInHome_weight += weightAdjustment;
     		botPipCountBearedOff_weight += weightAdjustment;
+    		allPiecesInHome_weight += weightAdjustment;
     		
     		
     		
@@ -362,11 +401,12 @@ public class Bot1 implements BotAPI {
     		opponentsPipCountInJail_weight -= weightAdjustment;
     		opponentsPipCountInHome_weight -= weightAdjustment;
     		opponentsPipCountBearedOff_weight -= weightAdjustment;
+    		checkersInJail_weight -= weightAdjustment;
     		
     	}
     }
     
-    public void swapWeightsWithOtherPlayer(int[] botWeights) {
+    public void swapWeightsWithOtherPlayer(Double[] botWeights) {
 		// positive weights
 		pipCountDifference_weight = botWeights[0];
 		blockBlotDif_weight = botWeights[1];
@@ -384,19 +424,24 @@ public class Bot1 implements BotAPI {
 		opponentsPipCountInJail_weight = botWeights[9];
 		opponentsPipCountInHome_weight = botWeights[10];
 		opponentsPipCountBearedOff_weight = botWeights[11];
+		checkersInJail_weight = botWeights[12];
+		
+		// others 
+		allPiecesInHome_weight = botWeights[13];
+		
     }
     
     // ONLY FOR TRAINING
-    public int[] getWeights() {
-    	int[] weights = {pipCountDifference_weight,blockBlotDif_weight,botBlocksHome_weight,botBlockOpponentHome_weight,botPipCountInJail_weight
+    public Double[] getWeights() {
+    	Double[] weights = {pipCountDifference_weight,blockBlotDif_weight,botBlocksHome_weight,botBlockOpponentHome_weight,botPipCountInJail_weight
     			,botPipCountInHome_weight,botPipCountBearedOff_weight, opponentsBlocksHome_weight, opponentBlockBotHome_weight,opponentsPipCountInJail_weight
-    			,opponentsPipCountInHome_weight,opponentsPipCountBearedOff_weight};
+    			,opponentsPipCountInHome_weight,opponentsPipCountBearedOff_weight,checkersInJail_weight,allPiecesInHome_weight};
     	return weights;
     }
     
     private void swapBotsWeightsWithOpponentBot(BotAPI opponentBot) {
-    	int[] bot0_weights = this.getWeights();
-    	int[] bot1_weights = opponentBot.getWeights();
+    	Double[] bot0_weights = this.getWeights();
+    	Double[] bot1_weights = opponentBot.getWeights();
     	
     	this.swapWeightsWithOtherPlayer(bot1_weights);
     	opponentBot.swapWeightsWithOtherPlayer(bot0_weights);
@@ -404,6 +449,52 @@ public class Bot1 implements BotAPI {
     
     public void setEnemyBot(BotAPI opponentBot) {
     	this.opponentBot = opponentBot;
+    }
+    
+    public void saveWeights() {
+		// Write weights to file
+        try {
+        	//OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(new File(WEIGHT_FILE)));
+        	FileWriter out = new FileWriter(WEIGHT_FILE);
+        	Double[] weights = this.getWeights();
+			String output = "";
+			for (Double weight : weights) {
+				output += weight + "\n";
+			}
+			System.out.println(output);
+			
+			out.write(output);
+			out.flush();
+			out.close();
+			System.out.println("hel");
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+    
+    public void retrieveWeights() {
+    	// retrieve the weights
+        try {
+        	BufferedReader bf1 = new BufferedReader(new FileReader(WEIGHT_FILE));
+        	Double[] weights = new Double[AMOUNTOFWEIGHTS];
+			for(int i = 0; i < AMOUNTOFWEIGHTS;i++) {
+				weights[i] = Double.parseDouble(bf1.readLine());
+			}
+			
+			swapWeightsWithOtherPlayer(weights);
+			bf1.close();
+			
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
     // END ONLY FOR TRAINING
     
@@ -425,17 +516,17 @@ public class Bot1 implements BotAPI {
         // TODO
         
         // Deal with hits
-        if (playersMove.getToPip() < BAR && playersMove.getToPip() > BEAR_OFF &&
+        if (playersMove.getToPip() < Board.BAR && playersMove.getToPip() > Board.BEAR_OFF &&
         		shadowBoard[opponent.getId()][calculateOpposingPip(playersMove.getToPip())] == 1) {
         	shadowBoard[opponent.getId()][calculateOpposingPip(playersMove.getToPip())]--;
-        	shadowBoard[opponent.getId()][BAR]++;
+        	shadowBoard[opponent.getId()][Board.BAR]++;
         }
 		
 		return shadowBoard;
 	}
     
     private int calculateOpposingPip(int pip) {
-        return NUM_PIPS - pip + 1;
+        return Board.NUM_PIPS - pip + 1;
     }
     
     

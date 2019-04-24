@@ -130,6 +130,8 @@ public class Francis implements BotAPI {
         // Add your code here
     	
     	// Ask if want to double
+    	
+    	/*		UNCOMMENT WHEN SUBMITTING
     	botIsAskingToDouble = true;
     	String seeIfBotWantsToAskForDouble = getDoubleDecision();
     	if(seeIfBotWantsToAskForDouble.equals("double")) {
@@ -138,6 +140,7 @@ public class Francis implements BotAPI {
     		return seeIfBotWantsToAskForDouble;
     	}
     	botIsAskingToDouble = false;
+    	*/
     	
     	// Get score for current board(without any moves)
     	Double currentHighestScore = 0.0;
@@ -227,13 +230,14 @@ public class Francis implements BotAPI {
     			return "double";
     		}
     		else if(percentageChanceOfsuccess(getScoreForBoard(board.get())) >= 75) {
+    			return "no";
+    		}
+    		else {
     			if(!botIsAskingToDouble) {
     				return "yes";
     			}
-    			return "no";
-    		}
-    		else
     			return "double";
+    		}
 
     	} // Normal Stage
     	
@@ -460,22 +464,22 @@ public class Francis implements BotAPI {
         	}
         	else {
         		// Adjust the weights by small amount as described in document
-        		double weightAdjustment = ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
+        		//double weightAdjustment = ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
         		// positive weights
-        		pipCountDifference_weight -= weightAdjustment;
-        		blockBlotDif_weight -= weightAdjustment;
-        		botBlocksHome_weight -= weightAdjustment;
-        		botBlockOpponentHome_weight -= weightAdjustment;
-        		botPipCountInJail_weight -= weightAdjustment;
-        		botPipCountInHome_weight -= weightAdjustment;
-        		botPipCountBearedOff_weight -= weightAdjustment;
+        		pipCountDifference_weight -= ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
+        		blockBlotDif_weight -= ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
+        		botBlocksHome_weight -= ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
+        		botBlockOpponentHome_weight -= ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
+        		botPipCountInJail_weight -= ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
+        		botPipCountInHome_weight -= ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
+        		botPipCountBearedOff_weight -= ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
 
         		// Negative weights
-        		opponentsBlocksHome_weight += weightAdjustment;
-        		opponentBlockBotHome_weight += weightAdjustment;
-        		opponentsPipCountInJail_weight += weightAdjustment;
-        		opponentsPipCountInHome_weight += weightAdjustment;
-        		opponentsPipCountBearedOff_weight += weightAdjustment;
+        		opponentsBlocksHome_weight += ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
+        		opponentBlockBotHome_weight += ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
+        		opponentsPipCountInJail_weight += ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
+        		opponentsPipCountInHome_weight += ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
+        		opponentsPipCountBearedOff_weight += ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
         	}
     	}
     }
@@ -484,27 +488,27 @@ public class Francis implements BotAPI {
     	if(inTrainingMode) {
     		// Adjust the weight by small amount as described in document
 
-    		double weightAdjustment = ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
+    		//double weightAdjustment = ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
     		//add a small random amount (could be slightly negative) to the
     		//positive weights and subtract a small amount from the negative weights (could be slightly negative
 
     		// positive weights
-    		pipCountDifference_weight += weightAdjustment;
-    		blockBlotDif_weight += weightAdjustment;
-    		botBlocksHome_weight += weightAdjustment;
-    		botBlockOpponentHome_weight += weightAdjustment;
-    		botPipCountInJail_weight += weightAdjustment;
-    		botPipCountInHome_weight += weightAdjustment;
-    		botPipCountBearedOff_weight += weightAdjustment;
-    		allPiecesInHome_weight += weightAdjustment;
+    		pipCountDifference_weight += ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
+    		blockBlotDif_weight += ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
+    		botBlocksHome_weight += ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
+    		botBlockOpponentHome_weight += ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
+    		botPipCountInJail_weight += ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
+    		botPipCountInHome_weight += ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
+    		botPipCountBearedOff_weight += ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
+    		allPiecesInHome_weight += ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
 
     		// Negative weights
-    		opponentsBlocksHome_weight -= weightAdjustment;
-    		opponentBlockBotHome_weight -= weightAdjustment;
-    		opponentsPipCountInJail_weight -= weightAdjustment;
-    		opponentsPipCountInHome_weight -= weightAdjustment;
-    		opponentsPipCountBearedOff_weight -= weightAdjustment;
-    		checkersInJail_weight -= weightAdjustment;
+    		opponentsBlocksHome_weight -= ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
+    		opponentBlockBotHome_weight -= ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
+    		opponentsPipCountInJail_weight -= ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
+    		opponentsPipCountInHome_weight -= ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
+    		opponentsPipCountBearedOff_weight -= ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
+    		checkersInJail_weight -= ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
 
     	}
     }

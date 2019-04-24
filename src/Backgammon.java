@@ -75,21 +75,26 @@ public class Backgammon {
 
         do {
         	playGame();			// Play a game
-        	//debug();			REMOVED FOR TRAINING
+        	debug();			//REMOVED FOR TRAINING
 
         	/*
         	 * Ask for the next match only if it is not a quit command given
         	 * or match is not over yet
         	 */
         	if(!realGame.getResignedByCommand() && !match.isOver()) {
-        		//nextGame = nextGame();		REMOVED FOR TRAINING
+        		//nextGame = nextGame();		//REMOVED FOR TRAINING
         		nextGame = true;			//	added FOR TRAINING
         		resetGame();				// 	added FOR TRAINING
         		match.setLength();
         		ui.display();
 
         		// Adjust the weights (THIS IS FOR TRAINING)
-
+        		//if() {
+        			
+        		//}
+        		//if() {
+        			
+        		//}
         		bots[players.getCurrent().getId()].botWins();
         		bots[players.getEnemy().getId()].botLoses();
 
@@ -103,24 +108,22 @@ public class Backgammon {
 
         		if(realGame.getResignedByCommand())
         			quitGameByCommand();
-
         	}
+        	
         	ui.display();
         	ui.displayString("");
-
         }while(nextGame && !realGame.getResignedByCommand());
 
         displayEndStage();
         ui.display_endMatch();
-        //newMatch = nextMatch();		// Removed for training
+        newMatch = nextMatch();		// Removed for training
 
         // Training code to save the weights of the bot
 
         // Save the weights
+        
 		bots[players.getCurrent().getId()].saveWeights();
 		bots[players.getEnemy().getId()].saveWeights();
-
-
 
         // Training code to save the weights of the bot
 
@@ -258,8 +261,8 @@ public class Backgammon {
     	ui.displayPlayerColor(players.get(0));
 
     	// Set up Steven with player 2
-        players.get(1).setName(Steven.getTheName());
-    	ui.displayString("> Steven bot controlls player 2");
+        players.get(1).setName("Bot1");
+    	ui.displayString("> Bot1 bot controlls player 2");
     	ui.displayPlayerColor(players.get(1));
 
     	// Set up the Francis bot
@@ -302,8 +305,8 @@ public class Backgammon {
     		ui.promptPlayersNextGame();
 
         	try {
-        		// String reply = ui.getString().toLowerCase().trim();
-        		String reply = "yes";	// Bot Training only
+        		String reply = ui.getString().toLowerCase().trim();
+        		//String reply = "yes";	// Bot Training only
 
         		if(reply.compareTo("yes") == 0) {		// play again
         			ui.display_PlayersWantNextGame();
@@ -409,7 +412,7 @@ public class Backgammon {
             // ----- DICE ROLL PART (Including Doubling Dice after first move) -----
             Dice currentDice = diceRollInTurns(firstMove, currentPlayer);
             firstMove = false;
-
+            
             if(realGame.getResignedByDouble()) {
         		return;
         	}
@@ -423,7 +426,6 @@ public class Backgammon {
                 ui.display(); 	// Display information about the player's attempt in current game turn
                 debug();
             }
-
             // ----- END OF CHECKER MOVE PART -----
 
 
@@ -452,7 +454,7 @@ public class Backgammon {
     	match.updateScores();
     	displayEndStage();
 		ui.display_endGame();
-        //TimeUnit.SECONDS.sleep(2); 	REMOVED FOR TRAINING
+        //TimeUnit.SECONDS.sleep(2); //	REMOVED FOR TRAINING
     }
 
     /**
@@ -474,12 +476,15 @@ public class Backgammon {
         	// Check if the current player wants to offer double or redouble challenges
         	// Requirements : current game is able to use DC, DC hasn't been owned or Current player is owning DC
         	if(match.canDouble(currentPlayer.getId()) && (!cube.isOwned() || cube.getOwnerId() == currentPlayer.getId())) {
+        		/*
         		if(bots[currentPlayer.getId()] != null) {
         			promptDoubleCubeOption();
         		}
         		else {
         			// current player is a bot
         		}
+        		*/
+        		promptDoubleCubeOption();
         	}
 
         	// Current player has no intent to quit current game
@@ -587,7 +592,7 @@ public class Backgammon {
      * @throws InterruptedException
      */
     private void promptDoubleCubeOption() throws InterruptedException {
-
+    	
     	int currentPlayer_id = players.getCurrent().getId();
     	boolean currentPlayerWantsToDouble = askPlayerifWishesToDouble();
 
@@ -623,7 +628,13 @@ public class Backgammon {
     		ui.promptPlayerToRedouble();
 
         // String reply = ui.getString();
-    	String reply = bots[players.getCurrent().getId()].getDoubleDecision(); // For Bot training
+    	String reply;
+    	if(bots[players.getCurrent().getId()] != null) {
+        	reply = bots[players.getCurrent().getId()].getDoubleDecision(); // For Bot training
+    	}
+    	else {
+    		reply = ui.getString();
+    	}
 
         ui.displayString("> " + reply);
         reply.toLowerCase().trim();
@@ -657,7 +668,15 @@ public class Backgammon {
     		try {
 
         		// String reply = ui.getString();
-        		String reply = bots[players.getEnemy().getId()].getDoubleDecision(); // Bot training only
+        		String reply;
+        		
+            	if(bots[players.getEnemy().getId()] != null) {
+                	reply = bots[players.getEnemy().getId()].getDoubleDecision(); // Bot training only
+            	}
+            	else {
+            		// For player
+            		reply = ui.getString();
+            	}
         		ui.displayString("> " + reply);										 // Display user response
         		reply.toLowerCase().trim();
 

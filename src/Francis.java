@@ -115,7 +115,7 @@ public class Francis implements BotAPI {
     	
 
     	// Get score for current board(without any moves)
-    	int currentHighestScore = 0;
+    	double currentHighestScore = 0;
     	Play playWithHighestScore;
     	
     	int[][] originalBoard = board.get();
@@ -129,7 +129,7 @@ public class Francis implements BotAPI {
     		int[][] shadowBoard_AfterMove = getBoardAfterPlay(originalBoard.clone(), currentPlay, me.getId());
     		
     		// Get the new boards score
-    		int scoreOfBoardAfterMove = getScoreForBoard(shadowBoard_AfterMove);
+    		double scoreOfBoardAfterMove = getScoreForBoard(shadowBoard_AfterMove);
     		
     		if(!firstScoreGotten) {
     			firstScoreGotten = true;
@@ -177,35 +177,35 @@ public class Francis implements BotAPI {
     public String getDoubleDecision() {
 
     	// Match Stage : 3 kind of stages -> Normal, Both Players 2 points from winning, Post Crawford
-    	String play = "double";
-//    	int playDouble = ThreadLocalRandom.current().nextInt(0, 1);
-    	
-    	// Used only under normal indecisive case (0/1)
-//    	if(playDouble == 0)
-//    		play = "no";
-//    	else
-//    		play = "double";
     	
     	// Stage 1 : Both Players 2 points from winning 
     	if(me.getScore() - 2 == match.getMatchPoint() && me.getScore() - 2 == match.getMatchPoint()) {
+    		if(getScoreForBoard(board.get()) >= 50 && getScoreForBoard(board.get()) <= 75)
+    			return "yes";
+    		else if(getScoreForBoard(board.get()) >= 75)
+    			return "no";
+    		else
+    			return "yes";
     		
-    		
-    	} // Post Crawford Stage
-    	else if(!match.canDouble(me.getId())) {
-    		
-    	} // Normal Stage : 
+    	} // Normal Stage
     	else {
     		
-    		if(board.lastCheckerInInnerBoard(me.getId()))
-    			play = "double";
+    		if(getScoreForBoard(board.get()) <= 75)
+    			return "yes";
+    		else
+    			return "no";
     	}
-    	
-    	return play; 
     }
     
-    // evaluating the stats
-    private int getScoreForBoard(int[][] theBoard) {
+    
+    /**
+     * Calculate the total board score of this bot, based on the position of owned checkers 
+     * @param theBoard	The duplication of board pips
+     * @return			Board score of this bot	
+     */
+    public double getScoreForBoard(int[][] theBoard) {
     	
+    	/** The difference between the number of blocks(pip with at least 1 pip) and blots(empty pip) on board */
     	int blockBlotDif = 0;
     	int blocks = 0;
     	int blots = 0;
@@ -224,7 +224,7 @@ public class Francis implements BotAPI {
     	
     	// Search through the points of the board
     	
-    	int currentPointer = 1;
+    	int currentPointer = 1;	// Search starts from ace point
     	int adjustment = +1;
     	int stopPoint = 24;
     	
@@ -234,7 +234,6 @@ public class Francis implements BotAPI {
     			// then bot has pieces on pip position
         		// Evaluate bot variables
     			int pointsPieceCount = theBoard[me.getId()][currentPointer];
-    			
     			
     			// Blocks and blots
     			if(pointsPieceCount > 1) {
@@ -343,7 +342,7 @@ public class Francis implements BotAPI {
     		
     	}
     	    	
-    	int totalScore = 0;
+    	double totalScore = 0;
     	
     	botScore = (botHomeBlockCount * botBlocksHome_weight) + (botBlockCountOpponentsHome * botBlockOpponentHome_weight)
     			+ (botPieceCountInHome * botPipCountInHome_weight) + (botsPointsScored * botPipCountBearedOff_weight) 
@@ -416,8 +415,6 @@ public class Francis implements BotAPI {
     		botPipCountBearedOff_weight += weightAdjustment;
     		allPiecesInHome_weight += weightAdjustment;
     		
-    		
-    		
     		// Negative weights
     		opponentsBlocksHome_weight -= weightAdjustment;
     		opponentBlockBotHome_weight -= weightAdjustment;
@@ -438,9 +435,7 @@ public class Francis implements BotAPI {
 		botPipCountInJail_weight = botWeights[4];
 		botPipCountInHome_weight = botWeights[5];
 		botPipCountBearedOff_weight = botWeights[6];
-		
-		
-		
+
 		// Negative weights
 		opponentsBlocksHome_weight = botWeights[7];
 		opponentBlockBotHome_weight = botWeights[8];
@@ -481,7 +476,7 @@ public class Francis implements BotAPI {
         	FileWriter out = new FileWriter(WEIGHT_FILE);
 			int[] weights = this.getWeights();
 			String output = "";
-			for (int weight : weights) {
+			for (double weight : weights) {
 				output += weight + "\n";
 			}
 			System.out.println(output);

@@ -322,13 +322,13 @@ public class Board implements BoardAPI {
     }
     
     @Override
-	public boolean lastCheckerInInnerBoard(int playerID) {
-		return findLastChecker(players.get(playerID)) <= INNER_END;
+	public boolean lastCheckerInInnerBoard(int playerId) {
+		return findLastChecker(players.get(playerId)) <= INNER_END;
 	}
 
 	@Override
-	public boolean lastCheckerInOpponentsInnerBoard(int playerID) {
-        return findLastChecker(players.get(playerID)) > OUTER_END;
+	public boolean lastCheckerInOpponentsInnerBoard(int playerId) {
+        return findLastChecker(players.get(playerId)) > OUTER_END;
 	}
 	
 	private int findLastChecker(Player player) {
@@ -347,8 +347,8 @@ public class Board implements BoardAPI {
 	}
 
 	@Override
-	public boolean hasCheckerOff(int playerID) {
-		return checkers[playerID][BEAR_OFF] > 0;
+	public boolean hasCheckerOff(int playerId) {
+		return checkers[playerId][BEAR_OFF] > 0;
 	}
 
     // ----- END OF BOOLEAN METHODS -----
@@ -365,39 +365,4 @@ public class Board implements BoardAPI {
         }
         return duplicateCheckers;
 	}
-
-	@Override
-	public Plays getPossiblePlays(int playerId, Dice dice) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean lastCheckerInInnerBoard(int playerId) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean lastCheckerInOpponentsInnerBoard(int playerId) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean allCheckersOff(int playerId) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean hasCheckerOff(int playerId) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	
-	
-
-
-	
 }

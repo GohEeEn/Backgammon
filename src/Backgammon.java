@@ -238,7 +238,7 @@ public class Backgammon {
     	
     	// Set up Steven with player 2
         players.get(1).setName(Steven.getTheName());
-    	ui.displayString("> Bot1 bot controlls player 2");
+    	ui.displayString("> Steven bot controlls player 2");
     	ui.displayPlayerColor(players.get(1));
     	
     	// Set up the Francis bot
@@ -248,7 +248,7 @@ public class Backgammon {
     	bots[1] = new Steven(players.get(1),players.get(0),board,cube,match,ui.getInfoPanel());
 
     	((Francis)(bots[0])).setEnemyBot(bots[1]);
-    	((Bot1)(bots[1])).setEnemyBot(bots[0]);
+    	((Steven)(bots[1])).setEnemyBot(bots[0]);
     }
     
     /**
@@ -454,7 +454,7 @@ public class Backgammon {
         	
         	// Check if the current player wants to offer double or redouble challenges
         	// Requirements : current game is able to use DC, DC hasn't been owned or Current player is owning DC
-        	if(match.canDouble(currentPlayer) && (!cube.isOwned() || cube.getOwnerId() == currentPlayer.getId())) {
+        	if(match.canDouble(currentPlayer.getId()) && (!cube.isOwned() || cube.getOwnerId() == currentPlayer.getId())) {
         		if(bots[currentPlayer.getId()] != null) {
         			promptDoubleCubeOption();   
         		}
@@ -482,7 +482,7 @@ public class Backgammon {
     	
     	Command command = new Command();
     	
-    	Plays possiblePlays = board.getPossiblePlays(currentPlayer, currentDice);
+    	Plays possiblePlays = board.getPossiblePlays(currentPlayer.getId(), currentDice);
         
         // Case 1 : No move for current player -> End current game turn
         if (possiblePlays.number() == 0) { 

@@ -17,10 +17,6 @@ public interface BoardAPI {
      */
     int getNumbCheckersAtPosition(int pipPosition);
 
-    Plays getPossiblePlays(int playerID, Dice dice);
-
-    boolean hasCheckerOff(Player player);
-
     Plays getPossiblePlays(int playerId, Dice dice);
 
     boolean lastCheckerInInnerBoard(int playerId);

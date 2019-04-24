@@ -1,3 +1,8 @@
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Steven implements BotAPI {
@@ -9,6 +14,8 @@ public class Steven implements BotAPI {
     // It may only inspect the state of the board and the player objects
 	
 	private final boolean TRAINING = true;
+	private static final String WEIGHT_FILE = "Steven_WeightsForScoring.txt";
+	
     public static final int BAR = 25;           	// Index of the BAR
     public static final int BEAR_OFF = 0;      		// Index of the BEAR OFF
     public static final int NUM_PIPS = 24;      	// Total number of pips on this board, EXECLUDING BAR and BEAR OFF
@@ -19,7 +26,6 @@ public class Steven implements BotAPI {
     private CubeAPI cube;
     private MatchAPI match;
     private InfoPanelAPI info;
-    
     private BotAPI opponentBot;
     
     // variables to keep track of so can adjust the weight
@@ -27,38 +33,10 @@ public class Steven implements BotAPI {
     private boolean inTrainingMode = true;
     
     // Weight adjustment variables
-    private double weightAdjustment_Min = -0.0005;
-    private double weightAdjustment_Max = 0.005;
-    // Weights
-    private int pipCountDifference_weight = 0;
+    private double weightAdjustment = 0.005;
     
-    private int blockBlotDif_weight = 0;
-    
-    private int botBlocksHome_weight = 0;
-    private int opponentsBlocksHome_weight = 0;
-    
-    private int botBlockOpponentHome_weight = 0;
-    private int opponentBlockBotHome_weight = 0;
-    
-    // for later: private int differenceBetweenBlockedCheckers_weight = 0;	// difference between pips that are trapped behind enemy pips
-    // for later: private int differenceBetweenEscapedCheckers_weight = 0;	// same as above, but for checkers that have escaped
-    
-    //private int differenceBetweenPipCountInJail_weight = 0;
-    private int botPipCountInJail_weight = 0;
-    private int opponentsPipCountInJail_weight = 0;
-    
-    //private int differenceBetweenPipCountsBearedOff_weight = 0;
-    private int botPipCountBearedOff_weight = 0;
-    private int opponentsPipCountBearedOff_weight = 0;
-    
-    private int botPipCountInHome_weight = 0;
-    private int opponentsPipCountInHome_weight = 0;
-    
-    
-    
-    
-
-    // END OF Weights
+    private double botWeight = 0;
+    private double opponentWeight = 0;
     
     Steven(PlayerAPI me, PlayerAPI opponent, BoardAPI board, CubeAPI cube, MatchAPI match, InfoPanelAPI info) {
         this.me = me;
@@ -67,7 +45,6 @@ public class Steven implements BotAPI {
         this.cube = cube;
         this.match = match;
         this.info = info;
-        
     }
 
     /**
@@ -78,9 +55,9 @@ public class Steven implements BotAPI {
     }
     
     public static String getTheName() {
-    	return "Bot1"; 
+        return "Steven"; 
     }
-
+    
     /**
      * TODO
      */
@@ -90,7 +67,7 @@ public class Steven implements BotAPI {
     	
 
     	// Get score for current board(without any moves)
-    	int currentHighestScore = 0;
+    	double currentHighestScore = 0;
     	Play playWithHighestScore;
     	
     	int[][] originalBoard = board.get();
@@ -104,7 +81,7 @@ public class Steven implements BotAPI {
     		int[][] shadowBoard_AfterMove = getBoardAfterPlay(originalBoard.clone(), currentPlay, me.getId());
     		
     		// Get the new boards score
-    		int scoreOfBoardAfterMove = getScoreForBoard(shadowBoard_AfterMove);
+    		double scoreOfBoardAfterMove = getScoreForBoard(shadowBoard_AfterMove);
     		
     		if(!firstScoreGotten) {
     			firstScoreGotten = true;
@@ -127,18 +104,18 @@ public class Steven implements BotAPI {
     
     // ----- Helper functions for getCommand -----
     
-    private boolean getIfPointIsInPlayersHome(int point) {
-    	if(point > 0 && point <= 6)
-    		return true;
-    	return false;
-    }
-    
-    private boolean getIfPointIsInPlayersEnemysHome(int point) {
-    	
-    	if(point > 18  && point <= 24)
-    		return true;
-    	return false;
-    }
+//    private boolean getIfPointIsInPlayersHome(int point) {
+//    	if(point > 0 && point <= 6)
+//    		return true;
+//    	return false;
+//    }
+//    
+//    private boolean getIfPointIsInPlayersEnemysHome(int point) {
+//    	
+//    	if(point > 18  && point <= 24)
+//    		return true;
+//    	return false;
+//    }
     
     
     // End of helpers for getCommand
@@ -147,155 +124,51 @@ public class Steven implements BotAPI {
      * TODO
      */
     public String getDoubleDecision() {
-        // Add your code here
     	
+    	// Match Stage : 3 kind of stages -> Normal, Both Players 2 points from winning, Post Crawford
     	
-    	
-    	
-    	
-    	
-    	
-    	
-    	
-    	
-        return "n";
+    	// Stage 1 : Both Players 2 points from winning 
+    	if(me.getScore() - 2 == match.getMatchPoint() && me.getScore() - 2 == match.getMatchPoint()) {
+    		if(getScoreForBoard(board.get()) >= 50 && getScoreForBoard(board.get()) <= 75)
+    			return "yes";
+    		else if(getScoreForBoard(board.get()) >= 75)
+    			return "no";
+    		else
+    			return "yes";
+    		
+    	} // Normal Stage
+    	else {
+    		
+    		if(getScoreForBoard(board.get()) <= 75)
+    			return "yes";
+    		else
+    			return "no";
+    	}
     }
     
     
     
     // evaluating the stats
-    private int getScoreForBoard(int[][] theBoard) {
-    	
-    	int blockBlotDif = 0;
-    	int blocks = 0;
-    	int blots = 0;
-    	
-    	int botPieceCountInHome = 0;
-    	int opponentsPieceCountInHome = 0;
-    	
-    	int botTotalPipCount = 0;
-    	int opponentTotalPipCount = 0;
-    	
-    	int botHomeBlockCount = 0;
-    	int opponentsHomeBlockCount = 0;
-    	
-    	int botBlockCountOpponentsHome = 0;
-    	int opponentsBlockCountBotsHome = 0;
-    	
-    	
-    	
-    	// Search through the points of the board
-    	
-    	int currentPointer = 1;
-    	int adjustment = +1;
-    	int stopPoint = 24;
-    	
-    	while(currentPointer != stopPoint) {
-    	
-    		if(theBoard[me.getId()][currentPointer]>0) {
-    			// then bot has pieces on pip position
-        		// Evaluate bot variables
-    			int pointsPieceCount = theBoard[me.getId()][currentPointer];
-    			
-    			
-    			// Blocks and blots
-    			if(pointsPieceCount > 1) {
-    				blocks++;
-    			}
-    			
-    			// In bots home
-    			if(getIfPointIsInPlayersHome(currentPointer)) {
-    				// Then bot is in bots home
-        			if(pointsPieceCount > 1) {
-        				botHomeBlockCount++;
-        			}
-        			botPieceCountInHome += pointsPieceCount;
-    			}
-    			
-    			
-    			// In opponents home
-    			if(getIfPointIsInPlayersEnemysHome(currentPointer)) {
-    				// Then bot is in opponents home
-        			if(pointsPieceCount > 1) {
-        				botBlockCountOpponentsHome++;
-        			}
-    				
-    			}
-    			    			
-    			botTotalPipCount += currentPointer;
-    			
-    		}
-    		if(theBoard[opponent.getId()][currentPointer] > 0) {
-    			// then opponent has pieces on pip position
-        		// Evaluate opponents variables
+    public int getScoreForBoard(int[][] theBoard) {
+        	
+        double boardPoint = 0;
+        int currentPlayerID = me.getId();
+        	
+       	// Counting checkers on board
+        for(int pipPointer = 24 ; pipPointer >= 1 ; pipPointer--) {
         		
-    			int pointsPieceCount = theBoard[opponent.getId()][currentPointer];
-    			
-    			// Blocks and blots
-    			if(pointsPieceCount == 1) {
-    				blots++;
-    			}
-    			
-    			// In bots home
-    			if(getIfPointIsInPlayersHome(currentPointer)) {
-    				// Then bot is in bots home
-        			if(pointsPieceCount > 1) {
-        				opponentsHomeBlockCount++;
-        			}
-        			opponentsPieceCountInHome += pointsPieceCount;
-    			}
-    			
-    			// In opponents home
-    			if(getIfPointIsInPlayersEnemysHome(currentPointer)) {
-    				// Then bot is in opponents home
-        			if(pointsPieceCount > 1) {
-        				opponentsBlockCountBotsHome++;
-        			}
-    				
-    			}
-    			    			
-    			opponentTotalPipCount += currentPointer;
-    			
-    		}else {
-    			// No pieces on pip position
-    		}
-    	
-    		
-    		currentPointer += adjustment;
-    		
-    	}
-    	
-    	// Check how many points player has scored (pieces beared off)
-    	int botsPointsScored = theBoard[me.getId()][0];
-    	int opponentsPointsScored = theBoard[opponent.getId()][0];
-    	
-    	int botPiecesInJail = theBoard[me.getId()][25];
-    	int opponentsPiecesInJail = theBoard[opponent.getId()][25];
-
-    	// Get:
-    	
-    	// Block Blot difference
-    	blockBlotDif = blocks - blots;
-    	
-    	// Difference between bot and opponent pip count
-    	int pipCountDifference = botTotalPipCount - opponentTotalPipCount;
-    	
-    	
-    	// FINNISHED ASSIGNEING THE VARIABLES
-    	// Now must get the score
-    	
-    	int totalScore = 0;
-    	
-    	totalScore += 
-    	((blockBlotDif * blockBlotDif_weight) + (pipCountDifference * pipCountDifference_weight)
-    	+ (botHomeBlockCount * botBlocksHome_weight) + (opponentsHomeBlockCount * opponentsBlocksHome_weight) 
-    	+ (botBlockCountOpponentsHome * botBlockOpponentHome_weight) + (opponentsBlockCountBotsHome * opponentBlockBotHome_weight)
-    	+ (botPieceCountInHome * botPipCountInHome_weight) + (opponentsPieceCountInHome * opponentsPipCountInHome_weight)
-    	+ (botsPointsScored * botPipCountBearedOff_weight) + (opponentsPointsScored * opponentsPipCountBearedOff_weight)
-    	+ (botPiecesInJail * botPipCountInJail_weight) + (opponentsPiecesInJail * opponentsPipCountInJail_weight));
-    	
-    	
-    	return totalScore;
+       		boardPoint +=  (24 - pipPointer) * board.getNumCheckers(currentPlayerID, pipPointer);
+        }    	
+        	
+        // Bear-off point will be the highest : 24 points per borne-off checker
+        if(board.hasCheckerOff(currentPlayerID))
+        	boardPoint += 24 * board.getNumbCheckersAtPosition(0);
+        	
+        // Else if the current bot has at least 1 checker(s) in bar : Deduction of score
+        else if(board.getNumbCheckersAtPosition(25) > 0)
+        	boardPoint -= 24 * board.getNumCheckers(currentPlayerID, 25);
+        	
+        return (int) boardPoint * 10 / 36;	// return the value in percentage        
     }
     
     
@@ -303,11 +176,11 @@ public class Steven implements BotAPI {
     
     
     public void botLoses() {
+    	
     	if(inTrainingMode) {
     		botLosesInARow++;
         	if(botLosesInARow == 3) {
         		// Exchange the weights between the bots
-        		
         		swapBotsWeightsWithOpponentBot(opponentBot);
         		
         		// End of changing the weights between bots
@@ -315,80 +188,47 @@ public class Steven implements BotAPI {
         	}
         	else {
         		// Adjust the weights by small amount as described in document
-        		double weightAdjustment = ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
+        		double weightAdjustment = ThreadLocalRandom.current().nextDouble(this.weightAdjustment - 0.001, this.weightAdjustment + 0.001);
+        		this.weightAdjustment = weightAdjustment;
+        		
         		// positive weights
-        		pipCountDifference_weight -= weightAdjustment;
-        		blockBlotDif_weight -= weightAdjustment;
-        		botBlocksHome_weight -= weightAdjustment;
-        		botBlockOpponentHome_weight -= weightAdjustment;
-        		botPipCountInJail_weight -= weightAdjustment;
-        		botPipCountInHome_weight -= weightAdjustment;
-        		botPipCountBearedOff_weight -= weightAdjustment;
+        		botWeight += weightAdjustment;
         		
         		// Negative weights
-        		opponentsBlocksHome_weight += weightAdjustment;
-        		opponentBlockBotHome_weight += weightAdjustment;
-        		opponentsPipCountInJail_weight += weightAdjustment;
-        		opponentsPipCountInHome_weight += weightAdjustment;
-        		opponentsPipCountBearedOff_weight += weightAdjustment;
+        		opponentWeight -= weightAdjustment;
         	}
     	}
     }
     
     public void botWins() {
+    	
     	if(inTrainingMode) {
     		// Adjust the weight by small amount as described in document
     		
-    		double weightAdjustment = ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
+    		double weightAdjustment = ThreadLocalRandom.current().nextDouble(this.weightAdjustment - 0.001, this.weightAdjustment + 0.001);
+    		this.weightAdjustment = weightAdjustment;
     		//add a small random amount (could be slightly negative) to the 
     		//positive weights and subtract a small amount from the negative weights (could be slightly negative
     		
     		// positive weights
-    		pipCountDifference_weight += weightAdjustment;
-    		blockBlotDif_weight += weightAdjustment;
-    		botBlocksHome_weight += weightAdjustment;
-    		botBlockOpponentHome_weight += weightAdjustment;
-    		botPipCountInJail_weight += weightAdjustment;
-    		botPipCountInHome_weight += weightAdjustment;
-    		botPipCountBearedOff_weight += weightAdjustment;
-    		
-    		
+    		botWeight -= weightAdjustment;
     		
     		// Negative weights
-    		opponentsBlocksHome_weight -= weightAdjustment;
-    		opponentBlockBotHome_weight -= weightAdjustment;
-    		opponentsPipCountInJail_weight -= weightAdjustment;
-    		opponentsPipCountInHome_weight -= weightAdjustment;
-    		opponentsPipCountBearedOff_weight -= weightAdjustment;
+    		opponentWeight += weightAdjustment;
     		
     	}
     }
     
     public void swapWeightsWithOtherPlayer(int[] botWeights) {
-		// positive weights
-		pipCountDifference_weight = botWeights[0];
-		blockBlotDif_weight = botWeights[1];
-		botBlocksHome_weight = botWeights[2];
-		botBlockOpponentHome_weight = botWeights[3];
-		botPipCountInJail_weight = botWeights[4];
-		botPipCountInHome_weight = botWeights[5];
-		botPipCountBearedOff_weight = botWeights[6];
 		
-		
-		
-		// Negative weights
-		opponentsBlocksHome_weight = botWeights[7];
-		opponentBlockBotHome_weight = botWeights[8];
-		opponentsPipCountInJail_weight = botWeights[9];
-		opponentsPipCountInHome_weight = botWeights[10];
-		opponentsPipCountBearedOff_weight = botWeights[11];
+    	double temp = botWeight;
+    	botWeight = opponentWeight;
+    	opponentWeight = temp;
     }
     
     // ONLY FOR TRAINING
     public int[] getWeights() {
-    	int[] weights = {pipCountDifference_weight,blockBlotDif_weight,botBlocksHome_weight,botBlockOpponentHome_weight,botPipCountInJail_weight
-    			,botPipCountInHome_weight,botPipCountBearedOff_weight, opponentsBlocksHome_weight, opponentBlockBotHome_weight,opponentsPipCountInJail_weight
-    			,opponentsPipCountInHome_weight,opponentsPipCountBearedOff_weight};
+    	int[] weights = {(int) botWeight, (int) opponentWeight};
     	return weights;
     }
     
@@ -435,10 +275,55 @@ public class Steven implements BotAPI {
     private int calculateOpposingPip(int pip) {
         return NUM_PIPS - pip + 1;
     }
-    
-    
-    
-    
+
+	@Override
+	public void saveWeights() {
+		// TODO Auto-generated method stub
+		// Write weights to file
+        try {
+        	//OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(new File(WEIGHT_FILE)));
+        	FileWriter out = new FileWriter(WEIGHT_FILE);
+			int[] weights = this.getWeights();
+			String output = "";
+			for (double weight : weights) {
+				output += weight + "\n";
+			}
+			System.out.println(output);
+			
+			out.write(output);
+			out.flush();
+			out.close();
+			System.out.println("hel");
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void retrieveWeights() {
+		// retrieve the weights
+        try {
+        	BufferedReader bf1 = new BufferedReader(new FileReader(WEIGHT_FILE));
+        	
+        	int[] weights = new int[2];
+			for(int i = 0; i < 2;i++) {
+				weights[i] = Integer.parseInt(bf1.readLine());
+			}
+			swapWeightsWithOtherPlayer(weights);
+			
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
     // SEEING THE BOARD
     
 }

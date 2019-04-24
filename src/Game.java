@@ -33,7 +33,7 @@ public class Game {
     	boolean gameOver = false;
     	if(resigned())
     		gameOver = true;
-    	else if(board.allCheckersOff(players.get(0))||board.allCheckersOff(players.get(1)))
+    	else if(board.allCheckersOff(0)||board.allCheckersOff(1))
     		gameOver = true;
     	return gameOver;
     }
@@ -53,9 +53,9 @@ public class Game {
     public Player getWinner() {
     	
     	if(!resigned()) {
-    		if(board.allCheckersOff(players.get(0)))
+    		if(board.allCheckersOff(0))
     			winner = players.get(0);
-    		else if(board.allCheckersOff(players.get(1)))
+    		else if(board.allCheckersOff(1))
     			winner = players.get(1);
     	}
     	
@@ -68,9 +68,9 @@ public class Game {
         if (resigned()) {
             players.getEnemy(winner);
         }else{
-            if (board.lastCheckerInInnerBoard(players.get(0))) {
+            if (board.lastCheckerInInnerBoard(0)) {
                 loser = players.get(1);
-            } else if (board.lastCheckerInInnerBoard(players.get(1))) {
+            } else if (board.lastCheckerInInnerBoard(1)) {
                 loser = players.get(0);
             }
         }
@@ -78,15 +78,15 @@ public class Game {
     }
     
     public boolean isSingle() {
-        return board.hasCheckerOff(getLoser());
+        return board.hasCheckerOff(getLoser().getId());
     }
 
     public boolean isGammon() {
-        return !board.hasCheckerOff(getLoser()) && !board.lastCheckerInOpponentsInnerBoard(getLoser());
+        return !board.hasCheckerOff(getLoser().getId()) && !board.lastCheckerInOpponentsInnerBoard(getLoser().getId());
     }
 
     public boolean isBackgammon() {
-        return !board.hasCheckerOff(getLoser()) && board.lastCheckerInOpponentsInnerBoard(getLoser());
+        return !board.hasCheckerOff(getLoser().getId()) && board.lastCheckerInOpponentsInnerBoard(getLoser().getId());
     }
     
     public boolean getResignedByCommand() {

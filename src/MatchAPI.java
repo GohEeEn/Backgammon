@@ -1,6 +1,6 @@
 public interface MatchAPI {
 
     int getLength();
-
-    boolean canDouble(Player player);
+    int getMatchPoint();
+    boolean canDouble(int currentID);
 }

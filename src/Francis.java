@@ -30,8 +30,12 @@ public class Francis implements BotAPI {
 
 	private final boolean TRAINING = true;
     private static final String WEIGHT_FILE = "Francis_WeightsForScoring.txt";
-
-    private Double referenceScoreForBot;
+    
+    private boolean botIsAskingToDouble = false;
+    
+    private double referenceScoreForBoard;
+    private double referenceScoreForBot;
+    private double referenceScoreForOpponent;
 
     private PlayerAPI me, opponent;
     private BoardAPI board;
@@ -97,7 +101,15 @@ public class Francis implements BotAPI {
 
         this.retrieveWeights();
 
-        referenceScoreForBot = this.getScoreForBoard(board.get());
+        
+        // Get reference score
+        // This will be done by getting the score for the bot at board set up
+        // this will be roughly == to being 50% chance of failure and loss (I am going to ignore the way who roles first effects there odds)
+        // Convert this number to 100% and this is some rough reference based on the current board set up
+        referenceScoreForBoard = this.getScoreForBoard(board.get());
+        referenceScoreForBot = botScore;
+        referenceScoreForOpponent = opponentScore;
+        referenceScoreForBoard = referenceScoreForBoard * 2;
     }
 
     /**
@@ -116,8 +128,17 @@ public class Francis implements BotAPI {
      */
     public String getCommand(Plays possiblePlays) {
         // Add your code here
-
-
+    	
+    	// Ask if want to double
+    	botIsAskingToDouble = true;
+    	String seeIfBotWantsToAskForDouble = getDoubleDecision();
+    	if(seeIfBotWantsToAskForDouble.equals("double")) {
+    		// ask for a double
+    		botIsAskingToDouble = false;
+    		return seeIfBotWantsToAskForDouble;
+    	}
+    	botIsAskingToDouble = false;
+    	
     	// Get score for current board(without any moves)
     	Double currentHighestScore = 0.0;
     	Play playWithHighestScore;
@@ -175,39 +196,88 @@ public class Francis implements BotAPI {
 
     // End of helpers for getCommand
 
-    @Override
-	public String initDouble() {
+    /*		breaks API
+    public String initDouble() {
 		// TODO Auto-generated method stub
 
     	if(getScoreForBoard(board.get()) > opponentBot.getScoreForBoard(board.get()) * 10)
     		return "double";
 		return "no";
 	}
+	*/
 
     /**
      * TODO
      */
     public String getDoubleDecision() {
+    	
+    	// This method will either be called from getCommand or it will called to ask if bot wants to accept a double decision
+    	// to distinguish between which have boolean variable: botBeingAskedToDouble
 
     	// Match Stage : 3 kind of stages -> Normal, Both Players 2 points from winning, Post Crawford
 
+		// bot is considering asking
     	// Stage 1 : Both Players 2 points from winning
     	if(me.getScore() - 2 == match.getMatchPoint() && me.getScore() - 2 == match.getMatchPoint()) {
-    		if(getScoreForBoard(board.get()) >= 50 && getScoreForBoard(board.get()) <= 75)
-    			return "yes";
-    		else if(getScoreForBoard(board.get()) >= 75)
+    		// bot is being asked to double by other player
+    		if(percentageChanceOfsuccess(getScoreForBoard(board.get())) >= 50 && percentageChanceOfsuccess(getScoreForBoard(board.get())) <= 75) {
+    			if(!botIsAskingToDouble) {
+    				return "yes";
+    			}
+    			return "double";
+    		}
+    		else if(percentageChanceOfsuccess(getScoreForBoard(board.get())) >= 75) {
+    			if(!botIsAskingToDouble) {
+    				return "yes";
+    			}
     			return "no";
+    		}
     		else
-    			return "yes";
+    			return "double";
 
     	} // Normal Stage
+    	
     	else {
-
-    		if(getScoreForBoard(board.get()) <= 75)
-    			return "yes";
+    		if(!botIsAskingToDouble) {
+    			// Then bot is the one being asked
+    		}
+    		// Bot is not being asked to double, and instead is going to choose for himself
+    		double percentageChanceOfSuccess = percentageChanceOfsuccess(getScoreForBoard(board.get()));
+    		if(percentageChanceOfSuccess < 66)
+    			return "no";
+    		else if(percentageChanceOfSuccess >= 66 && percentageChanceOfSuccess < 75) {
+    			if(!botIsAskingToDouble) {
+    				return "yes";
+    			}
+    			return "double";
+    		}
+    		else if(percentageChanceOfSuccess >= 75) {
+    			if(!botIsAskingToDouble) {
+    				return "yes";
+    			}
+    			return "double";
+    		}
     		else
     			return "no";
     	}
+    	
+    	
+    	
+    }
+    
+    private double percentageChanceOfsuccess(double currentScore) {
+    	// Get the percentage in respect to references (board, bot and opponent)
+    	double remainder_boardScore = currentScore - referenceScoreForBoard;
+    	double remainderbotScore = botScore - referenceScoreForBot;
+    	double remainder_opponentScore = opponentScore - referenceScoreForOpponent;
+    	
+    	double percentageChangeForBoardScore = (remainder_boardScore/referenceScoreForBoard) * 100;
+    	double percentageChangeForBotScore = (remainderbotScore/referenceScoreForBot) * 100;
+    	double percentageChangeForOpponentScore = (remainder_opponentScore/referenceScoreForOpponent) * 100;
+    	
+    	double averagePercentageChange = (percentageChangeForBoardScore + percentageChangeForBotScore + percentageChangeForOpponentScore)/3;
+    	
+    	return averagePercentageChange;
     }
 
 
@@ -216,7 +286,7 @@ public class Francis implements BotAPI {
      * @param theBoard	The duplication of board pips
      * @return			Board score of this bot
      */
-    public int getScoreForBoard(int[][] theBoard) {
+    public double getScoreForBoard(int[][] theBoard) {
 
     	/** The difference between the number of blocks(pip with at least 1 pip) and blots(empty pip) on board */
     	int blockBlotDif = 0;
@@ -370,7 +440,7 @@ public class Francis implements BotAPI {
     	+ botScore + opponentScore);
 
 
-    	return totalScore;
+    	return (totalScore);
     }
 
 

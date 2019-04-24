@@ -266,10 +266,10 @@ public class Backgammon {
     	bots[0] = new Francis(players.get(0),players.get(1),board,cube,match,ui.getInfoPanel());
 
     	// set up the Steven bot
-    	bots[1] = new Steven(players.get(1),players.get(0),board,cube,match,ui.getInfoPanel());
+    	bots[1] = new Bot1(players.get(1),players.get(0),board,cube,match,ui.getInfoPanel());
 
     	((Francis)(bots[0])).setEnemyBot(bots[1]);
-    	((Steven)(bots[1])).setEnemyBot(bots[0]);
+    	((Bot1)(bots[1])).setEnemyBot(bots[0]);
     }
 
     /**
@@ -623,7 +623,7 @@ public class Backgammon {
     		ui.promptPlayerToRedouble();
 
         // String reply = ui.getString();
-    	String reply = bots[players.getCurrent().getId()].initDouble(); // For Bot training
+    	String reply = bots[players.getCurrent().getId()].getDoubleDecision(); // For Bot training
 
         ui.displayString("> " + reply);
         reply.toLowerCase().trim();

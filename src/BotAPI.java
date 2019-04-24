@@ -8,7 +8,7 @@ public interface BotAPI {
      * Method to decide if this bot wants to offer a doubling cube challenge to the opponent
      * @return String, "double" if it wants to, else "no"
      */
-    String initDouble();
+    //String initDouble();				// not in api
     String getDoubleDecision();
 
     Double[] getWeights();	// Uncomment so as to work with training the bot

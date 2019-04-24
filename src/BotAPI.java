@@ -13,24 +13,17 @@ public interface BotAPI {
      * Method to decide if this bot wants to offer a doubling cube challenge to the opponent
      * @return String, "double" if it wants to, else "no"
      */
-    String initDouble();
-    
-    /**
-     * Method to decide if this bot wants to accept a doubling cube challenge from the opponent
-     * @return String, "yes" if yes, else "no"
-     */
+    //String initDouble();				// not in api
     String getDoubleDecision();
-    
-    int getScoreForBoard(int[][] theBoard);
-    
-    int[] getWeights();				// Uncomment so as to work with training the bot
-    
-    void swapWeightsWithOtherPlayer(int[] botWeights);		// Uncomment so as to work with training the bot
-    
-    void saveWeights();				// Uncomment so as to work with training the bot
-    void retrieveWeights();			// Uncomment so as to work with training the bot
-    
-    void botWins();					// Uncomment so as to work with training the bot
+
+    Double[] getWeights();	// Uncomment so as to work with training the bot
+
+    void swapWeightsWithOtherPlayer(Double[] botWeights);		// Uncomment so as to work with training the bot
+
+    void saveWeights();	// Uncomment so as to work with training the bot
+    void retrieveWeights();	// Uncomment so as to work with training the bot
+
+    void botWins();	// Uncomment so as to work with training the bot
     void botLoses();	// Uncomment so as to work with training the bot
-    
+
 }

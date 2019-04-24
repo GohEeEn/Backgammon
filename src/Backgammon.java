@@ -20,108 +20,129 @@ public class Backgammon {
     private BotAPI[] bots = new BotAPI[NUM_PLAYERS];
     private final UI ui = new UI(board,players,cube,match,bots);
     private String[] botNames = new String[NUM_PLAYERS];
-    
+
     // ----- BOOLEAN VARIABLES -----
     /** Boolean value that shows the player instantiation is done : Used for determine case in quit command related method  */
     private static boolean startGame					= false;
-    
+
     /** Boolean value to check if the players want to go for the next game during the end of current game : if not , players can decide whether a new match or quit */
     private static boolean nextGame 					= true;
-    
+
     /** Boolean value to check if the players want to start a new match : if not, it will quit the program */
     private static boolean newMatch 					= false;
-    
+
     // ----- END OF BOOLEAN VARIABLES -----
-    
+
     // ----- END OF VARIABLES -----
-    
+
     Backgammon() throws InterruptedException{
-    	
+
     	ui.display();
         ui.displayStartOfGame();
         ui.displayString("");
-        
+
     	do {
         	playMatch();
         }while(newMatch);
     }
-    
+
     /**
      * Main flow of the program body
      */
     public static void main(String[] args) throws InterruptedException {
-        
+
     	Backgammon game = new Backgammon();
         System.exit(0);
     }
-    
- 
-    
+
+
+
     /**
      * Method to setup a match <br>
      * Layer 1
      * @throws InterruptedException
      */
     private void playMatch() throws InterruptedException {
-    	
-    	
-        
+
+
+
         // Set the match point of the current match
         match.setMatchPoint(getMatchPoint());
         ui.displayString("");
-        
+
         //getPlayerNames();        // Instantiate players name
         getPlayerName_botTest();
-        
-        do { 
+
+        do {
         	playGame();			// Play a game
-        	debug();
-        	
-        	/* 
+        	//debug();			REMOVED FOR TRAINING
+
+        	/*
         	 * Ask for the next match only if it is not a quit command given
-        	 * or match is not over yet  
+        	 * or match is not over yet
         	 */
         	if(!realGame.getResignedByCommand() && !match.isOver()) {
-        		nextGame = nextGame();
+        		//nextGame = nextGame();		REMOVED FOR TRAINING
+        		nextGame = true;			//	added FOR TRAINING
+        		resetGame();				// 	added FOR TRAINING
         		match.setLength();
         		ui.display();
-        		
+
+        		// Adjust the weights (THIS IS FOR TRAINING)
+
+        		bots[players.getCurrent().getId()].botWins();
+        		bots[players.getEnemy().getId()].botLoses();
+
+
+        		// END OF ADJUST THE WEIGHTS (FOR TRAINING)
+
         	} // Else the match over (By command or full match is end)
-        	else { 
+        	else {
         		newMatch	= false;
         		nextGame  	= false;
-        		
+
         		if(realGame.getResignedByCommand())
         			quitGameByCommand();
-        		
+
         	}
         	ui.display();
         	ui.displayString("");
-        	
+
         }while(nextGame && !realGame.getResignedByCommand());
-        
+
         displayEndStage();
         ui.display_endMatch();
-        newMatch = nextMatch();
+        //newMatch = nextMatch();		// Removed for training
+
+        // Training code to save the weights of the bot
+
+        // Save the weights
+		bots[players.getCurrent().getId()].saveWeights();
+		bots[players.getEnemy().getId()].saveWeights();
+
+
+
+        // Training code to save the weights of the bot
+
     }
-    
+
     /**
      * Method to quit game instantly with the command 'quit' with the announcement of winner
-     * @throws InterruptedException 
+     * @throws InterruptedException
      */
     private void quitGameByCommand() throws InterruptedException {
-    		
+
     	if(match.isOver()) {
     		ui.display_PlayersWantQuit();
     		displayEndStage();
-    		ui.display_endProgram(); 
+    		ui.display_endProgram();
     		System.exit(0);
-    		
+
     	}else {
     		System.out.println("Something wrong here");
     	}
     }
-    
+
     /**
      * Method to get if players wanna go for the next match<br>
      * Layer 1<br>
@@ -129,17 +150,17 @@ public class Backgammon {
      * @throws InterruptedException
      */
     private boolean nextMatch() throws InterruptedException {
-    	
+
     	while(true) {
-    		
+
     		ui.promptRestartNewMatch();
         	ui.displayString("");
-    		
+
     		try {
         		// String reply = ui.getString().toLowerCase().trim();
         		String reply = "no"; 	// For Bot Training only, implementation now is to play only 1 round
         		ui.displayString("");
-        		
+
         		// Case to play for next game
         		if(reply.compareTo("yes") == 0) {
         			match.setLength();
@@ -147,7 +168,7 @@ public class Backgammon {
         			resetMatch();
         			ui.display_newMatch();
         			return true;
-        			
+
         		} // Case to stop playing
         		else if(reply.compareTo("no") == 0 || reply.compareTo("quit") == 0) {
         			displayEndStage();
@@ -155,40 +176,40 @@ public class Backgammon {
         		}
         		else
             		ui.displayError_incorrectEntry();
-        		
-        	}catch (Exception e) { 
+
+        	}catch (Exception e) {
         		ui.displayError_incorrectEntry();
         	}
     	}
     }
-    
-    /** 
-     * Method that prompt the players to enter the total amount of score to win the whole game<br> 
+
+    /**
+     * Method that prompt the players to enter the total amount of score to win the whole game<br>
      * Layer 2<br>
      */
     private int getMatchPoint() throws InterruptedException {
-    	
+
     	/** If players enter a valid answer */
     	boolean haveGottenAnswer = false;
     	int matchPoint = 0;
-    	
+
     	while(!haveGottenAnswer) {
-    		
+
         	ui.promptPlayersForGamePoint();
-        	
+
         	try {
-        		
+
         		String reply = ui.getString().toLowerCase().trim();
-        		
+
         		if(reply.compareTo("quit") == 0) { // Enable 'quit' in every stage
         			haveGottenAnswer = true;
         			realGame.setResignedByCommand(players.getCurrent());
         			quitGameByCommand();
-        			
+
         		}
-        		else	
+        		else
         			matchPoint = Integer.parseInt(reply);
-        		
+
         		if(matchPoint > 0) {	// Set match point if a valid value given
         			haveGottenAnswer = true;
         			match.setMatchPoint(matchPoint);
@@ -197,60 +218,60 @@ public class Backgammon {
         			ui.displayError_WrongScoreToWinEntered();
         			continue;
         		}
-        		
+
         	}catch (Exception e) {
         		ui.displayError_WrongInputForNumberOfPointsPlayingTo();
         		continue;
     		}
     	}
-    	
+
     	ui.displayString("> Game points playing to: " + matchPoint);
-    
+
     	return matchPoint;
     }
-    
+
     /**
      * Game stage to instantiate player's information (player name here)<br>
      */
     private void getPlayerNames() {
-    	
+
         for (Player player : players) {
-        	
+
             ui.promptPlayerName();
             String name = ui.getString().trim();
-            
+
             ui.displayString("> " + name);
             player.setName(name);
             ui.displayPlayerColor(player);
             ui.displayString("");
         }
     }
-    
+
     /**
      * Auto-naming method for bot test
      */
     private void getPlayerName_botTest() {
-    	
+
     	// Set up Francis with player 1
         players.get(0).setName(Francis.getTheName());
     	ui.displayString("> Francis bot controlls player 1");
     	ui.displayPlayerColor(players.get(0));
-    	
+
     	// Set up Steven with player 2
         players.get(1).setName(Steven.getTheName());
     	ui.displayString("> Steven bot controlls player 2");
     	ui.displayPlayerColor(players.get(1));
-    	
+
     	// Set up the Francis bot
-    	bots[0] = new Francis(players.get(0),players.get(1),board,cube,match,ui.getInfoPanel());    	
-    	
+    	bots[0] = new Francis(players.get(0),players.get(1),board,cube,match,ui.getInfoPanel());
+
     	// set up the Steven bot
-    	bots[1] = new Steven(players.get(1),players.get(0),board,cube,match,ui.getInfoPanel());
+    	bots[1] = new Bot1(players.get(1),players.get(0),board,cube,match,ui.getInfoPanel());
 
     	((Francis)(bots[0])).setEnemyBot(bots[1]);
-    	((Steven)(bots[1])).setEnemyBot(bots[0]);
+    	((Bot1)(bots[1])).setEnemyBot(bots[0]);
     }
-    
+
     /**
      * Method to execute the whole game play [ 3 stages ] <br>
      * - Instantiation stage <br>
@@ -260,30 +281,30 @@ public class Backgammon {
      * @throws InterruptedException
      */
     private void playGame() throws InterruptedException {
-    	
+
     	startGame = true;
     	rollToStart();
     	playTurns();
         endCurrentGame();
         ui.display(); //  Update match score on boardPanel
     }
-    
+
     /**
      * Boolean method to check if the players want to play new game in the same match<br>
      * Layer 2<br>
      * @return true if yes, else no
      * @throws InterruptedException
      */
-    private boolean nextGame() throws InterruptedException {        
-    	
+    private boolean nextGame() throws InterruptedException {
+
     	while(true) {
-        	
+
     		ui.promptPlayersNextGame();
-    		
+
         	try {
         		// String reply = ui.getString().toLowerCase().trim();
         		String reply = "yes";	// Bot Training only
-        	
+
         		if(reply.compareTo("yes") == 0) {		// play again
         			ui.display_PlayersWantNextGame();
         			nextGame = true;
@@ -292,7 +313,7 @@ public class Backgammon {
         			return true;
         		}
         		else if(reply.compareTo("no") == 0 || reply.compareTo("quit") == 0) { 	// end game
-        			
+
         			ui.display_PlayersWantQuitMatch();
         			nextGame = false;
         			newMatch = false;
@@ -302,21 +323,21 @@ public class Backgammon {
             		ui.displayError_incorrectEntry();
             		continue;
         		}
-        		        		
+
         	}catch (Exception e) {
         		ui.displayError_incorrectEntry();
         		continue;
     		}
     	}
     }
-    
+
     /**
      * Method to reset the game variables to initial states for a new match
      * Layer 2<br>
      * @throws InterruptedException
      */
     private void resetMatch() throws InterruptedException  {
-    	
+
     	this.board.reset();						// Reset the board
     	this.realGame.reset();
     	this.match.reset();
@@ -327,7 +348,7 @@ public class Backgammon {
         this.nextGame 					= true;
         this.newMatch 					= false;
     }
-    
+
     /**
      * Method to reset the game variables to initial states for a new game<br>
      * Thus nextMatch boolean value unchanged<br>
@@ -335,7 +356,7 @@ public class Backgammon {
      * @throws InterruptedException
      */
     private void resetGame() throws InterruptedException  {
-    
+
     	this.board.reset();					// Reset the board
     	this.realGame.reset();
     	this.cube.reset();
@@ -344,13 +365,13 @@ public class Backgammon {
     	this.startGame					= false;
         this.newMatch 					= false;
     }
-     
+
     /**
      * Method to determine the game starter, by comparing the single dice roll value from both players<br>
-     * Game starter is the player who got the higher dice roll value<br> 
+     * Game starter is the player who got the higher dice roll value<br>
      */
     private void rollToStart() {
-    	
+
         do {
 
         	// Each player roll dice
@@ -358,81 +379,82 @@ public class Backgammon {
                 player.getDice().rollDie();
                 ui.displayRoll(player);
             }
-            
+
             // Case if both player get the same dice roll value : Roll Again
-            if (players.isEqualDice()) { 
+            if (players.isEqualDice()) {
                 ui.displayDiceEqual();
             }
-            
+
         } while (players.isEqualDice());
-        
-        players.setCurrentAccordingToDieRoll();     
+
+        players.setCurrentAccordingToDieRoll();
         ui.displayDiceWinner(players.getCurrent());
         ui.display();
     }
-    
+
     /**
      * Game stage : Each player takes their game turn<br>
      * @throws InterruptedException
      */
     private void playTurns() throws InterruptedException {
-        
-        boolean firstMove = true;      
-        
+
+        boolean firstMove = true;
+
         do {	// Repeat Game Turn
-        		
+
             Player currentPlayer = players.getCurrent();
             ui.print_CurrentPlayer(currentPlayer.toString());
             realGame.setGameLength();
-            
+
             // ----- DICE ROLL PART (Including Doubling Dice after first move) -----
             Dice currentDice = diceRollInTurns(firstMove, currentPlayer);
             firstMove = false;
-            
+
             if(realGame.getResignedByDouble()) {
         		return;
         	}
             // ----- END OF DICE ROLL PART -----
-            
+
             // ----- CHECKER MOVE PART -----
-            checkerMoveInTurns(currentPlayer, currentDice); 
-            // For training
+            checkerMoveInTurns(currentPlayer, currentDice);
+
+            // This if will be gotten rid of for training
             if(bots[currentPlayer.getId()] == null) {
                 ui.display(); 	// Display information about the player's attempt in current game turn
                 debug();
             }
-            
+
             // ----- END OF CHECKER MOVE PART -----
-            
-            
-            
+
+
+
             // ----- END TURN : switch current player -----
             if(!realGame.isOver()) {
             	players.advanceCurrentPlayer();
             }/*else {
             	System.out.println("Match is over");
             }*/
-            
+
             ui.display();
             // ----- END OF END TURN -----
-        } while (!realGame.isOver());    
+        } while (!realGame.isOver());
     }
-    
+
     /**
      * Game stage : End current game - check if the match is over<br>
-     * Play next game until current match end<br>  
+     * Play next game until current match end<br>
      * Reset startGame, update match score, display endGame<br>
      * @throws InterruptedException
      */
-    private void endCurrentGame() throws InterruptedException {  
-    	
+    private void endCurrentGame() throws InterruptedException {
+
     	startGame = false;
     	match.updateScores();
     	displayEndStage();
-		ui.display_endGame();        					
-        // TimeUnit.SECONDS.sleep(2); 
+		ui.display_endGame();
+        //TimeUnit.SECONDS.sleep(2); 	REMOVED FOR TRAINING
     }
-    
+
     /**
      * Method to play the dice roll part in each game turn<br>
      * It asks the current player whether to play doubling cube<br>
@@ -442,113 +464,116 @@ public class Backgammon {
      * @throws InterruptedException
      */
     private Dice diceRollInTurns(boolean firstMove, Player currentPlayer) throws InterruptedException {
-    	
+
     	// Case for first move : The game starter should move the checker with the sum of dice roll value from both players
     	if (firstMove) {
             return new Dice(players.get(0).getDice().getDie(), players.get(1).getDice().getDie());
-            
+
         } else { // Normal game turn
-        	
+
         	// Check if the current player wants to offer double or redouble challenges
         	// Requirements : current game is able to use DC, DC hasn't been owned or Current player is owning DC
         	if(match.canDouble(currentPlayer.getId()) && (!cube.isOwned() || cube.getOwnerId() == currentPlayer.getId())) {
         		if(bots[currentPlayer.getId()] != null) {
-        			promptDoubleCubeOption();   
+        			promptDoubleCubeOption();
+        		}
+        		else {
+        			// current player is a bot
         		}
         	}
-        	
+
         	// Current player has no intent to quit current game
         	if(!realGame.resigned()) {
         		currentPlayer.getDice().rollDice();
         		ui.displayRoll(currentPlayer);
         	}
-        	
+
             return currentPlayer.getDice();
         }
     }
-    
+
     /**
      * Method to get a complete move list in each game turn<br>
-     * @param currentPlayer	
+     * @param currentPlayer
      * @param currentDice
-     * @return Given move or cheat command while playing 
+     * @return Given move or cheat command while playing
      * @throws InterruptedException
      */
     private Command checkerMoveInTurns(Player currentPlayer, Dice currentDice) throws InterruptedException {
-    	
+
     	Command command = new Command();
-    	
+
     	Plays possiblePlays = board.getPossiblePlays(currentPlayer.getId(), currentDice);
-        
+
         // Case 1 : No move for current player -> End current game turn
-        if (possiblePlays.number() == 0) { 
+        if (possiblePlays.number() == 0) {
         	ui.displayNoMove(currentPlayer);
-            
+
         } // Case 2 : Only 1 move available -> forced move for current player
-        else if (possiblePlays.number() == 1) { 
-        	
+        else if (possiblePlays.number() == 1) {
+
             ui.displayForcedMove(currentPlayer);
             board.move(currentPlayer, possiblePlays.get(0));
-            
+
         } // Case 3 : More than 1 move can be made -> Take the move the player chose
-        else {  
+        else {
 
         	if(bots[currentPlayer.getId()] == null) {
         		// Player is not a bot
                 ui.displayPlays(currentPlayer, possiblePlays);
                 ui.promptCommand(currentPlayer);
-                
+
                 command = ui.getCommand(possiblePlays);
-                ui.displayString("> " + command);		// Receive and display the given command 
-                
-                // Case 1 : Current player decides to quit the game 
+                ui.displayString("> " + command);		// Receive and display the given command
+
+                // Case 1 : Current player decides to quit the game
                 if (command.isQuit()) {
                 	realGame.setResignedByCommand(currentPlayer);
                 	quitGameByCommand();
-                	
+
                 }// Case 2 : Current player is making normal move
                 else if (command.isMove()) {
                     board.move(currentPlayer, command.getPlay());
-                    
-                } // Case 3 : Current player is making cheat move 
+
+                } // Case 3 : Current player is making cheat move
                 else if (command.isCheat()) {
                     board.cheat();
-                    
+
                 } // Temporary case to test the ending of game match
-                else if (command.isEnd()) { 
+                else if (command.isEnd()) {
                 	board.end();
-                }  
+                }
         	}
         	else {
         		// player is a bot
                 ui.displayPlays(currentPlayer, possiblePlays);
                 ui.displayString("> " + bots[currentPlayer.getId()].getName() +" is about to choose move");
-                
+
                 // Get the bot to choose best move
                 //(bots[currentPlayer.getId()]).getCommand(possiblePlays
                 command = new Command(bots[currentPlayer.getId()].getCommand(possiblePlays), possiblePlays);
-                
-                ui.displayString("> " + command);		// Receive and display the given command 
-                
-                // Case 1 : Current player decides to quit the game 
+
+                ui.displayString("> " + command);		// Receive and display the given command
+
+                // Case 1 : Current player decides to quit the game
                 if (command.isQuit()) {
                 	realGame.setResignedByCommand(currentPlayer);
                 	quitGameByCommand();
-                	
+
                 }// Case 2 : Current player is making normal move
                 else if (command.isMove()) {
                     board.move(currentPlayer, command.getPlay());
-                    
-                } // Case 3 : Current player is making cheat move 
+
+                } // Case 3 : Current player is making cheat move
                 else if (command.isCheat()) {
                     board.cheat();
-                    
+
                 } // Temporary case to test the ending of game match
-                else if (command.isEnd()) { 
+                else if (command.isEnd()) {
                 	board.end();
-                }  
+                }
         	}
-            
+
         }
         
         // TimeUnit.SECONDS.sleep(2);
@@ -562,28 +587,28 @@ public class Backgammon {
      * @throws InterruptedException
      */
     private void promptDoubleCubeOption() throws InterruptedException {
-    	
+
     	int currentPlayer_id = players.getCurrent().getId();
     	boolean currentPlayerWantsToDouble = askPlayerifWishesToDouble();
-    	
+
     	// Case if current player wants to enable double play
     	if(currentPlayerWantsToDouble) {
-    	
+
     		boolean otherPlayerAcceptsDoubleOffer = opponentAcceptDouble(currentPlayer_id);
-    		
+
     		// Case if the opponent accepts the offer
-    		if(otherPlayerAcceptsDoubleOffer) {		
+    		if(otherPlayerAcceptsDoubleOffer) {
     			cube.accept(players.getEnemy());	// Opponent accepts the doubling challenge
     			ui.display(); 						// Update the double cube value
     			ui.print_doubleTheScore();
-    			
+
     		} // Case if the opponent declines the offer - End current game
-    		else {		
-    			realGame.setResignedByDouble(players.getEnemy());	
+    		else {
+    			realGame.setResignedByDouble(players.getEnemy());
     		}
     	}
     }
-    
+
 
     /**
      * Method to ask and get the response of if the current player want to enable double play before making a valid checker move<br>
@@ -591,30 +616,30 @@ public class Backgammon {
      * @throws InterruptedException
      */
     private boolean askPlayerifWishesToDouble() throws InterruptedException {
-    
+
     	if(!cube.isOwned())
     		ui.promptPlayerToDouble();
     	else
     		ui.promptPlayerToRedouble();
-    	
+
         // String reply = ui.getString();
-    	String reply = bots[players.getCurrent().getId()].initDouble(); // For Bot training
+    	String reply = bots[players.getCurrent().getId()].getDoubleDecision(); // For Bot training
 
         ui.displayString("> " + reply);
         reply.toLowerCase().trim();
-        
+
         if(reply.compareTo("double") == 0) { // The current player wants to enable double play
         	return true;
         }
-        else if(reply.compareTo("quit") == 0) {	
+        else if(reply.compareTo("quit") == 0) {
 			realGame.setResignedByCommand(players.getCurrent());
 			quitGameByCommand();
 			return false;
 		}
-        else								 // Else the current player won't	
-           	return false;        
+        else								 // Else the current player won't
+           	return false;
     }
-    
+
     /**
      * Method to confirm the acceptance of opponent to enable double play<br>
      * Layer 5<br>
@@ -623,20 +648,20 @@ public class Backgammon {
      * @throws InterruptedException
      */
     private boolean opponentAcceptDouble(int currentPlayer_id) throws InterruptedException {
-    	
+
     	while(true) {
-    		
+
     		// Confirm the acceptance of double play from opponent
     		ui.promptOpponentToAcceptDouble(players.getEnemy().toString());
-        	
+
     		try {
-        		
+
         		// String reply = ui.getString();
-        		String reply = bots[players.getEnemy().getId()].getDoubleDecision(); // Bot training only 
+        		String reply = bots[players.getEnemy().getId()].getDoubleDecision(); // Bot training only
         		ui.displayString("> " + reply);										 // Display user response
         		reply.toLowerCase().trim();
-        		
-        		if(reply.compareTo("yes") == 0) {						
+
+        		if(reply.compareTo("yes") == 0) {
         			return true;
         		}
         		else if(reply.compareTo("no") == 0) {
@@ -650,23 +675,23 @@ public class Backgammon {
             		ui.displayError_incorrectEntry();
             		continue;
         		}
-        		        		
+
         	}catch (Exception e) {
         		ui.displayError_incorrectEntry();
         		continue;
     		}
     	}
     }
-    
+
     /**
      * Method to display related end stage message, ie. announce winner and sum of points earned so far<br>
-     * @throws InterruptedException 
+     * @throws InterruptedException
      */
     private void displayEndStage() throws InterruptedException {
-    	
+
 //    	System.out.print("Enter End Stage\t:");
-    	// END MATCH 
-    	// Case if the current player uses the 'quit' command 
+    	// END MATCH
+    	// Case if the current player uses the 'quit' command
     	if(realGame.getResignedByCommand()) {
 //    		System.out.print(" 1 ");
     		if(startGame) {
@@ -678,9 +703,9 @@ public class Backgammon {
     			ui.displayString("Program closed");
     		}
     	} // Case if the players decide not to continue the game matches : Compare their score and winner is the one with higher score
-    	else if(!nextGame) { 
+    	else if(!nextGame) {
 //    		System.out.print(" 2 ");
-			if(match.getWinner() == null) { 
+			if(match.getWinner() == null) {
 //				System.out.print(" a ");
 				ui.displayString("IT IS A DEUCE !!"); // Only happen when quit game suddenly or stop to continue the next match
 			}
@@ -689,31 +714,31 @@ public class Backgammon {
 				ui.display_matchWinner(match.getWinner().toString());
 			}
 		}
-    	// END A GAME 
+    	// END A GAME
     	// Case if a game end by rejecting double play (Opponent is the player who reject the doubling dice)
     	else if(realGame.getResignedByDouble()) {
 //    		System.out.print(" 3 ");
-    		ui.print_rejectedDoubleTheScore(realGame.getWinner().toString(), players.getEnemy().toString(), realGame.getPoints()); 
-    		
-    	} // Case if a match end normally 	 
-    	else if(realGame.isOver()) {    	
-    			
+    		ui.print_rejectedDoubleTheScore(realGame.getWinner().toString(), players.getEnemy().toString(), realGame.getPoints());
+
+    	} // Case if a match end normally
+    	else if(realGame.isOver()) {
+
 //    		System.out.print(" 4 ");
     		ui.display_roundWinner(players.getCurrent());
         }
-    		
-    	// Update match scores 
+
+    	// Update match scores
     	// DEBUG : Current Player not a winner
     	ui.display_CurrentMatchScores(players);
-        
+
     }
-    	
+
 
     /**
      * Method for efficient debugging
      */
     private void debug() {
-    	
+
     	System.out.println("[ In Game " + (match.getLength()) + " Turn "+ realGame.getGameLength() +" ]");
     	System.out.println("Current Player\t\t: " + players.getCurrent().toString());
     	System.out.println("Game Length\t\t: " + realGame.getGameLength());

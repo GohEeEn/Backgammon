@@ -479,7 +479,8 @@ public class Francis implements BotAPI {
     }
     
     public void saveWeights() {
-		// Write weights to file
+		
+    	// Write weights to file
         try {
         	//OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(new File(WEIGHT_FILE)));
         	FileWriter out = new FileWriter(WEIGHT_FILE);

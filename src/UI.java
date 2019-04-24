@@ -182,12 +182,12 @@ public class UI {
     
     public void displayNoMove(Player player) throws InterruptedException {
         displayString(player + " has no valid moves.");
-        TimeUnit.SECONDS.sleep(1);
+        // TimeUnit.SECONDS.sleep(1);
     }
 
     public void displayForcedMove(Player player) throws InterruptedException {
         displayString(player + " has a forced move.");
-        TimeUnit.SECONDS.sleep(1);
+        // TimeUnit.SECONDS.sleep(1);
     }
     
     // ----- END OF MOVE RESPOND MESSAGES -----
@@ -199,17 +199,17 @@ public class UI {
     
     public void displayError_WrongInputForNumberOfPointsPlayingTo() throws InterruptedException {
     	displayString("Wrong input for number of moves, please try again\n");
-    	TimeUnit.SECONDS.sleep(1);
+    	// TimeUnit.SECONDS.sleep(1);
     }
     
     public void displayError_incorrectEntry() throws InterruptedException {
     	displayString("Invalid Command : Please try again\n");
-    	TimeUnit.SECONDS.sleep(1);
+    	// TimeUnit.SECONDS.sleep(1);
     }
     
     public void displayError_WrongInputGivenForRepeatingOrEndingGame() throws InterruptedException {
     	displayString("Wrong input, please enter 'yes' or 'no', please try again\n");
-    	TimeUnit.SECONDS.sleep(1);
+    	// TimeUnit.SECONDS.sleep(1);
     }
     
     // ----- END OF ERROR RESPOND MESSAGES -----
@@ -241,7 +241,7 @@ public class UI {
     
     public void display_PlayersWantNextGame() throws InterruptedException{
     	displayString("Next game will start in 1 second\n");
-    	TimeUnit.SECONDS.sleep(1);
+    	// TimeUnit.SECONDS.sleep(1);
     }
     
     public void display_PlayersWantQuit() {
@@ -254,7 +254,7 @@ public class UI {
     
     public void display_PlayersWantNextMatch() throws InterruptedException{
     	displayString("New Match will start in 3 second\n");
-    	TimeUnit.SECONDS.sleep(3);
+    	// TimeUnit.SECONDS.sleep(3);
     }
     
     public void display_newGame(){
@@ -263,7 +263,7 @@ public class UI {
     
     public void display_endGame() throws InterruptedException {
     	displayString("=============== END GAME ===============\n");
-    	TimeUnit.SECONDS.sleep(1);
+    	// TimeUnit.SECONDS.sleep(1);
     }
     
     public void display_newMatch(){
@@ -272,12 +272,12 @@ public class UI {
     
     public void display_endMatch() throws InterruptedException {
     	displayString("=============== END MATCH ===============\n");
-    	TimeUnit.SECONDS.sleep(3);
+    	// TimeUnit.SECONDS.sleep(3);
     }
     
     public void display_endProgram() throws InterruptedException {
     	displayString("=============> END BACKGAMMON <=============\n");
-    	TimeUnit.SECONDS.sleep(3);
+    	// TimeUnit.SECONDS.sleep(3);
     }
     
     // ----- END OF END GAME MESSAGES -----

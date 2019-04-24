@@ -17,6 +17,12 @@ public interface BoardAPI {
      */
     int getNumbCheckersAtPosition(int pipPosition);
 
+    /**
+     * Method to get any possible play (combination of checker's move), based on the current board
+     * @param playerId	Player ID of the current player
+     * @param dice		Dice roll value in current game turn
+     * @return			An ArrayList
+     */
     Plays getPossiblePlays(int playerId, Dice dice);
 
     boolean lastCheckerInInnerBoard(int playerId);

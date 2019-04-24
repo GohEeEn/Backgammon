@@ -37,7 +37,7 @@ public class Command {
      */
     Command(String input, Plays possiblePlays) {
     	
-    	System.out.println("Input : " + input);
+    	// System.out.println("Input : " + input);
     	
         // regex examples: "[a-f]", "[a-z]|a[a-g]", "[a-z]|a[a-z]|b[a-n]"
         int numberOfFirstLetters = (possiblePlays.number() - 1) / 26;

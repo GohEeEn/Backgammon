@@ -430,7 +430,7 @@ public class Backgammon {
     	match.updateScores();
     	displayEndStage();
 		ui.display_endGame();        					
-        TimeUnit.SECONDS.sleep(2); 
+        // TimeUnit.SECONDS.sleep(2); 
     }
     
     /**
@@ -551,7 +551,7 @@ public class Backgammon {
             
         }
         
-        TimeUnit.SECONDS.sleep(2);
+        // TimeUnit.SECONDS.sleep(2);
         ui.displayString("");
         
         return command;

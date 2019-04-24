@@ -394,8 +394,10 @@ public class Backgammon {
             
             // ----- CHECKER MOVE PART -----
             checkerMoveInTurns(currentPlayer, currentDice); 
-            // For training
+            
+            // This if will be gotten rid of for training
             if(bots[currentPlayer.getId()] == null) {
+            	// For real players (not bots)
                 ui.display(); // Display information about the player's attempt in current game turn
                 debug();
             }

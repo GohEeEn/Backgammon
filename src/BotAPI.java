@@ -6,9 +6,9 @@ public interface BotAPI {
 
     String getDoubleDecision();
     
-    int[] getWeights();	// Uncomment so as to work with training the bot
+    Double[] getWeights();	// Uncomment so as to work with training the bot
     
-    void swapWeightsWithOtherPlayer(int[] botWeights);		// Uncomment so as to work with training the bot
+    void swapWeightsWithOtherPlayer(Double[] botWeights);		// Uncomment so as to work with training the bot
     
     void saveWeights();	// Uncomment so as to work with training the bot
     void retrieveWeights();	// Uncomment so as to work with training the bot

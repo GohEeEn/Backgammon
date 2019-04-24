@@ -31,7 +31,7 @@ public class Francis implements BotAPI {
 	private final boolean TRAINING = true;
     private static final String WEIGHT_FILE = "Francis_WeightsForScoring.txt";
     
-    private int referenceScoreForBot;
+    private Double referenceScoreForBot;
 
     private PlayerAPI me, opponent;
     private BoardAPI board;
@@ -50,36 +50,36 @@ public class Francis implements BotAPI {
     private double weightAdjustment_Max = 0.005;
     // Weights
     private static final int AMOUNTOFWEIGHTS = 14;
-    private int checkersInJail_weight = 0;
+    private Double checkersInJail_weight = 0.0;
     
-    private int pipCountDifference_weight = 0;
+    private Double pipCountDifference_weight = 0.0;
     
-    private int blockBlotDif_weight = 0;
+    private Double blockBlotDif_weight = 0.0;
     
-    private int botBlocksHome_weight = 0;
-    private int opponentsBlocksHome_weight = 0;
+    private Double botBlocksHome_weight = 0.0;
+    private Double opponentsBlocksHome_weight = 0.0;
     
-    private int botBlockOpponentHome_weight = 0;
-    private int opponentBlockBotHome_weight = 0;
+    private Double botBlockOpponentHome_weight = 0.0;
+    private Double opponentBlockBotHome_weight = 0.0;
     
-    private int allPiecesInHome_weight = 0;
+    private Double allPiecesInHome_weight = 0.0;
     
     // for later: private int differenceBetweenBlockedCheckers_weight = 0;	// difference between pips that are trapped behind enemy pips
     // for later: private int differenceBetweenEscapedCheckers_weight = 0;	// same as above, but for checkers that have escaped
     
     //private int differenceBetweenPipCountInJail_weight = 0;
-    private int botPipCountInJail_weight = 0;
-    private int opponentsPipCountInJail_weight = 0;
+    private Double botPipCountInJail_weight = 0.0;
+    private Double opponentsPipCountInJail_weight = 0.0;
     
     //private int differenceBetweenPipCountsBearedOff_weight = 0;
-    private int botPipCountBearedOff_weight = 0;
-    private int opponentsPipCountBearedOff_weight = 0;
+    private Double botPipCountBearedOff_weight = 0.0;
+    private Double opponentsPipCountBearedOff_weight = 0.0;
     
-    private int botPipCountInHome_weight = 0;
-    private int opponentsPipCountInHome_weight = 0;
+    private Double botPipCountInHome_weight = 0.0;
+    private Double opponentsPipCountInHome_weight = 0.0;
     
-    private int botScore = 0;
-    private int opponentScore = 0;
+    private Double botScore = 0.0;
+    private Double opponentScore = 0.0;
     
     
     
@@ -119,7 +119,7 @@ public class Francis implements BotAPI {
     	
 
     	// Get score for current board(without any moves)
-    	int currentHighestScore = 0;
+    	Double currentHighestScore = 0.0;
     	Play playWithHighestScore;
     	
     	int[][] originalBoard = board.get();
@@ -133,7 +133,7 @@ public class Francis implements BotAPI {
     		int[][] shadowBoard_AfterMove = getBoardAfterPlay(originalBoard.clone(), currentPlay, me.getId());
     		
     		// Get the new boards score
-    		int scoreOfBoardAfterMove = getScoreForBoard(shadowBoard_AfterMove);
+    		Double scoreOfBoardAfterMove = getScoreForBoard(shadowBoard_AfterMove);
     		
     		if(!firstScoreGotten) {
     			firstScoreGotten = true;
@@ -196,7 +196,7 @@ public class Francis implements BotAPI {
     
     
     // evaluating the stats
-    private int getScoreForBoard(int[][] theBoard) {
+    private Double getScoreForBoard(int[][] theBoard) {
     	
     	int blockBlotDif = 0;
     	int blocks = 0;
@@ -314,8 +314,8 @@ public class Francis implements BotAPI {
     	// Now must get the score
     	
     	// SPECIAL CASE: CHECK IF BOT HAS PIECES IN JAIL
-    	int botBonus = 0;
-    	int opponentBonus = 0;
+    	Double botBonus = 0.0;
+    	Double opponentBonus = 0.0;
     	if(board.getNumCheckers(me.getId(), 25) > 0) {
     		// bot is in jail, so some blocks inopponents home will effect more
     		botBonus += (opponentsHomeBlockCount * checkersInJail_weight * board.getNumCheckers(me.getId(), 25));
@@ -335,7 +335,7 @@ public class Francis implements BotAPI {
     		
     	}
     	    	
-    	int totalScore = 0;
+    	Double totalScore = 0.0;
     	
     	botScore = (botHomeBlockCount * botBlocksHome_weight) + (botBlockCountOpponentsHome * botBlockOpponentHome_weight)
     			+ (botPieceCountInHome * botPipCountInHome_weight) + (botsPointsScored * botPipCountBearedOff_weight) 
@@ -421,7 +421,7 @@ public class Francis implements BotAPI {
     	}
     }
     
-    public void swapWeightsWithOtherPlayer(int[] botWeights) {
+    public void swapWeightsWithOtherPlayer(Double[] botWeights) {
 		// positive weights
 		pipCountDifference_weight = botWeights[0];
 		blockBlotDif_weight = botWeights[1];
@@ -447,16 +447,16 @@ public class Francis implements BotAPI {
     }
     
     // ONLY FOR TRAINING
-    public int[] getWeights() {
-    	int[] weights = {pipCountDifference_weight,blockBlotDif_weight,botBlocksHome_weight,botBlockOpponentHome_weight,botPipCountInJail_weight
+    public Double[] getWeights() {
+    	Double[] weights = {pipCountDifference_weight,blockBlotDif_weight,botBlocksHome_weight,botBlockOpponentHome_weight,botPipCountInJail_weight
     			,botPipCountInHome_weight,botPipCountBearedOff_weight, opponentsBlocksHome_weight, opponentBlockBotHome_weight,opponentsPipCountInJail_weight
     			,opponentsPipCountInHome_weight,opponentsPipCountBearedOff_weight,checkersInJail_weight,allPiecesInHome_weight};
     	return weights;
     }
     
     private void swapBotsWeightsWithOpponentBot(BotAPI opponentBot) {
-    	int[] bot0_weights = this.getWeights();
-    	int[] bot1_weights = opponentBot.getWeights();
+    	Double[] bot0_weights = this.getWeights();
+    	Double[] bot1_weights = opponentBot.getWeights();
     	
     	this.swapWeightsWithOtherPlayer(bot1_weights);
     	opponentBot.swapWeightsWithOtherPlayer(bot0_weights);
@@ -471,9 +471,9 @@ public class Francis implements BotAPI {
         try {
         	//OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(new File(WEIGHT_FILE)));
         	FileWriter out = new FileWriter(WEIGHT_FILE);
-			int[] weights = this.getWeights();
+        	Double[] weights = this.getWeights();
 			String output = "";
-			for (int weight : weights) {
+			for (Double weight : weights) {
 				output += weight + "\n";
 			}
 			System.out.println(output);
@@ -495,12 +495,13 @@ public class Francis implements BotAPI {
     	// retrieve the weights
         try {
         	BufferedReader bf1 = new BufferedReader(new FileReader(WEIGHT_FILE));
-        	int[] weights = new int[AMOUNTOFWEIGHTS];
+        	Double[] weights = new Double[AMOUNTOFWEIGHTS];
 			for(int i = 0; i < AMOUNTOFWEIGHTS;i++) {
-				weights[i] = Integer.parseInt(bf1.readLine());
+				weights[i] = Double.parseDouble(bf1.readLine());
 			}
 			
 			swapWeightsWithOtherPlayer(weights);
+			bf1.close();
 			
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block

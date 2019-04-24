@@ -37,6 +37,8 @@ public class Command {
      */
     Command(String input, Plays possiblePlays) {
     	
+    	System.out.println("Input : " + input);
+    	
         // regex examples: "[a-f]", "[a-z]|a[a-g]", "[a-z]|a[a-z]|b[a-n]"
         int numberOfFirstLetters = (possiblePlays.number() - 1) / 26;
         char finalLetterLimit = (char) ((possiblePlays.number() - 1) % 26 + (int) 'a');
@@ -44,7 +46,7 @@ public class Command {
         String regex = "";
         char firstChar = 'a';
         
-        for (int i=0; i<numberOfFirstLetters; i++) {
+        for (int i = 0 ; i < numberOfFirstLetters ; i++) {
             regex = regex + "[a-z]|" + firstChar;
             firstChar++;
         }

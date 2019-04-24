@@ -59,7 +59,7 @@ public class Steven implements BotAPI {
     }
     
     /**
-     * TODO
+     * Done
      */
     public String getCommand(Plays possiblePlays) {
         
@@ -99,7 +99,7 @@ public class Steven implements BotAPI {
 		}
     	
     	// in the end, the highest scored move, and the move that will achieve the highest score
-        return ("" + currentPlayPointer);
+        return ("" + currentPlayPointer); 
     }
     
     // ----- Helper functions for getCommand -----
@@ -146,9 +146,15 @@ public class Steven implements BotAPI {
     	}
     }
     
+    @Override
+    public String initDouble() {
+    	
+    	if(getScoreForBoard(board.get()) > opponentBot.getScoreForBoard(board.get()) * 10)
+    		return "double";	
+		return "no";
+	}
     
-    
-    // evaluating the stats
+    @Override
     public int getScoreForBoard(int[][] theBoard) {
         	
         double boardPoint = 0;

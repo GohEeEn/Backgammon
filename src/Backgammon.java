@@ -136,7 +136,8 @@ public class Backgammon {
         	ui.displayString("");
     		
     		try {
-        		String reply = ui.getString().toLowerCase().trim();
+        		// String reply = ui.getString().toLowerCase().trim();
+        		String reply = "no"; 	// For Bot Training only, implementation now is to play only 1 round
         		ui.displayString("");
         		
         		// Case to play for next game
@@ -210,7 +211,6 @@ public class Backgammon {
     
     /**
      * Game stage to instantiate player's information (player name here)<br>
-     * Layer 2<br>
      */
     private void getPlayerNames() {
     	
@@ -281,7 +281,8 @@ public class Backgammon {
     		ui.promptPlayersNextGame();
     		
         	try {
-        		String reply = ui.getString().toLowerCase().trim();
+        		// String reply = ui.getString().toLowerCase().trim();
+        		String reply = "yes";	// Bot Training only
         	
         		if(reply.compareTo("yes") == 0) {		// play again
         			ui.display_PlayersWantNextGame();
@@ -347,7 +348,6 @@ public class Backgammon {
     /**
      * Method to determine the game starter, by comparing the single dice roll value from both players<br>
      * Game starter is the player who got the higher dice roll value<br> 
-     * Layer 3<br>  
      */
     private void rollToStart() {
     	
@@ -373,7 +373,6 @@ public class Backgammon {
     
     /**
      * Game stage : Each player takes their game turn<br>
-     * Layer 3<br>
      * @throws InterruptedException
      */
     private void playTurns() throws InterruptedException {
@@ -399,7 +398,7 @@ public class Backgammon {
             checkerMoveInTurns(currentPlayer, currentDice); 
             // For training
             if(bots[currentPlayer.getId()] == null) {
-                ui.display(); // Display information about the player's attempt in current game turn
+                ui.display(); 	// Display information about the player's attempt in current game turn
                 debug();
             }
             
@@ -423,7 +422,6 @@ public class Backgammon {
      * Game stage : End current game - check if the match is over<br>
      * Play next game until current match end<br>  
      * Reset startGame, update match score, display endGame<br>
-     * Layer 3<br> 
      * @throws InterruptedException
      */
     private void endCurrentGame() throws InterruptedException {  
@@ -438,7 +436,6 @@ public class Backgammon {
     /**
      * Method to play the dice roll part in each game turn<br>
      * It asks the current player whether to play doubling cube<br>
-     * Layer 4<br>
      * @param firstMove		Boolean value to check if this is the first checker move in this game match
      * @param currentPlayer	Instance of Player class of the current player
      * @return	Dice roll value generated from current game turn
@@ -472,7 +469,6 @@ public class Backgammon {
     
     /**
      * Method to get a complete move list in each game turn<br>
-     * Layer 4<br>
      * @param currentPlayer	
      * @param currentDice
      * @return Given move or cheat command while playing 
@@ -563,7 +559,6 @@ public class Backgammon {
 
     /**
      * Method to enable double play on current player if he/she accepts the doubling play<br>
-     * Layer 4<br>	
      * @throws InterruptedException
      */
     private void promptDoubleCubeOption() throws InterruptedException {
@@ -592,7 +587,6 @@ public class Backgammon {
 
     /**
      * Method to ask and get the response of if the current player want to enable double play before making a valid checker move<br>
-     * Layer 5<br>
      * @return True if the current player accepts, else false
      * @throws InterruptedException
      */
@@ -603,7 +597,9 @@ public class Backgammon {
     	else
     		ui.promptPlayerToRedouble();
     	
-        String reply = ui.getString();  
+        // String reply = ui.getString();
+    	String reply = bots[players.getCurrent().getId()].initDouble(); // For Bot training
+
         ui.displayString("> " + reply);
         reply.toLowerCase().trim();
         
@@ -635,8 +631,9 @@ public class Backgammon {
         	
     		try {
         		
-        		String reply = ui.getString(); 
-        		ui.displayString("> " + reply);							// Display user response
+        		// String reply = ui.getString();
+        		String reply = bots[players.getEnemy().getId()].getDoubleDecision(); // Bot training only 
+        		ui.displayString("> " + reply);										 // Display user response
         		reply.toLowerCase().trim();
         		
         		if(reply.compareTo("yes") == 0) {						

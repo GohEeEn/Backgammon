@@ -171,6 +171,15 @@ public class Francis implements BotAPI {
     
     // End of helpers for getCommand
 
+    @Override
+	public String initDouble() {
+		// TODO Auto-generated method stub
+    	
+    	if(getScoreForBoard(board.get()) > opponentBot.getScoreForBoard(board.get()) * 10)
+    		return "double";	
+		return "no";
+	}
+    
     /**
      * TODO
      */
@@ -203,7 +212,7 @@ public class Francis implements BotAPI {
      * @param theBoard	The duplication of board pips
      * @return			Board score of this bot	
      */
-    public double getScoreForBoard(int[][] theBoard) {
+    public int getScoreForBoard(int[][] theBoard) {
     	
     	/** The difference between the number of blocks(pip with at least 1 pip) and blots(empty pip) on board */
     	int blockBlotDif = 0;
@@ -342,7 +351,7 @@ public class Francis implements BotAPI {
     		
     	}
     	    	
-    	double totalScore = 0;
+    	int totalScore = 0;
     	
     	botScore = (botHomeBlockCount * botBlocksHome_weight) + (botBlockCountOpponentsHome * botBlockOpponentHome_weight)
     			+ (botPieceCountInHome * botPipCountInHome_weight) + (botsPointsScored * botPipCountBearedOff_weight) 
@@ -545,10 +554,6 @@ public class Francis implements BotAPI {
     private int calculateOpposingPip(int pip) {
         return Board.NUM_PIPS - pip + 1;
     }
-    
-    
-    
-    
+
     // SEEING THE BOARD
-    
 }

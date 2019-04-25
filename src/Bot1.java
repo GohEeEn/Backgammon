@@ -65,11 +65,7 @@ public class Bot1 implements BotAPI {
     
     private Double botScore = 0.0;
     private Double opponentScore = 0.0;
-    
-    
-    
-    
-
+            
     // END OF Weights
     
     Bot1(PlayerAPI me, PlayerAPI opponent, BoardAPI board, CubeAPI cube, MatchAPI match, InfoPanelAPI info) {
@@ -178,10 +174,8 @@ public class Bot1 implements BotAPI {
         return "n";
     }
     
-    
-    
     // evaluating the stats
-    private Double getScoreForBoard(int[][] theBoard) {
+    public double getScoreForBoard(int[][] theBoard) {
     	
     	int blockBlotDif = 0;
     	int blocks = 0;
@@ -528,10 +522,7 @@ public class Bot1 implements BotAPI {
     private int calculateOpposingPip(int pip) {
         return Board.NUM_PIPS - pip + 1;
     }
-    
-    
-    
-    
+          
     // SEEING THE BOARD
     
 }

@@ -13,14 +13,13 @@ public class Steven implements BotAPI {
     // Bot may not alter the state of the game objects
     // It may only inspect the state of the board and the player objects
 	
-	private final boolean TRAINING = true;
+	// private final boolean TRAINING = true;
 	private static final String WEIGHT_FILE = "Steven_WeightsForScoring.txt";
 	
     public static final int BAR = 25;           	// Index of the BAR
     public static final int BEAR_OFF = 0;      		// Index of the BEAR OFF
     public static final int NUM_PIPS = 24;      	// Total number of pips on this board, EXECLUDING BAR and BEAR OFF
-
-
+    
     private PlayerAPI me, opponent;
     private BoardAPI board;
     private CubeAPI cube;
@@ -28,15 +27,23 @@ public class Steven implements BotAPI {
     private InfoPanelAPI info;
     private BotAPI opponentBot;
     
-    // variables to keep track of so can adjust the weight
+    // ----- ML Variables -----
+    private double referenceScoreForBoard;
+    private double referenceScoreForBot;
+    private double referenceScoreForOpponent;
+
+    // variables to keep track of so can adjust the weight by machine learning method
     private int botLosesInARow = 0;
-    private boolean inTrainingMode = true;
+    private final boolean TRAINING = true;
     
     // Weight adjustment variables
     private double weightAdjustment = 0.005;
-    
     private double botWeight = 0;
     private double opponentWeight = 0;
+    // ----- END OF ML Variables -----
+    
+    private double botScore = 0.0;
+    private double opponentScore = 0.0;
     
     Steven(PlayerAPI me, PlayerAPI opponent, BoardAPI board, CubeAPI cube, MatchAPI match, InfoPanelAPI info) {
         this.me = me;
@@ -45,6 +52,11 @@ public class Steven implements BotAPI {
         this.cube = cube;
         this.match = match;
         this.info = info;
+        
+        referenceScoreForBoard = this.getScoreForBoard(board.get());
+        referenceScoreForBot = botScore;
+        referenceScoreForOpponent = opponentScore;
+        referenceScoreForBoard = referenceScoreForBoard * 2;
     }
 
     /**
@@ -59,13 +71,23 @@ public class Steven implements BotAPI {
     }
     
     /**
-     * Done
+     * Method to be defined as the decision-maker of offering a double challenge from this bot
+     * @return	String, "double" if the condition passed, else "no"
+     */
+    public String initDouble() {
+    	
+    	if(botScore > opponentScore * 10)
+    		return "double";
+    	return "no";
+    }
+    
+    /**
+     * Method to get a move command 
      */
     public String getCommand(Plays possiblePlays) {
         
     	// Add your code here
-    	
-
+    
     	// Get score for current board(without any moves)
     	double currentHighestScore = 0;
     	Play playWithHighestScore;
@@ -146,16 +168,7 @@ public class Steven implements BotAPI {
     	}
     }
     
-    @Override
-    public String initDouble() {
-    	
-    	if(getScoreForBoard(board.get()) > opponentBot.getScoreForBoard(board.get()) * 10)
-    		return "double";	
-		return "no";
-	}
-    
-    @Override
-    public int getScoreForBoard(int[][] theBoard) {
+    public double getScoreForBoard(int[][] theBoard) {
         	
         double boardPoint = 0;
         int currentPlayerID = me.getId();
@@ -183,7 +196,7 @@ public class Steven implements BotAPI {
     
     public void botLoses() {
     	
-    	if(inTrainingMode) {
+    	if(TRAINING) {
     		botLosesInARow++;
         	if(botLosesInARow == 3) {
         		// Exchange the weights between the bots
@@ -208,7 +221,7 @@ public class Steven implements BotAPI {
     
     public void botWins() {
     	
-    	if(inTrainingMode) {
+    	if(TRAINING) {
     		// Adjust the weight by small amount as described in document
     		
     		double weightAdjustment = ThreadLocalRandom.current().nextDouble(this.weightAdjustment - 0.001, this.weightAdjustment + 0.001);
@@ -225,7 +238,7 @@ public class Steven implements BotAPI {
     	}
     }
     
-    public void swapWeightsWithOtherPlayer(int[] botWeights) {
+    public void swapWeightsWithOtherPlayer(Double[] botWeights) {
 		
     	double temp = botWeight;
     	botWeight = opponentWeight;
@@ -233,14 +246,14 @@ public class Steven implements BotAPI {
     }
     
     // ONLY FOR TRAINING
-    public int[] getWeights() {
-    	int[] weights = {(int) botWeight, (int) opponentWeight};
+    public Double[] getWeights() {
+    	Double[] weights = {botWeight, opponentWeight};
     	return weights;
     }
     
     private void swapBotsWeightsWithOpponentBot(BotAPI opponentBot) {
-    	int[] bot0_weights = this.getWeights();
-    	int[] bot1_weights = opponentBot.getWeights();
+    	Double[] bot0_weights = this.getWeights();
+    	Double[] bot1_weights = opponentBot.getWeights();
     	
     	this.swapWeightsWithOtherPlayer(bot1_weights);
     	opponentBot.swapWeightsWithOtherPlayer(bot0_weights);
@@ -289,7 +302,7 @@ public class Steven implements BotAPI {
         try {
         	//OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(new File(WEIGHT_FILE)));
         	FileWriter out = new FileWriter(WEIGHT_FILE);
-			int[] weights = this.getWeights();
+			Double[] weights = this.getWeights();
 			String output = "";
 			for (double weight : weights) {
 				output += weight + "\n";
@@ -315,9 +328,10 @@ public class Steven implements BotAPI {
         try {
         	BufferedReader bf1 = new BufferedReader(new FileReader(WEIGHT_FILE));
         	
-        	int[] weights = new int[2];
+        	Double[] weights = new Double[2];
 			for(int i = 0; i < 2;i++) {
-				weights[i] = Integer.parseInt(bf1.readLine());
+				weights[i] = Double.parseDouble(bf1.readLine());
+				// weights[i] = Integer.parseInt(bf1.readLine());
 			}
 			swapWeightsWithOtherPlayer(weights);
 			

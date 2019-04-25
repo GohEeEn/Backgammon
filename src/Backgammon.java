@@ -1,4 +1,4 @@
-import java.util.concurrent.TimeUnit;
+// import java.util.concurrent.TimeUnit;
 
 /**
  * This is the main class for the Backgammon game. It orchestrates the running of the game.<br>
@@ -55,11 +55,8 @@ public class Backgammon {
         System.exit(0);
     }
 
-
-
     /**
-     * Method to setup a match <br>
-     * Layer 1
+     * Method to setup a match <br>     
      * @throws InterruptedException
      */
     private void playMatch() throws InterruptedException {
@@ -112,7 +109,7 @@ public class Backgammon {
 
         displayEndStage();
         ui.display_endMatch();
-        //newMatch = nextMatch();		// Removed for training
+        newMatch = nextMatch();		// Removed for training
 
         // Training code to save the weights of the bot
 
@@ -145,7 +142,6 @@ public class Backgammon {
 
     /**
      * Method to get if players wanna go for the next match<br>
-     * Layer 1<br>
      * @return	true if yes, else false
      * @throws InterruptedException
      */
@@ -185,7 +181,6 @@ public class Backgammon {
 
     /**
      * Method that prompt the players to enter the total amount of score to win the whole game<br>
-     * Layer 2<br>
      */
     private int getMatchPoint() throws InterruptedException {
 
@@ -590,7 +585,7 @@ public class Backgammon {
 
     	int currentPlayer_id = players.getCurrent().getId();
     	boolean currentPlayerWantsToDouble = askPlayerifWishesToDouble();
-
+    	
     	// Case if current player wants to enable double play
     	if(currentPlayerWantsToDouble) {
 
@@ -598,6 +593,7 @@ public class Backgammon {
 
     		// Case if the opponent accepts the offer
     		if(otherPlayerAcceptsDoubleOffer) {
+    			System.out.println("Double challenge accepted");	// Testing
     			cube.accept(players.getEnemy());	// Opponent accepts the doubling challenge
     			ui.display(); 						// Update the double cube value
     			ui.print_doubleTheScore();
@@ -629,6 +625,7 @@ public class Backgammon {
         reply.toLowerCase().trim();
 
         if(reply.compareTo("double") == 0) { // The current player wants to enable double play
+        	System.out.println("Double challenge offered");
         	return true;
         }
         else if(reply.compareTo("quit") == 0) {
@@ -642,7 +639,6 @@ public class Backgammon {
 
     /**
      * Method to confirm the acceptance of opponent to enable double play<br>
-     * Layer 5<br>
      * @param currentPlayer_id	The player ID of the current player
      * @return
      * @throws InterruptedException

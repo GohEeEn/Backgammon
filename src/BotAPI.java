@@ -10,12 +10,11 @@ public interface BotAPI {
     String getCommand(Plays possiblePlays);
 
     /**
-     * Method to decide if this bot wants to offer a doubling cube challenge to the opponent
+     * Method to decide if this bot wants to accept the doubling cube challenge offered by the opponent
      * @return String, "double" if it wants to, else "no"
      */
-    //String initDouble();				// not in api
     String getDoubleDecision();
-
+    
     Double[] getWeights();	// Uncomment so as to work with training the bot
 
     void swapWeightsWithOtherPlayer(Double[] botWeights);		// Uncomment so as to work with training the bot
@@ -25,5 +24,4 @@ public interface BotAPI {
 
     void botWins();	// Uncomment so as to work with training the bot
     void botLoses();	// Uncomment so as to work with training the bot
-
 }

@@ -31,6 +31,11 @@ public class Francis implements BotAPI {
 	private final boolean TRAINING = true;
     private static final String WEIGHT_FILE = "Francis_WeightsForScoring.txt";
     
+    public static final int BAR = 25;           	// Index of the BAR
+    public static final int BEAR_OFF = 0;      		// Index of the BEAR OFF
+    public static final int NUM_PIPS = 24;      	// Total number of pips on this board, EXECLUDING BAR and BEAR OFF
+
+    
     private boolean botIsAskingToDouble = false;
     
     private double referenceScoreForBoard;
@@ -42,7 +47,6 @@ public class Francis implements BotAPI {
     private CubeAPI cube;
     private MatchAPI match;
     private InfoPanelAPI info;
-
     private BotAPI opponentBot;
 
     // variables to keep track of so can adjust the weight
@@ -85,10 +89,7 @@ public class Francis implements BotAPI {
     private Double botScore = 0.0;
     private Double opponentScore = 0.0;
 
-
-
-
-
+    
     // END OF Weights
 
     Francis(PlayerAPI me, PlayerAPI opponent, BoardAPI board, CubeAPI cube, MatchAPI match, InfoPanelAPI info) {
@@ -195,16 +196,13 @@ public class Francis implements BotAPI {
 
 
     // End of helpers for getCommand
-
-    /*		breaks API
     public String initDouble() {
-		// TODO Auto-generated method stub
 
-    	if(getScoreForBoard(board.get()) > opponentBot.getScoreForBoard(board.get()) * 10)
+    	if(botScore > opponentScore * 10)
     		return "double";
 		return "no";
 	}
-	*/
+
 
     /**
      * TODO
@@ -227,6 +225,7 @@ public class Francis implements BotAPI {
     			return "double";
     		}
     		else if(percentageChanceOfsuccess(getScoreForBoard(board.get())) >= 75) {
+    			
     			if(!botIsAskingToDouble) {
     				return "yes";
     			}
@@ -238,9 +237,11 @@ public class Francis implements BotAPI {
     	} // Normal Stage
     	
     	else {
+    		
     		if(!botIsAskingToDouble) {
     			// Then bot is the one being asked
     		}
+    		
     		// Bot is not being asked to double, and instead is going to choose for himself
     		double percentageChanceOfSuccess = percentageChanceOfsuccess(getScoreForBoard(board.get()));
     		if(percentageChanceOfSuccess < 66)
@@ -260,9 +261,11 @@ public class Francis implements BotAPI {
     		else
     			return "no";
     	}
+    }
+    
+    public void setOfferingDouble() {
     	
-    	
-    	
+    	this.botIsAskingToDouble = !this.botIsAskingToDouble;
     }
     
     private double percentageChanceOfsuccess(double currentScore) {
@@ -440,7 +443,7 @@ public class Francis implements BotAPI {
     	+ botScore + opponentScore);
 
 
-    	return (totalScore);
+    	return totalScore;
     }
 
 
@@ -629,7 +632,7 @@ public class Francis implements BotAPI {
 
     private int calculateOpposingPip(int pip) {
         return Board.NUM_PIPS - pip + 1;
-    }
+    }	
 
     // SEEING THE BOARD
 }

@@ -53,37 +53,45 @@ public class Francis implements BotAPI {
     private double weightAdjustment_Min = -0.0005;
     private double weightAdjustment_Max = 0.005;
     // Weights
-    private static final int AMOUNTOFWEIGHTS = 14;
-    private Double checkersInJail_weight = 0.0;
+    private static final int AMOUNTOFWEIGHTS = 19;
+    
+    
+    private double checkersInJailBot_weight = 0.0;		// Negative 
+    private double checkersInJailOpponent_weight = 0.0;	// Positive
 
-    private Double pipCountDifference_weight = 0.0;
+    private double pipCountDifference_weight = 0.0;		// Positive	(for both bot and player) 
 
-    private Double blockBlotDif_weight = 0.0;
+    private double blockBlotDifBot_weight = 0.0;		// Positive
+    private double blockBlotDifOpponent_weight = 0.0;	// Negative
+    
+    private double botBlocksHome_weight = 0.0;			// Positive
+    private double opponentsBlocksHome_weight = 0.0;	// Negative
 
-    private Double botBlocksHome_weight = 0.0;
-    private Double opponentsBlocksHome_weight = 0.0;
+    private double botBlockOpponentHome_weight = 0.0;		// Positive
+    private double opponentBlockBotHome_weight = 0.0;		// Negative
 
-    private Double botBlockOpponentHome_weight = 0.0;
-    private Double opponentBlockBotHome_weight = 0.0;
-
-    private Double allPiecesInHome_weight = 0.0;
+    private double allPiecesInHomeBot_weight = 0.0;			// Positive	
+    private double allPiecesInHomeOpponent_weight = 0.0;	// Negative
+    
+    private double lengthOfBlockChainsBot_weight = 0.0;			// Positive TODO: THIS IS JUST A TEST
+    private double lengthOfBlockChainsOpponent_weight = 0.0;			// negative TODO: THIS IS JUST A TEST
 
     // for later: private int differenceBetweenBlockedCheckers_weight = 0;	// difference between pips that are trapped behind enemy pips
     // for later: private int differenceBetweenEscapedCheckers_weight = 0;	// same as above, but for checkers that have escaped
 
     //private int differenceBetweenPipCountInJail_weight = 0;
-    private Double botPipCountInJail_weight = 0.0;
-    private Double opponentsPipCountInJail_weight = 0.0;
+    private double botPipCountInJail_weight = 0.0;			// Negative
+    private double opponentsPipCountInJail_weight = 0.0;	// Positive
 
     //private int differenceBetweenPipCountsBearedOff_weight = 0;
-    private Double botPipCountBearedOff_weight = 0.0;
-    private Double opponentsPipCountBearedOff_weight = 0.0;
+    private double botPipCountBearedOff_weight = 0.0;		// Positive
+    private double opponentsPipCountBearedOff_weight = 0.0;	// Negative
 
-    private Double botPipCountInHome_weight = 0.0;
-    private Double opponentsPipCountInHome_weight = 0.0;
+    private double botPipCountInHome_weight = 0.0;			// Positive
+    private double opponentsPipCountInHome_weight = 0.0;	// Negative
 
-    private Double botScore = 0.0;
-    private Double opponentScore = 0.0;
+    private double botScore = 0.0;
+    private double opponentScore = 0.0;
 
 
 
@@ -293,9 +301,13 @@ public class Francis implements BotAPI {
     public double getScoreForBoard(int[][] theBoard) {
 
     	/** The difference between the number of blocks(pip with at least 1 pip) and blots(empty pip) on board */
-    	int blockBlotDif = 0;
-    	int blocks = 0;
-    	int blots = 0;
+    	int blockBlotDif_bots = 0;
+    	int blockBlotDif_opponents = 0;
+    	int blocks_bots = 0;
+    	int blots_opponents = 0;
+    	int blocks_opponents = 0;
+    	int blots_bots = 0;
+    	
 
     	int botPieceCountInHome = 0;
     	int opponentsPieceCountInHome = 0;
@@ -308,6 +320,14 @@ public class Francis implements BotAPI {
 
     	int botBlockCountOpponentsHome = 0;
     	int opponentsBlockCountBotsHome = 0;
+    	
+    	// TODO: FOR TEST (REMOVE IF DOESNT WORK)
+    	int lengthOfCurrentBlockChain_bots = 0;
+    	int lengthOfCurrentBlockChain_opponents = 0;
+    	boolean previousBlockInPoint_bots = false;
+    	boolean previousBlockInPoint_opponents = false;
+    	int totalScoreForBlockChains_Bots = 0;
+    	int totalScoreForBlockChains_Opponents = 0;
 
     	// Search through the points of the board
 
@@ -323,8 +343,33 @@ public class Francis implements BotAPI {
     			int pointsPieceCount = theBoard[me.getId()][currentPointer];
 
     			// Blocks and blots
+    			if(pointsPieceCount == 1) {
+    				// bot blot
+    				blots_bots++;
+    			}
+    			
     			if(pointsPieceCount > 1) {
-    				blocks++;
+    				// Bot block
+    				if(previousBlockInPoint_bots) {
+    					// There is a chain/length of blocks (as previous point had a bot block)
+    					lengthOfCurrentBlockChain_bots += 1;
+    				}else {
+    					// No chain/length of bot blocks
+    					lengthOfCurrentBlockChain_bots += 1;
+    					previousBlockInPoint_bots = true;
+    				}
+    				blocks_bots++;
+    				
+    			}
+    			else {
+    				// not a bot block, and so check if have to end chain
+    				if(previousBlockInPoint_bots) {
+    					// Then current point has no bot blocks, therefor calculate the score for the length of the block chain
+    					totalScoreForBlockChains_Bots += (lengthOfCurrentBlockChain_bots);
+    					
+    					lengthOfCurrentBlockChain_bots = 0; 	// reset the length of the current bot block chain
+    					previousBlockInPoint_bots = false;
+    				}
     			}
 
     			// In bots home
@@ -357,7 +402,32 @@ public class Francis implements BotAPI {
 
     			// Blocks and blots
     			if(pointsPieceCount == 1) {
-    				blots++;
+    				// bot blot
+    				blots_opponents++;
+    			}
+    			
+    			if(pointsPieceCount > 1) {
+    				// Bot block
+    				if(previousBlockInPoint_opponents) {
+    					// There is a chain/length of blocks (as previous point had a bot block)
+    					lengthOfCurrentBlockChain_opponents += 1;
+    				}else {
+    					// No chain/length of bot blocks
+    					lengthOfCurrentBlockChain_opponents += 1;
+    					previousBlockInPoint_opponents = true;
+    				}
+    				blocks_opponents++;
+    				
+    			}
+    			else {
+    				// not a bot block, and so check if have to end chain
+    				if(previousBlockInPoint_opponents) {
+    					// Then current point has no bot blocks, therefor calculate the score for the length of the block chain
+    					totalScoreForBlockChains_Opponents += (lengthOfCurrentBlockChain_opponents);
+    					
+    					lengthOfCurrentBlockChain_opponents = 0; 	// reset the length of the current bot block chain
+    					previousBlockInPoint_opponents = false;
+    				}
     			}
 
     			// In bots home
@@ -399,7 +469,8 @@ public class Francis implements BotAPI {
     	// Get:
 
     	// Block Blot difference
-    	blockBlotDif = blocks - blots;
+    	blockBlotDif_bots = blocks_bots - blots_opponents;
+    	blockBlotDif_opponents = blocks_opponents - blots_bots;
 
     	// Difference between bot and opponent pip count
     	int pipCountDifference = botTotalPipCount - opponentTotalPipCount;
@@ -412,11 +483,16 @@ public class Francis implements BotAPI {
     	Double opponentBonus = 0.0;
     	if(board.getNumCheckers(me.getId(), 25) > 0) {
     		// bot is in jail, so some blocks inopponents home will effect more
-    		botBonus += (opponentsHomeBlockCount * checkersInJail_weight * board.getNumCheckers(me.getId(), 25));
+    		botBonus += (opponentsHomeBlockCount * checkersInJailBot_weight * board.getNumCheckers(me.getId(), 25));
+    	}
+    	
+    	if(board.getNumCheckers(opponent.getId(), 25) > 0) {
+    		// bot is in jail, so some blocks inopponents home will effect more
+    		opponentBonus += (botHomeBlockCount * checkersInJailOpponent_weight * board.getNumCheckers(opponent.getId(), 25));
     	}
 
     	// SPECIAL CASE: CHECK IF BOT HAS PIECES IN ALL PIECES IN HOME
-    	else if(board.lastCheckerInInnerBoard(me.getId())) {
+    	if(board.lastCheckerInInnerBoard(me.getId())) {
     		// Bot has all pieces in home section of board
     		// loop through home of bot and "weigh"
     		int totalWeight = 0;
@@ -425,23 +501,34 @@ public class Francis implements BotAPI {
     			totalWeight += weightForPipPosition;
     		}
 
-    		botBonus += (totalWeight * allPiecesInHome_weight);
+    		botBonus += (totalWeight * allPiecesInHomeBot_weight);
+
+    	}
+    	if(board.lastCheckerInInnerBoard(opponent.getId())) {
+    		// Bot has all pieces in home section of board
+    		// loop through home of bot and "weigh"
+    		int totalWeight = 0;
+    		for(int i = 1;i <= 6;i++) {
+    			int weightForPipPosition = (7-i)*theBoard[opponent.getId()][i];
+    			totalWeight += weightForPipPosition;
+    		}
+
+    		opponentBonus += (totalWeight * allPiecesInHomeOpponent_weight);
 
     	}
 
     	Double totalScore = 0.0;
 
-    	botScore = (botHomeBlockCount * botBlocksHome_weight) + (botBlockCountOpponentsHome * botBlockOpponentHome_weight)
-    			+ (botPieceCountInHome * botPipCountInHome_weight) + (botsPointsScored * botPipCountBearedOff_weight)
-    			+ (botPiecesInJail * botPipCountInJail_weight) + botBonus;
 
-    	opponentScore = (opponentsHomeBlockCount * opponentsBlocksHome_weight) + (opponentsBlockCountBotsHome * opponentBlockBotHome_weight)
-    			+ (opponentsPieceCountInHome * opponentsPipCountInHome_weight) + (opponentsPointsScored * opponentsPipCountBearedOff_weight)
-    			+ (opponentsPiecesInJail * opponentsPipCountInJail_weight) + opponentBonus;
-
-    	totalScore +=
-    	((blockBlotDif * blockBlotDif_weight) + (pipCountDifference * pipCountDifference_weight)
-    	+ botScore + opponentScore);
+        botScore = (blockBlotDifBot_weight*blockBlotDif_bots) + (botBlocksHome_weight* botHomeBlockCount) + (botBlockOpponentHome_weight*botBlockCountOpponentsHome)
+        		+ (lengthOfBlockChainsBot_weight*lengthOfCurrentBlockChain_bots) + (botPipCountInJail_weight*botPiecesInJail) 
+        		+ (botPipCountBearedOff_weight*botsPointsScored) + (botPipCountInHome_weight*botPipCountInHome_weight) + botBonus;
+        
+        botScore = (blockBlotDifBot_weight*blockBlotDif_opponents) + (opponentsBlocksHome_weight* opponentsHomeBlockCount) + (opponentBlockBotHome_weight*opponentsBlockCountBotsHome)
+        		+ (lengthOfBlockChainsOpponent_weight*lengthOfCurrentBlockChain_opponents) + (opponentsPipCountInJail_weight*opponentsPiecesInJail) 
+        		+ (opponentsPipCountBearedOff_weight*opponentsPointsScored) + (opponentsPipCountInHome_weight*opponentsPipCountInHome_weight) + opponentBonus;
+        
+    	totalScore += botScore + opponentScore + (pipCountDifference_weight*pipCountDifference);
 
 
     	return (totalScore);
@@ -465,21 +552,34 @@ public class Francis implements BotAPI {
         	else {
         		// Adjust the weights by small amount as described in document
         		//double weightAdjustment = ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
-        		// positive weights
-        		pipCountDifference_weight -= ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
-        		blockBlotDif_weight -= ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
-        		botBlocksHome_weight -= ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
-        		botBlockOpponentHome_weight -= ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
-        		botPipCountInJail_weight -= ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
-        		botPipCountInHome_weight -= ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
-        		botPipCountBearedOff_weight -= ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
+        	    // POSITIVE
+        		checkersInJailOpponent_weight -= ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);	// Positive
 
-        		// Negative weights
-        		opponentsBlocksHome_weight += ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
-        		opponentBlockBotHome_weight += ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
-        		opponentsPipCountInJail_weight += ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
-        		opponentsPipCountInHome_weight += ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
-        		opponentsPipCountBearedOff_weight += ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
+        	    pipCountDifference_weight -= ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);		// Positive	(for both bot and player) 
+        	    botPipCountInHome_weight -= ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);		// Positive
+        	    botPipCountBearedOff_weight -= ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);		// Positive
+        	    opponentsPipCountInJail_weight -= ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);	// Positive
+        	    lengthOfBlockChainsBot_weight -= ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);			// Positive TODO: THIS IS JUST A TEST
+        	    allPiecesInHomeBot_weight -= ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);			// Positive	
+        	    botBlockOpponentHome_weight -= ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);		// Positive
+        	    botBlocksHome_weight -= ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);		// Positive
+        	    blockBlotDifBot_weight -= ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);		// Positive
+
+
+        	    
+        	    
+        	    
+        	    // NEGATIVE
+        	    checkersInJailBot_weight += ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);		// Negative 
+        	    opponentsPipCountInHome_weight += ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);	// Negative
+        	    opponentsPipCountBearedOff_weight += ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);	// Negative
+        	    botPipCountInJail_weight += ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);			// Negative
+        	    lengthOfBlockChainsOpponent_weight += ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);			// negative TODO: THIS IS JUST A TEST
+        	    allPiecesInHomeOpponent_weight += ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);	// Negative
+        	    opponentBlockBotHome_weight += ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);		// Negative
+        	    opponentsBlocksHome_weight += ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);	// Negative
+        	    blockBlotDifOpponent_weight += ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);	// Negative
+
         	}
     	}
     }
@@ -491,62 +591,88 @@ public class Francis implements BotAPI {
     		//double weightAdjustment = ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
     		//add a small random amount (could be slightly negative) to the
     		//positive weights and subtract a small amount from the negative weights (could be slightly negative
+    	    
+    	    // POSITIVE
+    		checkersInJailOpponent_weight += ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);	// Positive
 
-    		// positive weights
-    		pipCountDifference_weight += ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
-    		blockBlotDif_weight += ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
-    		botBlocksHome_weight += ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
-    		botBlockOpponentHome_weight += ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
-    		botPipCountInJail_weight += ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
-    		botPipCountInHome_weight += ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
-    		botPipCountBearedOff_weight += ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
-    		allPiecesInHome_weight += ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
+    	    pipCountDifference_weight += ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);		// Positive	(for both bot and player) 
+    	    botPipCountInHome_weight += ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);		// Positive
+    	    botPipCountBearedOff_weight += ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);		// Positive
+    	    opponentsPipCountInJail_weight += ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);	// Positive
+    	    lengthOfBlockChainsBot_weight += ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);			// Positive TODO: THIS IS JUST A TEST
+    	    allPiecesInHomeBot_weight += ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);			// Positive	
+    	    botBlockOpponentHome_weight += ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);		// Positive
+    	    botBlocksHome_weight += ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);		// Positive
+    	    blockBlotDifBot_weight += ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);		// Positive
 
-    		// Negative weights
-    		opponentsBlocksHome_weight -= ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
-    		opponentBlockBotHome_weight -= ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
-    		opponentsPipCountInJail_weight -= ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
-    		opponentsPipCountInHome_weight -= ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
-    		opponentsPipCountBearedOff_weight -= ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
-    		checkersInJail_weight -= ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);
 
+    	    
+    	    
+    	    
+    	    // NEGATIVE
+    	    checkersInJailBot_weight -= ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);		// Negative 
+    	    opponentsPipCountInHome_weight -= ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);	// Negative
+    	    opponentsPipCountBearedOff_weight -= ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);	// Negative
+    	    botPipCountInJail_weight -= ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);			// Negative
+    	    lengthOfBlockChainsOpponent_weight -= ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);			// negative TODO: THIS IS JUST A TEST
+    	    allPiecesInHomeOpponent_weight -= ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);	// Negative
+    	    opponentBlockBotHome_weight -= ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);		// Negative
+    	    opponentsBlocksHome_weight -= ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);	// Negative
+    	    blockBlotDifOpponent_weight -= ThreadLocalRandom.current().nextDouble(weightAdjustment_Min, weightAdjustment_Max + 0.0001);	// Negative
+
+    		
     	}
     }
 
-    public void swapWeightsWithOtherPlayer(Double[] botWeights) {
-		// positive weights
-		pipCountDifference_weight = botWeights[0];
-		blockBlotDif_weight = botWeights[1];
-		botBlocksHome_weight = botWeights[2];
-		botBlockOpponentHome_weight = botWeights[3];
-		botPipCountInJail_weight = botWeights[4];
-		botPipCountInHome_weight = botWeights[5];
-		botPipCountBearedOff_weight = botWeights[6];
+    public void swapWeightsWithOtherPlayer(double[] botWeights) {
+    	
+	    // POSITIVE
+		checkersInJailOpponent_weight = botWeights[0];
 
-		// Negative weights
-		opponentsBlocksHome_weight = botWeights[7];
-		opponentBlockBotHome_weight = botWeights[8];
-		opponentsPipCountInJail_weight = botWeights[9];
-		opponentsPipCountInHome_weight = botWeights[10];
-		opponentsPipCountBearedOff_weight = botWeights[11];
-		checkersInJail_weight = botWeights[12];
+	    pipCountDifference_weight = botWeights[1]; 
+	    botPipCountInHome_weight = botWeights[2];
+	    botPipCountBearedOff_weight = botWeights[3];
+	    opponentsPipCountInJail_weight = botWeights[4];
+	    lengthOfBlockChainsBot_weight = botWeights[5];
+	    allPiecesInHomeBot_weight = botWeights[6];	
+	    botBlockOpponentHome_weight = botWeights[7];
+	    botBlocksHome_weight = botWeights[8];
+	    blockBlotDifBot_weight = botWeights[9];
 
-		// others
-		allPiecesInHome_weight = botWeights[13];
+
+	    
+	    
+    	
+    	// NEGATIVE
+	    checkersInJailBot_weight = botWeights[10]; 
+	    opponentsPipCountInHome_weight = botWeights[11];
+	    opponentsPipCountBearedOff_weight = botWeights[12];
+	    botPipCountInJail_weight = botWeights[13];
+	    lengthOfBlockChainsOpponent_weight = botWeights[14];
+	    allPiecesInHomeOpponent_weight = botWeights[15];
+	    opponentBlockBotHome_weight = botWeights[16];
+	    opponentsBlocksHome_weight = botWeights[17];
+	    blockBlotDifOpponent_weight = botWeights[18];
+
 
     }
+    
+    
 
     // ONLY FOR TRAINING
-    public Double[] getWeights() {
-    	Double[] weights = {pipCountDifference_weight,blockBlotDif_weight,botBlocksHome_weight,botBlockOpponentHome_weight,botPipCountInJail_weight
-    			,botPipCountInHome_weight,botPipCountBearedOff_weight, opponentsBlocksHome_weight, opponentBlockBotHome_weight,opponentsPipCountInJail_weight
-    			,opponentsPipCountInHome_weight,opponentsPipCountBearedOff_weight,checkersInJail_weight,allPiecesInHome_weight};
+    public double[] getWeights() {
+    	double[] weights = {
+    	    	checkersInJailOpponent_weight,pipCountDifference_weight,botPipCountInHome_weight,botPipCountBearedOff_weight,
+    	    	opponentsPipCountInJail_weight,lengthOfBlockChainsBot_weight,allPiecesInHomeBot_weight,botBlockOpponentHome_weight,
+    	    	botBlocksHome_weight,blockBlotDifBot_weight,checkersInJailBot_weight,opponentsPipCountInHome_weight,
+    	    	opponentsPipCountBearedOff_weight,botPipCountInJail_weight,lengthOfBlockChainsOpponent_weight,
+    	    	allPiecesInHomeOpponent_weight,opponentBlockBotHome_weight,opponentsBlocksHome_weight,blockBlotDifOpponent_weight};
     	return weights;
     }
 
     private void swapBotsWeightsWithOpponentBot(BotAPI opponentBot) {
-    	Double[] bot0_weights = this.getWeights();
-    	Double[] bot1_weights = opponentBot.getWeights();
+    	double[] bot0_weights = this.getWeights();
+    	double[] bot1_weights = opponentBot.getWeights();
 
     	this.swapWeightsWithOtherPlayer(bot1_weights);
     	opponentBot.swapWeightsWithOtherPlayer(bot0_weights);
@@ -561,7 +687,7 @@ public class Francis implements BotAPI {
         try {
         	//OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(new File(WEIGHT_FILE)));
         	FileWriter out = new FileWriter(WEIGHT_FILE);
-        	Double[] weights = this.getWeights();
+        	double[] weights = this.getWeights();
 			String output = "";
 			for (double weight : weights) {
 				output += weight + "\n";
@@ -585,7 +711,7 @@ public class Francis implements BotAPI {
     	// retrieve the weights
         try {
         	BufferedReader bf1 = new BufferedReader(new FileReader(WEIGHT_FILE));
-        	Double[] weights = new Double[AMOUNTOFWEIGHTS];
+        	double[] weights = new double[AMOUNTOFWEIGHTS];
 			for(int i = 0; i < AMOUNTOFWEIGHTS;i++) {
 				weights[i] = Double.parseDouble(bf1.readLine());
 			}

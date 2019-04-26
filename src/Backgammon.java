@@ -88,18 +88,18 @@ public class Backgammon {
         		match.setLength();
         		ui.display();
 
-        		// Adjust the weights (THIS IS FOR TRAINING)
-        		//if() {
-        			
-        		//}
-        		//if() {
-        			
-        		//}
-        		bots[players.getCurrent().getId()].botWins();
-        		bots[players.getEnemy().getId()].botLoses();
-
-
-        		// END OF ADJUST THE WEIGHTS (FOR TRAINING)
+//        		// Adjust the weights (THIS IS FOR TRAINING)
+//        		//if() {
+//        			
+//        		//}
+//        		//if() {
+//        			
+//        		//}
+//        		bots[players.getCurrent().getId()].botWins();
+//        		bots[players.getEnemy().getId()].botLoses();
+//
+//
+//        		// END OF ADJUST THE WEIGHTS (FOR TRAINING)
 
         	} // Else the match over (By command or full match is end)
         	else {
@@ -122,8 +122,8 @@ public class Backgammon {
 
         // Save the weights
         
-		bots[players.getCurrent().getId()].saveWeights();
-		bots[players.getEnemy().getId()].saveWeights();
+//		bots[players.getCurrent().getId()].saveWeights();
+//		bots[players.getEnemy().getId()].saveWeights();
 
         // Training code to save the weights of the bot
 
@@ -256,7 +256,7 @@ public class Backgammon {
     private void getPlayerName_botTest() {
 
     	// Set up Francis with player 1
-        players.get(0).setName(Francis.getTheName());
+        players.get(0).setName(OrangeIguanas.getTheName());
     	ui.displayString("> Francis bot controlls player 1");
     	ui.displayPlayerColor(players.get(0));
 
@@ -266,12 +266,12 @@ public class Backgammon {
     	ui.displayPlayerColor(players.get(1));
 
     	// Set up the Francis bot
-    	bots[0] = new Francis(players.get(0),players.get(1),board,cube,match,ui.getInfoPanel());
+    	bots[0] = new OrangeIguanas(players.get(0),players.get(1),board,cube,match,ui.getInfoPanel());
 
     	// set up the Steven bot
     	bots[1] = new Bot1(players.get(1),players.get(0),board,cube,match,ui.getInfoPanel());
 
-    	((Francis)(bots[0])).setEnemyBot(bots[1]);
+    	((OrangeIguanas)(bots[0])).setEnemyBot(bots[1]);
     	((Bot1)(bots[1])).setEnemyBot(bots[0]);
     }
 

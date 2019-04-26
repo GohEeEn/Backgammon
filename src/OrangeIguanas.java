@@ -18,9 +18,9 @@ import java.util.concurrent.ThreadLocalRandom;
 /**
  * Game Bot Class
  * @author Ee En Goh
- *
+ *@author Ferdia Fagan
  */
-public class Francis implements BotAPI {
+public class OrangeIguanas implements BotAPI {
 
     // The public API of Bot must not change
     // This is ONLY class that you can edit in the program
@@ -30,8 +30,6 @@ public class Francis implements BotAPI {
 
 	private final boolean TRAINING = true;
     private static final String WEIGHT_FILE = "Francis_WeightsForScoring.txt";
-    
-    private boolean botIsAskingToDouble = false;
     
     private double referenceScoreForBoard;
     private double referenceScoreForBot;
@@ -56,42 +54,44 @@ public class Francis implements BotAPI {
     private static final int AMOUNTOFWEIGHTS = 19;
     
     
-    private double checkersInJailBot_weight = 0.0;		// Negative 
-    private double checkersInJailOpponent_weight = 0.0;	// Positive
+    private double checkersInJailBot_weight = -0.3419541627101706;		// Negative 
+    private double checkersInJailOpponent_weight = 0.34465152348767086;	// Positive
 
-    private double pipCountDifference_weight = 0.0;		// Positive	(for both bot and player) 
+    private double pipCountDifference_weight = 0.3299212737000887;		// Positive	(for both bot and player) 
 
-    private double blockBlotDifBot_weight = 0.0;		// Positive
-    private double blockBlotDifOpponent_weight = 0.0;	// Negative
+    private double blockBlotDifBot_weight = 0.3558940746345395;		// Positive
+    private double blockBlotDifOpponent_weight = -0.3410357398144862;	// Negative
     
-    private double botBlocksHome_weight = 0.0;			// Positive
-    private double opponentsBlocksHome_weight = 0.0;	// Negative
+    private double botBlocksHome_weight = 0.2251103704403442;			// Positive
+    private double opponentsBlocksHome_weight = -0.30951474634000053;	// Negative
 
-    private double botBlockOpponentHome_weight = 0.0;		// Positive
-    private double opponentBlockBotHome_weight = 0.0;		// Negative
+    private double botBlockOpponentHome_weight = 0.35414183138017175;		// Positive
+    private double opponentBlockBotHome_weight = -0.31827514514140254;		// Negative
 
-    private double allPiecesInHomeBot_weight = 0.0;			// Positive	
-    private double allPiecesInHomeOpponent_weight = 0.0;	// Negative
+    private double allPiecesInHomeBot_weight = 0.2780307270628255;			// Positive	
+    private double allPiecesInHomeOpponent_weight = -0.375318058526427;	// Negative
     
-    private double lengthOfBlockChainsBot_weight = 0.0;			// Positive TODO: THIS IS JUST A TEST
-    private double lengthOfBlockChainsOpponent_weight = 0.0;			// negative TODO: THIS IS JUST A TEST
+    private double lengthOfBlockChainsBot_weight = 0.43468063500681253;			// Positive TODO: THIS IS JUST A TEST
+    private double lengthOfBlockChainsOpponent_weight = -0.30137439751905065;			// negative TODO: THIS IS JUST A TEST
 
     // for later: private int differenceBetweenBlockedCheckers_weight = 0;	// difference between pips that are trapped behind enemy pips
     // for later: private int differenceBetweenEscapedCheckers_weight = 0;	// same as above, but for checkers that have escaped
 
     //private int differenceBetweenPipCountInJail_weight = 0;
-    private double botPipCountInJail_weight = 0.0;			// Negative
-    private double opponentsPipCountInJail_weight = 0.0;	// Positive
+    private double botPipCountInJail_weight = -0.28457383277549714;			// Negative
+    private double opponentsPipCountInJail_weight = 0.27212066697270776;	// Positive
 
     //private int differenceBetweenPipCountsBearedOff_weight = 0;
-    private double botPipCountBearedOff_weight = 0.0;		// Positive
-    private double opponentsPipCountBearedOff_weight = 0.0;	// Negative
+    private double botPipCountBearedOff_weight = 0.33675117699756657;		// Positive
+    private double opponentsPipCountBearedOff_weight = -0.37895385238348667;	// Negative
 
-    private double botPipCountInHome_weight = 0.0;			// Positive
-    private double opponentsPipCountInHome_weight = 0.0;	// Negative
+    private double botPipCountInHome_weight = 0.3509636466581288;			// Positive
+    private double opponentsPipCountInHome_weight = -0.2782324183664841;	// Negative
 
     private double botScore = 0.0;
     private double opponentScore = 0.0;
+    
+    private String lastCommand = "";
 
 
 
@@ -99,15 +99,14 @@ public class Francis implements BotAPI {
 
     // END OF Weights
 
-    Francis(PlayerAPI me, PlayerAPI opponent, BoardAPI board, CubeAPI cube, MatchAPI match, InfoPanelAPI info) {
+    OrangeIguanas(PlayerAPI me, PlayerAPI opponent, BoardAPI board, CubeAPI cube, MatchAPI match, InfoPanelAPI info) {
         this.me = me;
         this.opponent = opponent;
         this.board = board;
         this.cube = cube;
         this.match = match;
         this.info = info;
-
-        this.retrieveWeights();
+        //this.retrieveWeights();
 
         
         // Get reference score
@@ -124,11 +123,11 @@ public class Francis implements BotAPI {
      * return the bot name (must match the class name)
      */
     public String getName() {
-        return "Francis";
+        return "OrangeIguanas";
     }
 
     public static String getTheName() {
-    	return "Francis";
+    	return "OrangeIguanas";
     }
 
     /**
@@ -139,16 +138,14 @@ public class Francis implements BotAPI {
     	
     	// Ask if want to double
     	
-    	/*		UNCOMMENT WHEN SUBMITTING
-    	botIsAskingToDouble = true;
     	String seeIfBotWantsToAskForDouble = getDoubleDecision();
-    	if(seeIfBotWantsToAskForDouble.equals("double")) {
-    		// ask for a double
-    		botIsAskingToDouble = false;
-    		return seeIfBotWantsToAskForDouble;
+    	if(match.canDouble(me.getId()) && !lastCommand.equals("double")) {
+        	if(seeIfBotWantsToAskForDouble.equals("y")) {
+        		// ask for a double
+        		lastCommand = "double";
+        		return "double";
+        	}	
     	}
-    	botIsAskingToDouble = false;
-    	*/
     	
     	// Get score for current board(without any moves)
     	Double currentHighestScore = 0.0;
@@ -181,7 +178,7 @@ public class Francis implements BotAPI {
 
     		currentPlayPointer++;
 		}
-
+    	lastCommand = "" + currentPlayPointer;
     	// in the end, the highest scored move, and the move that will achieve the highest score
         return ("" + currentPlayPointer);
     }
@@ -229,52 +226,34 @@ public class Francis implements BotAPI {
 
 		// bot is considering asking
     	// Stage 1 : Both Players 2 points from winning
-    	if(me.getScore() - 2 == match.getMatchPoint() && me.getScore() - 2 == match.getMatchPoint()) {
+    	if(me.getScore() - 2 == match.getLength() && me.getScore() - 2 == match.getLength()) {
     		// bot is being asked to double by other player
     		if(percentageChanceOfsuccess(getScoreForBoard(board.get())) >= 50 && percentageChanceOfsuccess(getScoreForBoard(board.get())) <= 75) {
-    			if(!botIsAskingToDouble) {
-    				return "yes";
-    			}
-    			return "double";
+    			return "y";
     		}
     		else if(percentageChanceOfsuccess(getScoreForBoard(board.get())) >= 75) {
-    			return "no";
+    			return "n";
     		}
     		else {
-    			if(!botIsAskingToDouble) {
-    				return "yes";
-    			}
-    			return "double";
+    			return "y";
     		}
 
     	} // Normal Stage
     	
     	else {
-    		if(!botIsAskingToDouble) {
-    			// Then bot is the one being asked
-    		}
     		// Bot is not being asked to double, and instead is going to choose for himself
     		double percentageChanceOfSuccess = percentageChanceOfsuccess(getScoreForBoard(board.get()));
     		if(percentageChanceOfSuccess < 66)
-    			return "no";
+    			return "n";
     		else if(percentageChanceOfSuccess >= 66 && percentageChanceOfSuccess < 75) {
-    			if(!botIsAskingToDouble) {
-    				return "yes";
-    			}
-    			return "double";
+    			return "y";
     		}
     		else if(percentageChanceOfSuccess >= 75) {
-    			if(!botIsAskingToDouble) {
-    				return "yes";
-    			}
-    			return "double";
+    			return "y";
     		}
     		else
-    			return "no";
+    			return "n";
     	}
-    	
-    	
-    	
     }
     
     private double percentageChanceOfsuccess(double currentScore) {
@@ -298,7 +277,7 @@ public class Francis implements BotAPI {
      * @param theBoard	The duplication of board pips
      * @return			Board score of this bot
      */
-    public double getScoreForBoard(int[][] theBoard) {
+    private double getScoreForBoard(int[][] theBoard) {
 
     	/** The difference between the number of blocks(pip with at least 1 pip) and blots(empty pip) on board */
     	int blockBlotDif_bots = 0;
@@ -524,7 +503,7 @@ public class Francis implements BotAPI {
         		+ (lengthOfBlockChainsBot_weight*lengthOfCurrentBlockChain_bots) + (botPipCountInJail_weight*botPiecesInJail) 
         		+ (botPipCountBearedOff_weight*botsPointsScored) + (botPipCountInHome_weight*botPipCountInHome_weight) + botBonus;
         
-        botScore = (blockBlotDifBot_weight*blockBlotDif_opponents) + (opponentsBlocksHome_weight* opponentsHomeBlockCount) + (opponentBlockBotHome_weight*opponentsBlockCountBotsHome)
+        opponentScore = (blockBlotDifBot_weight*blockBlotDif_opponents) + (opponentsBlocksHome_weight* opponentsHomeBlockCount) + (opponentBlockBotHome_weight*opponentsBlockCountBotsHome)
         		+ (lengthOfBlockChainsOpponent_weight*lengthOfCurrentBlockChain_opponents) + (opponentsPipCountInJail_weight*opponentsPiecesInJail) 
         		+ (opponentsPipCountBearedOff_weight*opponentsPointsScored) + (opponentsPipCountInHome_weight*opponentsPipCountInHome_weight) + opponentBonus;
         
@@ -537,7 +516,7 @@ public class Francis implements BotAPI {
 
     // For training
 
-
+    /*//COMMENTED OUT--- USED FOR TRAINING
     public void botLoses() {
     	if(inTrainingMode) {
     		botLosesInARow++;
@@ -623,7 +602,8 @@ public class Francis implements BotAPI {
     		
     	}
     }
-
+    */		//COMMENTED OUT--- USED FOR TRAINING
+    /*
     public void swapWeightsWithOtherPlayer(double[] botWeights) {
     	
 	    // POSITIVE
@@ -656,10 +636,12 @@ public class Francis implements BotAPI {
 
 
     }
+    */
     
     
 
     // ONLY FOR TRAINING
+    /*			//COMMENTED OUT--- USED FOR TRAINING
     public double[] getWeights() {
     	double[] weights = {
     	    	checkersInJailOpponent_weight,pipCountDifference_weight,botPipCountInHome_weight,botPipCountBearedOff_weight,
@@ -727,6 +709,7 @@ public class Francis implements BotAPI {
 			e.printStackTrace();
 		}
     }
+    */		//COMMENTED OUT--- USED FOR TRAINING
     // END ONLY FOR TRAINING
 
     // SEEING THE BOARD
@@ -759,6 +742,11 @@ public class Francis implements BotAPI {
     private int calculateOpposingPip(int pip) {
         return Board.NUM_PIPS - pip + 1;
     }
+
+	public void setEnemyBot(BotAPI botAPI) {
+		// TODO Auto-generated method stub
+		this.opponentBot = botAPI;
+	}
 
     // SEEING THE BOARD
 }

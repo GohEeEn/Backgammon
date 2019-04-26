@@ -86,7 +86,7 @@ public class Match implements MatchAPI{
      */
 	@Override
 	public boolean canDouble(int currentID) {
-		if(!crawford || cube.getValue() < matchPoint - players.get(currentID).getScore())
+		if(!crawford && cube.getValue() < matchPoint - players.get(currentID).getScore())
 			return true;
 		return false;
 	}

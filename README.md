@@ -1,6 +1,6 @@
 # Orange-Iguanas
-<b>Author</b>  : Ee En Goh    - 17202691<br/>
-<b>Author</b>  : Ferdia Fagan - 16372803<br/>
+<b>Author</b>  : @GohEeEn    - 17202691<br/>
+<b>Author</b>  : @FerdiaFagan - 16372803<br/>
 <b>Version</b> : 2.0 
 
 
